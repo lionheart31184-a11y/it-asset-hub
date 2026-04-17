@@ -1,0 +1,3644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IT Asset & Onboarding Hub</title>
+<meta name="description" content="Comprehensive IT asset management, employee headcount tracker, new hire onboarding pipeline, and reporting dashboard."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+/* ========================================================
+   DESIGN TOKENS
+======================================================== */
+:root {
+  --bg:       #0b0d1a;
+  --surface:  #12152a;
+  --card:     #181c35;
+  --border:   #252a4a;
+  --border2:  #2e3460;
+  --accent:   #6366f1;
+  --accent2:  #818cf8;
+  --accent3:  #4f46e5;
+  --teal:     #14b8a6;
+  --rose:     #f43f5e;
+  --amber:    #f59e0b;
+  --green:    #22c55e;
+  --sky:      #38bdf8;
+  --purple:   #a855f7;
+  --text:     #e2e8f0;
+  --text2:    #94a3b8;
+  --text3:    #64748b;
+  --radius:   12px;
+  --radius-sm:8px;
+  --shadow:   0 4px 24px rgba(0,0,0,.4);
+  --trans:    all .22s cubic-bezier(.4,0,.2,1);
+}
+
+:root[data-theme="light"] {
+  --bg:       #f8fafc;
+  --surface:  #ffffff;
+  --card:     #ffffff;
+  --border:   #e2e8f0;
+  --border2:  #cbd5e1;
+  --text:     #1e293b;
+  --text2:    #475569;
+  --text3:    #64748b;
+  --shadow:   0 4px 20px rgba(0,0,0,.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  overflow: visible;
+}
+
+/* ========================================================
+   SIDEBAR
+======================================================== */
+#sidebar {
+  width: 240px;
+  min-width: 240px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 200;
+  transition: var(--trans);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(99,102,241,.4);
+  flex-shrink: 0;
+}
+.logo-text { font-size: 14px; font-weight: 700; line-height: 1.2; }
+.logo-text span { display: block; font-size: 11px; font-weight: 400; color: var(--text2); }
+
+.sidebar-nav { flex: 1; padding: 12px 10px; overflow-y: auto; }
+.nav-section { font-size: 10px; font-weight: 600; letter-spacing: .08em; color: var(--text3); text-transform: uppercase; padding: 16px 10px 6px; z-index: 1; position: relative; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text2);
+  transition: var(--trans);
+  margin-bottom: 2px;
+  position: relative;
+  user-select: none;
+}
+.nav-item:hover { background: rgba(99,102,241,.1); color: var(--text); }
+.nav-item.active { background: rgba(99,102,241,.18); color: var(--accent2); }
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 3px; background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text3);
+  display: flex; align-items: center; gap: 10px;
+}
+.avatar-sm {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+
+/* ========================================================
+   MAIN
+======================================================== */
+#main {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px;
+  background: rgba(18,21,42,.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-size: 18px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.icon-btn {
+  width: 36px; height: 36px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text2);
+  transition: var(--trans);
+}
+.icon-btn:hover { background: var(--border); color: var(--text); }
+.notification-dot { position: relative; }
+.notification-dot::after {
+  content: '';
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: var(--rose); border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+/* ========================================================
+   PAGE CONTENT
+======================================================== */
+.content { padding: 28px; flex: 1; }
+
+.page { display: none; animation: fadeIn .3s ease; min-height: calc(100vh - 120px); }
+.page.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================================
+   SHARED COMPONENTS
+======================================================== */
+
+/* STAT CARDS */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; margin-bottom: 24px; }
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: var(--trans);
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.stat-card.indigo::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
+.stat-card.teal::before { background: linear-gradient(90deg, var(--teal), var(--sky)); }
+.stat-card.rose::before { background: linear-gradient(90deg, var(--rose), var(--amber)); }
+.stat-card.green::before { background: linear-gradient(90deg, var(--green), var(--teal)); }
+.stat-card.amber::before { background: linear-gradient(90deg, var(--amber), var(--rose)); }
+.stat-card.purple::before { background: linear-gradient(90deg, var(--purple), var(--accent)); }
+
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--border2); }
+
+.stat-icon { font-size: 22px; }
+.stat-value { font-size: 28px; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 12px; color: var(--text2); font-weight: 500; }
+.stat-delta { font-size: 11px; margin-top: 2px; }
+.delta-up { color: var(--green); }
+.delta-down { color: var(--rose); }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+.section-title { font-size: 16px; font-weight: 700; }
+.section-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: none; transition: var(--trans); white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent3); box-shadow: 0 4px 16px rgba(99,102,241,.4); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--card); color: var(--text); border-color: var(--border2); }
+.btn-danger { background: rgba(244,63,94,.15); color: var(--rose); border: 1px solid rgba(244,63,94,.3); }
+.btn-danger:hover { background: rgba(244,63,94,.25); }
+.btn-success { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+.btn-success:hover { background: rgba(34,197,94,.25); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* FILTERS ROW */
+.filters-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px;
+  flex: 1; min-width: 200px;
+}
+.search-box input {
+  background: none; border: none; outline: none;
+  color: var(--text); font-size: 13px; font-family: inherit; flex: 1;
+}
+.search-box input::placeholder { color: var(--text3); }
+.search-icon { color: var(--text3); font-size: 14px; }
+
+.filter-select {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); border-radius: var(--radius-sm);
+  padding: 8px 12px; font-size: 13px; font-family: inherit;
+  cursor: pointer; outline: none; transition: var(--trans); min-width: 130px;
+}
+.filter-select:hover, .filter-select:focus { border-color: var(--accent); }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+
+table {
+  width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap;
+}
+thead tr { background: var(--surface); }
+th {
+  padding: 12px 16px; text-align: left;
+  font-size: 11px; font-weight: 600;
+  color: var(--text3); text-transform: uppercase; letter-spacing: .05em;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(99,102,241,.06); }
+tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
+
+.bulk-bar {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 24px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  z-index: 100; transition: var(--trans);
+  gap: 16px;
+}
+.bulk-info { font-weight: 600; color: var(--accent2); }
+.col-cb { width: 40px; text-align: center; }
+.td-cb input { cursor: pointer; width: 16px; height: 16px; accent-color: var(--accent); }
+
+/* BADGES */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.badge.green  { background: rgba(34,197,94,.15);  color: var(--green); }
+.badge.rose   { background: rgba(244,63,94,.15);   color: var(--rose); }
+.badge.amber  { background: rgba(245,158,11,.15);  color: var(--amber); }
+.badge.sky    { background: rgba(56,189,248,.15);  color: var(--sky); }
+.badge.purple { background: rgba(168,85,247,.15);  color: var(--purple); }
+.badge.text3  { background: rgba(100,116,139,.15); color: var(--text3); }
+.badge.teal   { background: rgba(20,184,166,.15);  color: var(--teal); }
+
+/* INLINE EDIT */
+.editable { cursor: pointer; }
+.editable:hover { color: var(--accent2); }
+.inline-input {
+  background: var(--surface); border: 1px solid var(--accent);
+  color: var(--text); border-radius: 4px; padding: 4px 8px;
+  font-size: 13px; font-family: inherit; outline: none;
+  width: 100%; min-width: 80px;
+}
+.inline-select {
+  background: var(--surface); border: 1px solid var(--accent);
+  color: var(--text); border-radius: 4px; padding: 4px 8px;
+  font-size: 13px; font-family: inherit; outline: none; cursor: pointer;
+}
+.action-btns { display: flex; gap: 6px; align-items: center; }
+
+/* CARD */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* GRID 2 */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+@media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 900px)  { .grid-3 { grid-template-columns: 1fr 1fr; } }
+
+/* CHART CONTAINER */
+.chart-wrap { position: relative; height: 260px; }
+
+/* PROGRESS BAR */
+.progress-bar-wrap { background: var(--surface); border-radius: 20px; height: 8px; overflow: hidden; margin-top: 4px; }
+.progress-bar-fill { height: 100%; border-radius: 20px; transition: width .5s ease; }
+
+/* ========================================================
+   CSV IMPORT
+======================================================== */
+.import-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.import-tab {
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); color: var(--text2);
+  background: var(--card); transition: var(--trans);
+}
+.import-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.drop-zone {
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--trans);
+  margin-bottom: 12px;
+  position: relative;
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--accent); background: rgba(99,102,241,.06);
+}
+.drop-zone input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.drop-icon { font-size: 32px; margin-bottom: 8px; }
+.drop-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.drop-sub { font-size: 11px; color: var(--text2); }
+
+.preview-table-wrap {
+  margin-top: 0;
+  max-height: 280px;
+  overflow: auto;
+  border-radius: var(--radius-sm);
+  background: rgba(0,0,0,.15);
+}
+.preview-table-wrap table {
+  font-size: 11px;
+  min-width: 600px;
+  width: max-content;
+}
+.preview-table-wrap table th,
+.preview-table-wrap table td {
+  white-space: nowrap;
+}
+
+.mapping-row th {
+  padding: 8px 10px;
+  background: var(--surface);
+}
+.mapping-select {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  color: var(--accent2);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+.mapping-select:hover { border-color: var(--accent2); }
+.mapping-select option { background: var(--surface); color: var(--text); }
+
+.mapping-select:hover { border-color: var(--accent2); }
+.mapping-select option { background: var(--surface); color: var(--text); }
+
+/* ========================================================
+   ONBOARDING PIPELINE
+======================================================== */
+.pipeline-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: var(--trans);
+}
+.pipeline-card:hover { border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
+
+.pipeline-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.pipeline-name { font-size: 15px; font-weight: 700; }
+.pipeline-meta { font-size: 12px; color: var(--text2); display: flex; gap: 12px; margin-top: 2px; flex-wrap: wrap; }
+
+.stages-track { display: flex; gap: 0; margin-bottom: 14px; }
+.stage-step {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+.stage-step:not(:last-child)::after {
+  content: '';
+  position: absolute; top: 14px; left: 50%; right: -50%;
+  height: 2px; background: var(--border2); z-index: 0;
+}
+.stage-step.done:not(:last-child)::after { background: var(--accent); }
+.stage-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; z-index: 1; transition: var(--trans);
+  position: relative;
+}
+.stage-step.done .stage-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+.stage-step.active-stage .stage-dot {
+  background: var(--surface); border-color: var(--accent2);
+  box-shadow: 0 0 0 4px rgba(99,102,241,.2);
+  color: var(--accent2);
+}
+.stage-label { font-size: 10px; color: var(--text3); margin-top: 6px; text-align: center; max-width: 70px; line-height: 1.3; }
+.stage-step.done .stage-label { color: var(--accent2); }
+.stage-step.active-stage .stage-label { color: var(--text); }
+
+/* ========================================================
+   MODAL
+======================================================== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+  z-index: 1000; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 28px;
+  max-width: 560px; width: 90%;
+  animation: modalIn .25s cubic-bezier(.4,0,.2,1);
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.95) translateY(-10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.modal-title { font-size: 16px; font-weight: 700; }
+.modal-close { font-size: 20px; cursor: pointer; color: var(--text2); line-height: 1; transition: var(--trans); }
+.modal-close:hover { color: var(--rose); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; }
+.form-field.full { grid-column: 1/-1; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+.form-input, .form-select {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); border-radius: var(--radius-sm);
+  padding: 9px 12px; font-size: 13px; font-family: inherit;
+  outline: none; transition: var(--trans); width: 100%;
+}
+.form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+.form-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ========================================================
+   REPORTS
+======================================================== */
+.report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 20px; }
+
+/* ========================================================
+   TOAST
+======================================================== */
+#toast-container {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 14px 18px;
+  font-size: 13px; color: var(--text);
+  box-shadow: var(--shadow); min-width: 260px;
+  display: flex; align-items: center; gap: 10px;
+  animation: toastIn .3s ease; position: relative; overflow: hidden;
+}
+.toast::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.toast.success::before { background: var(--green); }
+.toast.error::before   { background: var(--rose); }
+.toast.info::before    { background: var(--accent); }
+@keyframes toastIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+
+/* ========================================================
+   EMPTY STATE
+======================================================== */
+.empty-state { text-align: center; padding: 52px 24px; color: var(--text3); }
+.empty-icon { font-size: 42px; margin-bottom: 12px; opacity: .3; line-height: 1; }
+.empty-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--text2); }
+.empty-sub { font-size: 13px; }
+
+/* ========================================================
+   RECENT + MINI LISTS
+======================================================== */
+.mini-list { display: flex; flex-direction: column; gap: 1px; }
+.mini-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.mini-item:last-child { border-bottom: none; }
+.mini-icon {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.mini-content { flex: 1; min-width: 0; }
+.mini-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.mini-right { text-align: right; flex-shrink: 0; }
+
+/* Scroll */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* Responsive topbar handling */
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  #sidebar { width: 100%; height: auto; position: relative; }
+  .sidebar-nav { display: flex; overflow-x: auto; padding: 8px; flex-direction: row; }
+  .nav-item { flex-shrink: 0; }
+  #main { margin-left: 0; }
+  .content { padding: 16px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* ALERTS */
+.alert-card {
+  display: flex; align-items: stretch; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--border); overflow: hidden;
+  margin-bottom: 10px;
+}
+.alert-card.rose { border-left: 4px solid var(--rose); background: rgba(244,63,94,.04); }
+.alert-card.amber { border-left: 4px solid var(--amber); background: rgba(245,158,11,.04); }
+.alert-card.sky { border-left: 4px solid var(--sky); background: rgba(56,189,248,.04); }
+.alert-icon { padding: 14px 16px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+.alert-content { padding: 12px 16px; flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;}
+.alert-title { font-size: 14px; font-weight: 700; color: var(--text); }
+.alert-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.alert-action { font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 4px; padding: 6px 12px; transition: var(--trans); border: 1px solid transparent; white-space: nowrap; }
+.alert-card.rose .alert-action { color: var(--rose); border-color: rgba(244,63,94,.3); }
+.alert-card.rose .alert-action:hover { background: rgba(244,63,94,.1); }
+.alert-card.amber .alert-action { color: var(--amber); border-color: rgba(245,158,11,.3); }
+.alert-card.amber .alert-action:hover { background: rgba(245,158,11,.1); }
+.alert-card.sky .alert-action { color: var(--sky); border-color: rgba(56,189,248,.3); }
+.alert-card.sky .alert-action:hover { background: rgba(56,189,248,.1); }
+
+/* LOGIN OVERLAY */
+#login-overlay {
+  display: flex; position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  align-items: center; justify-content: center;
+}
+#login-overlay.hidden { display: none; }
+.login-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 48px 40px;
+  width: 380px; max-width: 95vw;
+  display: flex; flex-direction: column; align-items: center;
+  box-shadow: var(--shadow);
+}
+.login-logo { font-size: 48px; margin-bottom: 12px; }
+.login-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+.login-field { width: 100%; margin-bottom: 14px; }
+.login-field input {
+  width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif;
+  box-sizing: border-box; outline: none; transition: border-color .2s;
+}
+.login-field input:focus { border-color: var(--accent); }
+.login-error { font-size: 12px; color: var(--rose); margin-bottom: 10px; text-align: center; }
+.login-btn { width: 100%; padding: 12px; font-size: 15px; margin-top: 4px; justify-content: center; }
+.login-btn:disabled { opacity: .5; cursor: not-allowed; }
+.login-hint { font-size: 11px; color: var(--text3); margin-top: 16px; text-align: center; }
+
+/* Role-based visibility */
+[data-role-only] { }
+[data-role-hide] { }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN OVERLAY ===================== -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </div>
+    <div class="login-title">IT Asset & Onboarding Hub</div>
+    <div class="login-sub">Sign in to continue</div>
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="login-field">
+        <input type="text" id="login-username" placeholder="Username" autocomplete="username" required/>
+      </div>
+      <div class="login-field">
+        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required/>
+      </div>
+      <div id="login-error" class="login-error" style="display:none;"></div>
+      <button type="submit" class="btn btn-primary login-btn" id="login-btn">Sign In</button>
+    </form>
+    <div class="login-hint">Default: admin / password123</div>
+  </div>
+</div>
+
+<!-- ===================== SIDEBAR ===================== -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </div>
+    <div class="logo-text">IT Hub <span>Asset & Onboarding</span></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section" data-i18n="overview">Overview</div>
+    <div class="nav-item active" data-page="dashboard" id="nav-dashboard" onclick="navigate('dashboard')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
+    </div>
+    <div class="nav-section">Management</div>
+    <div class="nav-item" data-page="assets" id="nav-assets" onclick="navigate('assets')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span> Assets
+    </div>
+    <div class="nav-item" data-page="headcount" id="nav-headcount" onclick="navigate('headcount')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Headcount
+    </div>
+    <div class="nav-item" data-page="newhires" id="nav-newhires" onclick="navigate('newhires')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span> New Hires
+    </div>
+    <div class="nav-item" data-page="onboarding" id="nav-onboarding" onclick="navigate('onboarding')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></span> Onboarding Pipeline
+    </div>
+    <div class="nav-section">Data</div>
+    <div class="nav-item" data-page="csvimport" id="nav-csvimport" onclick="navigate('csvimport')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> CSV Import
+    </div>
+    <div class="nav-item" data-page="reports" id="nav-reports" onclick="navigate('reports')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Reports
+    </div>
+    <div class="nav-item" data-page="users" id="nav-users" onclick="navigate('users')" data-role-only="admin">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span> User Management
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="avatar-sm" id="user-footer-avatar">AB</div>
+    <div id="user-footer-info">
+      <div style="font-weight:600;color:var(--text2);font-size:12px;">Admin</div>
+      <div style="font-size:11px;">IT Manager</div>
+    </div>
+    <button class="icon-btn" id="logout-btn" title="Logout" onclick="logout()" style="margin-left:auto;display:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== MAIN ===================== -->
+<div id="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-sub" id="topbar-sub">Welcome back — here's your IT overview</div>
+    </div>
+    <div class="topbar-right">
+      <div class="icon-btn" id="theme-toggle" title="Toggle Theme" onclick="toggleTheme()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </div>
+      <div class="icon-btn" id="lang-toggle" title="Switch Language" onclick="toggleLanguage()" style="font-size:10px;font-weight:800;letter-spacing:.03em;">EN</div>
+      <div class="icon-btn notification-dot" title="Notifications">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="icon-btn" title="Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <button class="btn btn-primary" id="topbar-action-btn" onclick="openTopbarAction()" data-role-only="admin,itstaff">+ Add Asset</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="page active" id="page-dashboard">
+      <div id="dash-alerts-container" style="margin-bottom:20px; display:none;">
+        <div class="section-header" style="margin-bottom:12px;">
+          <div class="section-title" style="color:var(--rose);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Actionable Alerts
+          </div>
+        </div>
+        <div id="dash-alerts"></div>
+      </div>
+      <div class="stats-grid" id="dash-stats"></div>
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div class="card">
+          <div class="section-header">
+            <div>
+              <div class="section-title" data-i18n="asset_by_model">Assets by Model</div>
+              <div class="section-sub">Distribution across hardware models</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-asset-type"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div class="section-title" data-i18n="recent_assets">Recent Assets</div>
+            <button class="btn btn-outline btn-sm" onclick="navigate('assets')">View All</button>
+          </div>
+          <div class="mini-list" id="dash-recent-assets"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-header">
+            <div>
+              <div class="section-title" data-i18n="headcount_by_dept">Headcount by Department</div>
+              <div class="section-sub">Employee distribution across departments</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-dept"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div>
+              <div class="section-title" data-i18n="newhires_by_month">New Hires by Month</div>
+              <div class="section-sub">2026 Onboarding pipeline</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart-newhires-month"></canvas></div>
+        </div>
+      </div>
+      <div class="card" style="grid-column: 1 / -1;">
+          <div class="section-header">
+            <div>
+              <div class="section-title" data-i18n="detailed_inventory">Detailed Inventory by Model</div>
+              <div class="section-sub">Hardware count breakdown & Maintenance rate</div>
+            </div>
+          </div>
+          <div class="table-wrap" style="max-height: 280px; overflow-y: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th style="position: sticky; top: 0; z-index: 1;">Model</th>
+                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Total</th>
+                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">In Use</th>
+                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Available</th>
+                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Maintenance</th>
+                  <th style="position: sticky; top: 0; z-index: 1; text-align:right;">Failure Rate %</th>
+                </tr>
+              </thead>
+              <tbody id="dash-model-inventory"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ASSETS ============ -->
+    <section class="page" id="page-assets">
+      <div class="section-header">
+        <div>
+          <div class="section-title" data-i18n="assets">Asset Registry</div>
+          <div class="section-sub">Manage all IT hardware and software assets</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('assets')" data-i18n="export_csv">⬇ Export CSV</button>
+          <button class="btn btn-primary" onclick="openAddAsset()" data-i18n="add_asset" data-role-only="admin,itstaff">+ Add Asset</button>
+        </div>
+      </div>
+      <div class="filters-row" style="position:relative;">
+        <div id="asset-bulk-bar" class="bulk-bar" style="display:none;">
+          <div class="bulk-info"><span id="selected-count">0</span> items selected</div>
+          <div style="display:flex;gap:12px;">
+            <button class="btn btn-outline btn-sm" onclick="clearSelection()" data-i18n="cancel">Cancel</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSelectedAssets()" data-role-only="admin,itstaff">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Delete Selected
+            </button>
+          </div>
+        </div>
+        <div class="search-box">
+          <span class="search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input id="asset-search" placeholder="Search by name, serial, user…" oninput="renderAssets()" data-i18n="search_placeholder">
+        </div>
+        <select class="filter-select" id="asset-filter-type" onchange="renderAssets()">
+          <option value="">All Types</option>
+          <option>Laptop</option><option>Desktop</option><option>Monitor</option>
+          <option>Phone</option><option>Tablet</option><option>Printer</option>
+          <option>Network</option><option>Software</option><option>Other</option>
+        </select>
+        <select class="filter-select" id="asset-filter-status" onchange="renderAssets()">
+          <option value="">All Statuses</option>
+          <option>In Use</option><option>Available</option>
+          <option>Maintenance</option><option>Retired</option>
+        </select>
+        <select class="filter-select" id="asset-filter-dept" onchange="renderAssets()">
+          <option value="">All Departments</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table id="assets-table">
+          <thead>
+            <tr>
+              <th class="col-cb"><input type="checkbox" id="assets-select-all" onclick="toggleAllAssets(this.checked)"></th>
+              <th data-i18n="id">Asset ID</th><th>Type</th><th>Brand / Model</th>
+              <th>Spec</th><th>Serial</th><th>Assigned To</th><th>Department</th>
+              <th>Location</th><th>Status</th><th>Warranty</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="assets-tbody"></tbody>
+        </table>
+      </div>
+      <div id="assets-empty" class="empty-state" style="display:none;">
+        <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="empty-title">No assets found</div>
+        <div class="empty-sub">Try adjusting your filters or add a new asset.</div>
+      </div>
+    </section>
+
+    <!-- ============ CSV IMPORT ============ -->
+    <section class="page" id="page-csvimport">
+      <div class="section-header">
+        <div>
+          <div class="section-title" data-i18n="csvimport">CSV Import</div>
+          <div class="section-sub">Import bulk data or download templates</div>
+        </div>
+      </div>
+      <div class="import-tabs">
+        <div class="import-tab active" onclick="switchImportTab('assets', this)">Assets</div>
+        <div class="import-tab" onclick="switchImportTab('headcount', this)">Headcount</div>
+        <div class="import-tab" onclick="switchImportTab('newhires', this)">New Hires</div>
+      </div>
+
+      <div id="import-panel" class="card">
+        <div class="section-header" style="margin-bottom:14px;">
+          <div>
+            <div class="section-title" id="import-panel-title">Import Assets</div>
+            <div class="section-sub">Upload a CSV file matching the template format</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="import-template-btn" onclick="downloadTemplate()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Template
+          </button>
+        </div>
+        <div class="drop-zone" id="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <input type="file" accept=".csv" id="csv-file-input" onchange="handleFileSelect(event)" multiple="false"/>
+          <div class="drop-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        </div>
+          <div class="drop-title">Drop your CSV file here</div>
+          <div class="drop-sub">or click to browse — .csv files only</div>
+        </div>
+        <div id="preview-section" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div class="section-title" style="font-size:14px;font-weight:700;">Preview (first 5 rows)</div>
+            <button class="btn btn-primary btn-sm" id="import-confirm-btn" onclick="confirmImport()" data-role-only="admin,hr,itstaff">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Import Data
+            </button>
+          </div>
+          <div style="overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border);background:rgba(0,0,0,.15);">
+            <div class="preview-table-wrap" id="csv-preview" style="overflow-x:auto;max-height:280px;overflow-y:auto;border:none;border-radius:0;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ HEADCOUNT ============ -->
+    <section class="page" id="page-headcount">
+      <div class="section-header">
+        <div>
+          <div class="section-title" data-i18n="headcount">Headcount Registry</div>
+          <div class="section-sub">All employees and their IT asset assignments</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('headcount')" data-i18n="export_csv">⬇ Export CSV</button>
+          <button class="btn btn-primary" onclick="openAddEmployee()" data-i18n="add_employee" data-role-only="admin,hr">+ Add Employee</button>
+        </div>
+      </div>
+      <div class="filters-row" style="position:relative;">
+        <div id="emp-bulk-bar" class="bulk-bar" style="display:none;">
+          <div class="bulk-info"><span id="emp-selected-count">0</span> items selected</div>
+          <div style="display:flex;gap:12px;">
+            <button class="btn btn-outline btn-sm" onclick="clearEmpSelection()">Cancel</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSelectedEmployees()" data-role-only="admin,hr">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Delete Selected
+            </button>
+          </div>
+        </div>
+        <div class="search-box">
+          <span class="search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input id="hc-search" placeholder="Search by name, role, email…" oninput="renderHeadcount()" data-i18n="search_placeholder">
+        </div>
+        <select class="filter-select" id="hc-filter-dept" onchange="renderHeadcount()">
+          <option value="">All Departments</option>
+        </select>
+        <select class="filter-select" id="hc-filter-status" onchange="renderHeadcount()">
+          <option value="">All Statuses</option>
+          <option>Active</option><option>On Leave</option><option>Inactive</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox" id="employees-select-all" onchange="toggleAllEmployees(this.checked)"></th>
+              <th>Employee</th><th>Department</th><th>Role</th>
+              <th>Email</th><th>Location</th><th>Manager</th>
+              <th>Status</th><th>IT Assets</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="headcount-tbody"></tbody>
+        </table>
+      </div>
+      <div id="headcount-empty" class="empty-state" style="display:none;">
+        <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="empty-title">No employees found</div>
+        <div class="empty-sub">Try adjusting your filters or add an employee.</div>
+      </div>
+    </section>
+
+    <!-- ============ NEW HIRES ============ -->
+    <section class="page" id="page-newhires">
+      <div class="section-header">
+        <div>
+          <div class="section-title" data-i18n="newhires">New Hire Tracker</div>
+          <div class="section-sub">Track join dates, equipment needs, and IT readiness</div>
+        </div>
+        <div style="display:flex;gap:8px;" data-role-only="admin,hr,itstaff">
+          <button class="btn btn-primary btn-sm" onclick="openAddHire()">+ Add New Hire</button>
+        </div>
+      </div>
+      <div class="filters-row" style="position:relative;">
+        <div id="nh-bulk-bar" class="bulk-bar" style="position:absolute; top: -75px; left:0; right:0; margin: 0 auto; width: 60%; display:none;">
+          <div class="bulk-info"><span id="nh-selected-count">0</span> items selected</div>
+          <div style="display:flex;gap:12px;">
+            <button class="btn btn-outline btn-sm" onclick="clearNhSelection()">Cancel</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteSelectedNewHires()" data-role-only="admin,hr">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Delete Selected
+            </button>
+          </div>
+        </div>
+        <div class="search-box">
+          <span class="search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input id="nh-search" placeholder="Search by name, manager…" oninput="renderNewHires()">
+        </div>
+        <select class="filter-select" id="nh-filter-status" onchange="renderNewHires()">
+          <option value="">All IT Statuses</option>
+          <option>Pending</option><option>In Progress</option>
+          <option>Ready</option><option>Completed</option>
+        </select>
+        <select class="filter-select" id="nh-filter-stage" onchange="renderNewHires()">
+          <option value="">All Pipeline Stages</option>
+          <option>Equipment Prep</option><option>Account Setup</option>
+          <option>Network Access</option><option>Software Install</option>
+          <option>Handover</option><option>Completed</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:36px;"><input type="checkbox" id="newhires-select-all" onchange="toggleAllNewHires(this.checked)"></th>
+              <th>Name</th><th>Department</th><th>Type</th><th>Role</th><th>Join Date</th>
+              <th>Manager</th><th>Equipment Needed</th><th>IT Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="newhires-tbody"></tbody>
+        </table>
+      </div>
+      <div id="newhires-empty" class="empty-state" style="display:none;">
+        <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+        <div class="empty-title">No new hires tracked</div>
+        <div class="empty-sub">Add a new hire to start tracking onboarding.</div>
+      </div>
+    </section>
+
+    <!-- ============ ONBOARDING PIPELINE ============ -->
+    <section class="page" id="page-onboarding">
+      <div class="section-header">
+        <div>
+          <div class="section-title">IT Onboarding Pipeline</div>
+          <div class="section-sub">Visual stage tracker for each new hire's onboarding journey</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select class="filter-select" id="ob-filter-stage" onchange="renderOnboarding()">
+            <option value="">All Stages</option>
+            <option>Equipment Prep</option><option>Account Setup</option>
+            <option>Network Access</option><option>Software Install</option>
+            <option>Handover</option><option>Completed</option>
+          </select>
+        </div>
+      </div>
+      <div id="onboarding-list"></div>
+      <div id="onboarding-empty" class="empty-state" style="display:none;">
+        <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></div>
+        <div class="empty-title">No ongoing onboardings</div>
+        <div class="empty-sub">Add new hires to track their onboarding pipeline.</div>
+      </div>
+    </section>
+
+    <!-- ============ USER MANAGEMENT ============ -->
+    <section class="page" id="page-users">
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            User Management
+          </div>
+          <div class="section-sub">Manage user accounts and permissions</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Add User</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th><th>Full Name</th><th>Role</th><th>Created</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ REPORTS ============ -->
+    <section class="page" id="page-reports">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Reports & Analytics</div>
+          <div class="section-sub">Distribution charts across all dimensions</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="regenerateReports()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Refresh
+        </button>
+      </div>
+      <div class="report-grid" id="report-grid"></div>
+    </section>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ======= MODALS ======= -->
+<!-- Add/Edit Asset -->
+<div class="modal-overlay" id="modal-asset">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-asset-title">Add Asset</div>
+      <span class="modal-close" onclick="closeModal('modal-asset')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Asset ID</label>
+        <input class="form-input" id="f-asset-id" placeholder="AST-001" readonly/>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="type">Type</label>
+        <select class="form-select" id="f-asset-type">
+          <option>Desktop</option><option>Laptop</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="brand">Brand</label>
+        <select class="form-select" id="f-asset-brand">
+          <option value="">— Select Brand —</option>
+          <option>Dell</option><option>HP</option><option>Apple</option><option>Lenovo</option><option>Acer</option><option>Asus</option><option>Microsoft</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="model">Model</label>
+        <select class="form-select" id="f-asset-model">
+          <option value="">— Select Model —</option>
+          <option>Dell Precision T3680</option><option>Dell OptiPlex 7040 (High)</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Specs</label>
+        <input class="form-input" id="f-asset-spec" placeholder="e.g. Intel i7, 16GB, 512GB SSD"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="serial">Serial Number</label>
+        <input class="form-input" id="f-asset-serial" placeholder="SN-XXXXXX"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="status">Status</label>
+        <select class="form-select" id="f-asset-status">
+          <option>In Use</option><option>Available</option><option>Maintenance</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="assigned_to">Assigned To</label>
+        <input class="form-input" id="f-asset-user" placeholder="Employee name"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Department</label>
+        <select class="form-select" id="f-asset-dept">
+          <option>Product</option><option>Marketing</option><option>Esports</option><option>Platform</option><option>Creative</option><option>Strategy &amp; Operations</option><option>Game Dev (Craftland)</option><option>Game Dev (In-house)</option><option>Development</option><option>Admin &amp; Support</option><option>HR</option><option>Legal</option><option>Finance</option><option>IT</option><option>Operations</option><option>Additional / Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="location">Location</label>
+        <input class="form-input" id="f-asset-location" placeholder="e.g. HQ Floor 3"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label" data-i18n="warranty">Warranty Expiry</label>
+        <input class="form-input" type="date" id="f-asset-warranty"/>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-asset')" data-i18n="cancel">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAsset()" data-i18n="save">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Asset Modal -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">Assign Asset</div>
+      <span class="modal-close" onclick="closeModal('modal-assign')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <input type="hidden" id="f-assign-asset-id"/>
+      <div class="form-field" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;">
+        <div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Asset</div>
+        <div id="f-assign-asset-info" style="font-size:14px;font-weight:600;color:var(--accent2);"></div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Assign To Employee</label>
+        <select class="form-select" id="f-assign-emp" onchange="onAssignEmpChange()">
+          <option value="">— Select Employee —</option>
+        </select>
+      </div>
+      <div class="form-field" id="f-assign-emp-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.3);border-radius:var(--radius-sm);padding:12px 16px;">
+        <!-- Employee details shown here after selection -->
+      </div>
+      <div class="form-field">
+        <label class="form-label">Department</label>
+        <input class="form-input" id="f-assign-dept" placeholder="Auto-filled from employee"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="f-assign-location" placeholder="e.g. HQ Floor 3"/>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-assign')">Cancel</button>
+      <button class="btn btn-primary" id="btn-confirm-assign" onclick="confirmAssetAssign()">Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Employee -->
+<div class="modal-overlay" id="modal-employee">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-emp-title">Add Employee</div>
+      <span class="modal-close" onclick="closeModal('modal-employee')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="f-emp-name" placeholder="Jane Smith"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="f-emp-email" placeholder="jane@company.com" type="email"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Department</label>
+        <select class="form-select" id="f-emp-dept">
+          <option>Product</option><option>Marketing</option><option>Esports</option><option>Platform</option><option>Creative</option><option>Strategy &amp; Operations</option><option>Game Dev (Craftland)</option><option>Game Dev (In-house)</option><option>Development</option><option>Admin &amp; Support</option><option>HR</option><option>Legal</option><option>Finance</option><option>IT</option><option>Operations</option><option>Additional / Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="f-emp-role">
+          <option>Producer</option><option>Product AOV/EE</option><option>Product FC/DF/New Games</option><option>Marketing AOV/EE</option><option>Marketing FC/DF/New Games</option><option>Marketing CDP</option><option>Marketing GDP (work with data analysis)</option><option>Esports AOV/EE</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="f-emp-location" placeholder="e.g. Singapore"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Manager</label>
+        <input class="form-input" id="f-emp-manager" placeholder="Manager name"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="f-emp-status">
+          <option>Active</option><option>On Leave</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-employee')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEmployee()">Save Employee</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add New Hire -->
+<div class="modal-overlay" id="modal-hire">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Hire</div>
+      <span class="modal-close" onclick="closeModal('modal-hire')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="f-hire-name" placeholder="Alex Johnson"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Department</label>
+        <select class="form-select" id="f-hire-dept">
+          <option>Product</option><option>Marketing</option><option>Esports</option><option>Platform</option><option>Creative</option><option>Strategy &amp; Operations</option><option>Game Dev (Craftland)</option><option>Game Dev (In-house)</option><option>Development</option><option>Admin &amp; Support</option><option>HR</option><option>Legal</option><option>Finance</option><option>IT</option><option>Operations</option><option>Additional / Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Type</label>
+        <select class="form-select" id="f-hire-type">
+          <option>New Hire</option><option>Replace</option><option>Part Time</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="f-hire-role">
+          <option>Producer</option><option>Product AOV/EE</option><option>Product FC/DF/New Games</option><option>Marketing AOV/EE</option><option>Marketing FC/DF/New Games</option><option>Marketing CDP</option><option>Marketing GDP (work with data analysis)</option><option>Esports AOV/EE</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Join Date</label>
+        <input class="form-input" type="date" id="f-hire-joindate"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Manager</label>
+        <input class="form-input" id="f-hire-manager" placeholder="Direct manager"/>
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Equipment Needed</label>
+        <input class="form-input" id="f-hire-equipment" placeholder="e.g. Laptop, Monitor, Mouse, Keyboard"/>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-hire')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHire()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal-overlay" id="modal-user">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-user-title">Add User</div>
+      <span class="modal-close" onclick="closeModal('modal-user')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <input type="hidden" id="f-user-id"/>
+      <div class="form-field">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="f-user-username" placeholder="e.g. john.doe" required/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" id="f-user-name" placeholder="e.g. John Doe" required/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="f-user-role">
+          <option value="viewer">Viewer</option>
+          <option value="itstaff">IT Staff</option>
+          <option value="hr">HR</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label" id="f-user-pw-label">Password</label>
+        <input class="form-input" id="f-user-password" type="password" placeholder="Leave blank to keep existing"/>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-user')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUser()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+// ===================================================
+//   DATA STORE
+// ===================================================
+const DEPARTMENTS = ['Engineering','IT','HR','Finance','Marketing','Sales','Operations','Legal'];
+const PIPELINE_STAGES = ['Equipment Prep','Account Setup','Network Access','Software Install','Handover','Completed'];
+
+let assets = [];
+let employees = [];
+let newHires = [];
+
+let currentImportType = 'assets';
+let currentLang = localStorage.getItem('it-app-lang') || 'en';
+let currentTheme = localStorage.getItem('it-app-theme') || 'dark';
+let currentPage = 'dashboard';
+let selectedAssetIds = new Set();
+let selectedEmployeeIds = new Set();
+let selectedNewHireIds = new Set();
+
+let currentUser = null;
+
+// ===================================================
+//   AUTH HELPERS
+// ===================================================
+function authFetch(url, options = {}) {
+  const token = localStorage.getItem('auth_token');
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, { ...options, headers });
+}
+
+function canAccess(section, action) {
+  if (!currentUser) return false;
+  const r = currentUser.role;
+  const perm = {
+    dashboard: { read: ['admin','hr','itstaff','viewer'], write: ['admin'] },
+    assets: { read: ['admin','hr','itstaff','viewer'], create: ['admin','itstaff'], edit: ['admin','itstaff'], delete: ['admin','itstaff'] },
+    employees: { read: ['admin','hr','itstaff','viewer'], write: ['admin','hr'], delete: ['admin','hr'] },
+    newhires: { read: ['admin','hr','itstaff','viewer'], write: ['admin','hr','itstaff'], delete: ['admin','hr'] },
+    headcount: { read: ['admin','hr','itstaff','viewer'], write: ['admin','hr'], delete: ['admin'] },
+    csvimport: { read: ['admin','hr'], write: ['admin','hr'], it_only: ['admin','hr','itstaff'] },
+    reports: { read: ['admin','hr','itstaff','viewer'] },
+    users: { read: ['admin'], write: ['admin'], delete: ['admin'] }
+  };
+  const s = perm[section];
+  if (!s) return false;
+  if (action === 'read') return s.read.includes(r);
+  if (action === 'it_only') return s.it_only.includes(r);
+  return s[action] && s[action].includes(r);
+}
+
+function applyRoleUI() {
+  document.querySelectorAll('[data-role-only]').forEach(el => {
+    const roles = el.dataset.roleOnly.split(',');
+    el.style.display = roles.includes(currentUser?.role) ? '' : 'none';
+  });
+  document.querySelectorAll('[data-role-hide]').forEach(el => {
+    const roles = el.dataset.roleHide.split(',');
+    el.style.display = roles.includes(currentUser?.role) ? 'none' : '';
+  });
+}
+
+async function handleLogin(event) {
+  event.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-error');
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { throw new Error(data.error || 'Login failed'); }
+    localStorage.setItem('auth_token', data.token);
+    localStorage.setItem('auth_user', JSON.stringify(data.user));
+    currentUser = data.user;
+    document.getElementById('login-overlay').classList.add('hidden');
+    applyRoleUI();
+    updateUserFooter();
+    await initializeData();
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('auth_user');
+  currentUser = null;
+  document.getElementById('login-overlay').classList.remove('hidden');
+}
+
+async function checkSession() {
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    document.getElementById('login-overlay').classList.remove('hidden');
+    return;
+  }
+  try {
+    const res = await authFetch('/api/auth/me');
+    if (!res.ok) throw new Error('Session invalid');
+    const data = await res.json();
+    currentUser = data.user;
+    localStorage.setItem('auth_user', JSON.stringify(data.user));
+    document.getElementById('login-overlay').classList.add('hidden');
+    applyRoleUI();
+    updateUserFooter();
+  } catch(e) {
+    logout();
+  }
+}
+
+function updateUserFooter() {
+  if (!currentUser) return;
+  const name = currentUser.name || currentUser.username;
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  const footerEl = document.getElementById('user-footer-info');
+  if (footerEl) footerEl.innerHTML = `<div style="font-weight:600;color:var(--text2);font-size:12px;">${name}</div><div style="font-size:11px;">${currentUser.role}</div>`;
+  const avatarEl = document.getElementById('user-footer-avatar');
+  if (avatarEl) avatarEl.textContent = initials;
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) logoutBtn.style.display = 'flex';
+}
+
+function roleBadge(role) {
+  const map = {admin:'rose', hr:'teal', itstaff:'sky', viewer:'text3'};
+  return `<span class="badge ${map[role]||'text3'}">${role}</span>`;
+}
+
+const TRANSLATIONS = {
+  en: {
+    dashboard: 'Dashboard',
+    assets: 'Assets',
+    headcount: 'Headcount',
+    newhires: 'New Hires',
+    onboarding: 'Onboarding Pipeline',
+    csvimport: 'CSV Import',
+    reports: 'Reports',
+    users: 'User Management',
+    overview: 'Overview',
+    management: 'Management',
+    data: 'Data',
+    welcome: 'Welcome back — here\'s your IT overview',
+    add_asset: '+ Add Asset',
+    add_employee: '+ Add Employee',
+    add_hire: '+ Add New Hire',
+    export_csv: '⬇ Export CSV',
+    actionable_alerts: 'Actionable Alerts',
+    asset_by_model: 'Assets by Model',
+    headcount_by_dept: 'Headcount by Department',
+    newhires_by_month: 'New Hires by Month',
+    recent_assets: 'Recent Assets',
+    pending_hires: 'Pending New Hires',
+    detailed_inventory: 'Detailed Inventory by Model',
+    search_placeholder: 'Search...',
+    status_active: 'Active',
+    status_inactive: 'Inactive',
+    total_assets: 'Total Assets',
+    assets_in_use: 'Assets In Use',
+    available_assets: 'Available Assets',
+    in_maintenance: 'In Maintenance',
+    total_employees: 'Total Employees',
+    pending_onboarding: 'Pending Onboardings',
+    utilization: 'utilization',
+    ready_for_assignment: 'Ready for assignment',
+    needs_attention: 'Needs attention',
+    awaiting_completion: 'Awaiting completion',
+    low_stock_alert: 'Low Stock Models Alert',
+    warranty_expire_alert: 'assets have warranties expiring soon',
+    unassigned_alert: 'assets are available but unassigned',
+    imminent_hire_alert: 'imminent new hire(s) lack IT readiness',
+    devices_borrowed: 'devices are currently on loan',
+    low_stock_model_alert: 'Models with fewer than 3 units',
+    cancel: 'Cancel', save: 'Save Changes',
+    type: 'Type', brand: 'Brand', model: 'Model', role: 'Role', dept: 'Department', serial: 'Serial Number', status: 'Status', assigned_to: 'Assigned To', location: 'Location', warranty: 'Warranty Expiry',
+    name: 'Full Name', email: 'Email Address', dept: 'Department', role: 'Job Role', manager: 'Direct Manager',
+    in_use_label: 'In Use', available_label: 'Available', on_loan_label: 'On Loan',
+    asset_status_summary: 'Asset Status Summary'
+  },
+  vi: {
+    dashboard: 'Bảng điều khiển',
+    assets: 'Tài sản IT',
+    headcount: 'Nhân sự',
+    newhires: 'Nhân viên mới',
+    onboarding: 'Tiến độ Onboarding',
+    csvimport: 'Nhập dữ liệu CSV',
+    reports: 'Báo cáo',
+    overview: 'Tổng quan',
+    management: 'Quản trị',
+    data: 'Dữ liệu',
+    welcome: 'Chào mừng trở lại — đây là báo cáo của bạn',
+    add_asset: '+ Thêm tài sản',
+    add_employee: '+ Thêm nhân sự',
+    add_hire: '+ Thêm NV mới',
+    export_csv: '⬇ Xuất file CSV',
+    actionable_alerts: 'Cảnh báo quan trọng',
+    asset_by_model: 'Tài sản theo Model',
+    headcount_by_dept: 'Nhân sự theo phòng ban',
+    newhires_by_month: 'Nhân sự mới theo tháng',
+    recent_assets: 'Tài sản mới cập nhật',
+    pending_hires: 'Nhân viên sắp vào làm',
+    detailed_inventory: 'Kiểm kê kho chi tiết',
+    search_placeholder: 'Tìm kiếm...',
+    status_active: 'Đang làm việc',
+    status_inactive: 'Đã nghỉ việc',
+    total_assets: 'Tổng tài sản',
+    assets_in_use: 'Đăng sử dụng',
+    available_assets: 'Tài sản sẵn có',
+    in_maintenance: 'Đang bảo trì',
+    total_employees: 'Tổng nhân sự',
+    pending_onboarding: 'Đang làm thủ tục',
+    utilization: 'công suất',
+    ready_for_assignment: 'Sẵn sàng cấp phát',
+    needs_attention: 'Cần kiểm tra',
+    awaiting_completion: 'Đang chờ hoàn tất',
+    low_stock_alert: 'Cảnh báo cạn kho (Model)',
+    warranty_expire_alert: 'tài sản sắp hết hạn bảo hành',
+    unassigned_alert: 'tài sản sẵn có chưa cấp phát',
+    imminent_hire_alert: 'nhân viên sắp vào chưa chuẩn bị IT',
+    devices_borrowed: 'thiết bị đang cho mượn',
+    low_stock_model_alert: 'Model còn dưới 3 chiếc',
+    cancel: 'Hủy bỏ', save: 'Lưu thay đổi',
+    type: 'Loại thiết bị', brand: 'Hãng sản xuất', model: 'Dòng máy (Model)', role: 'Chức danh', dept: 'Phòng ban', serial: 'Số Serial', status: 'Trạng thái', assigned_to: 'Cấp phát cho', location: 'Vị trí', warranty: 'Hạn bảo hành',
+    name: 'Họ và tên', email: 'Địa chỉ Email', dept: 'Phòng ban', role: 'Chức danh', manager: 'Quản lý trực tiếp',
+    in_use_label: 'Đang sử dụng', available_label: 'Sẵn có', on_loan_label: 'Đang cho mượn',
+    asset_status_summary: 'Tổng hợp trạng thái tài sản'
+  }
+};
+
+function applyConfig() {
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  document.getElementById('theme-toggle').innerHTML = currentTheme === 'dark'
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  document.getElementById('lang-toggle').textContent = currentLang.toUpperCase();
+  applyLanguage();
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('it-app-theme', currentTheme);
+  applyConfig();
+}
+
+function toggleLanguage() {
+  currentLang = currentLang === 'en' ? 'vi' : 'en';
+  localStorage.setItem('it-app-lang', currentLang);
+  applyConfig();
+}
+
+function applyLanguage() {
+  const dict = TRANSLATIONS[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) {
+      if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+        el.placeholder = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+  
+  // Update dynamic elements
+  document.getElementById('topbar-title').textContent = dict[navigateMap[currentPage]];
+  document.getElementById('topbar-sub').textContent = currentLang === 'en' ? 'Welcome back — here\'s your IT overview' : 'Chào mừng trở lại — đây là báo cáo của bạn';
+  
+  // Action buttons text
+  const actionBtn = document.getElementById('topbar-action-btn');
+  if (currentPage === 'dashboard' || currentPage === 'assets') actionBtn.textContent = dict.add_asset;
+  else if (currentPage === 'headcount') actionBtn.textContent = dict.add_employee;
+  else if (currentPage === 'newhires') actionBtn.textContent = dict.add_hire;
+}
+
+const navigateMap = {
+  'dashboard': 'dashboard', 'assets': 'assets', 'headcount': 'headcount',
+  'newhires': 'newhires', 'onboarding': 'onboarding',
+  'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports'
+};
+
+let pendingCSVData = null;
+let editingAssetId = null;
+let editingEmployeeId = null;
+
+async function initializeData() {
+  applyConfig();
+  try {
+    const [assRes, empRes, nhRes] = await Promise.all([
+      authFetch('/api/assets'), authFetch('/api/employees'),
+      authFetch('/api/newhires')
+    ]);
+    if (assRes.ok) assets = await assRes.json();
+    if (empRes.ok) employees = await empRes.json();
+    if (nhRes.ok) newHires = await nhRes.json();
+  } catch (err) {
+    console.error('Failed to load DB data:', err);
+    showToast('Failed connecting to database. Is backend running?', 'error');
+  }
+
+  // Render everything after loading
+  renderDashboard();
+  renderAssets();
+  renderHeadcount();
+  renderNewHires();
+  renderOnboarding();
+  if (canAccess('users', 'read')) renderUsers();
+}
+
+
+// ===================================================
+//   NAVIGATION
+// ===================================================
+const pageConfig = {
+  dashboard:   { title:'Dashboard', sub:'Welcome back — here\'s your IT overview', action:'+ Add Asset', actionFn:'openAddAsset'},
+  assets:      { title:'Asset Registry', sub:'Manage all IT hardware and software assets', action:'+ Add Asset', actionFn:'openAddAsset'},
+  headcount:   { title:'Headcount', sub:'Employee registry and IT asset assignments', action:'+ Add Employee', actionFn:'openAddEmployee'},
+  newhires:    { title:'New Hire Tracker', sub:'Track onboarding readiness for incoming staff', action:'+ Add New Hire', actionFn:'openAddHire'},
+  onboarding:  { title:'Onboarding Pipeline', sub:'Visual IT onboarding stage tracker', action:'', actionFn:''},
+  csvimport:   { title:'CSV Import / Export', sub:'Bulk import data or download CSV templates', action:'', actionFn:''},
+  reports:     { title:'Reports & Analytics', sub:'Distribution charts and insights across all dimensions', action:'', actionFn:''},
+  users:       { title:'User Management', sub:'Manage user accounts and permissions', action:'', actionFn:''},
+};
+
+function navigate(pageId) {
+  currentPage = pageId;
+  const dict = TRANSLATIONS[currentLang];
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  
+  const navEl = document.getElementById(`nav-${pageId}`);
+  if (navEl) navEl.classList.add('active');
+  const pageEl = document.getElementById(`page-${pageId}`);
+  if (pageEl) pageEl.classList.add('active');
+  
+  document.getElementById('topbar-title').textContent = dict[navigateMap[pageId]];
+  
+  const actionBtn = document.getElementById('topbar-action-btn');
+  if (['dashboard','assets','headcount','newhires'].includes(pageId)) {
+    actionBtn.style.display = 'inline-flex';
+    if (pageId === 'dashboard' || pageId === 'assets') actionBtn.textContent = dict.add_asset;
+    else if (pageId === 'headcount') actionBtn.textContent = dict.add_employee;
+    else if (pageId === 'newhires') actionBtn.textContent = dict.add_hire;
+  } else {
+    actionBtn.style.display = 'none';
+  }
+
+  // Render page data
+  if (pageId === 'dashboard')  renderDashboard();
+  if (pageId === 'assets')     { renderAssets(); populateAssetDeptFilter(); }
+  if (pageId === 'headcount')  { renderHeadcount(); populateHcDeptFilter(); }
+  if (pageId === 'newhires')   renderNewHires();
+  if (pageId === 'onboarding') renderOnboarding();
+  if (pageId === 'reports')    renderReports();
+  if (pageId === 'users')      renderUsers();
+
+  applyRoleUI();
+}
+
+
+function openTopbarAction() {
+  const active = document.querySelector('.nav-item.active');
+  if (!active) return;
+  const page = active.dataset.page;
+  if ((page === 'assets' || page === 'dashboard') && canAccess('assets','create')) openAddAsset();
+  else if (page === 'headcount' && canAccess('employees','write')) openAddEmployee();
+  else if (page === 'newhires' && canAccess('newhires','write')) openAddHire();
+}
+
+// ===================================================
+//   DASHBOARD
+// ===================================================
+let chartAssetType = null, chartDept = null, chartNewHiresMonth = null;
+
+function renderDashboard() {
+  const totalAssets = assets.length;
+  const inUse = assets.filter(a=>a.status==='In Use').length;
+  const available = assets.filter(a=>a.status==='Available').length;
+  const maintenance = assets.filter(a=>a.status==='Maintenance').length;
+  const totalEmp = employees.length;
+  const activeEmp = employees.filter(e=>e.status==='Active').length;
+  const pendingHires = newHires.filter(h=>h.itStatus!=='Completed').length;
+
+  const dict = TRANSLATIONS[currentLang];
+  const statsEl = document.getElementById('dash-stats');
+  statsEl.innerHTML = `
+    <div class="stat-card indigo">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <div class="stat-value">${totalAssets}</div>
+      <div class="stat-label">${dict.total_assets}</div>
+      <div class="stat-delta delta-up">↑ 3 this month</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="stat-value">${inUse}</div>
+      <div class="stat-label">${dict.assets_in_use}</div>
+      <div class="stat-delta" style="color:var(--text3)">${((inUse/totalAssets)*100).toFixed(0)}% ${dict.utilization}</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 21V3"/><path d="M2 11h20"/></svg></div>
+      <div class="stat-value">${available}</div>
+      <div class="stat-label">${dict.available_assets}</div>
+      <div class="stat-delta delta-up">${dict.ready_for_assignment}</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="stat-value">${maintenance}</div>
+      <div class="stat-label">${dict.in_maintenance}</div>
+      <div class="stat-delta delta-down">${dict.needs_attention}</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-value">${totalEmp}</div>
+      <div class="stat-label">${dict.total_employees}</div>
+      <div class="stat-delta" style="color:var(--text3)">${activeEmp} ${dict.status_active.toLowerCase()}</div>
+    </div>
+    <div class="stat-card rose">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+      <div class="stat-value">${pendingHires}</div>
+      <div class="stat-label">${dict.pending_onboarding}</div>
+      <div class="stat-delta delta-down">${dict.awaiting_completion}</div>
+    </div>
+  `;
+
+  // Asset Status Summary bar
+  const totalA = assets.length;
+  const inUseA = assets.filter(a => a.status === 'In Use').length;
+  const availA = assets.filter(a => a.status === 'Available').length;
+  const maintA = assets.filter(a => a.status === 'Maintenance').length;
+  const onLoanA = assets.filter(a => a.status === 'In Use' && a.user).length;
+  const selfUseA = inUseA - onLoanA; // In Use but not on loan (self use)
+
+  const statusBar = document.getElementById('dash-status-bar') || (() => {
+    const div = document.createElement('div');
+    div.id = 'dash-status-bar';
+    statsEl.parentNode.insertBefore(div, statsEl.nextSibling);
+    return div;
+  })();
+
+  const enLabel = currentLang === 'en';
+  const inUseLbl    = enLabel ? 'In Use' : 'Đang sử dụng';
+  const availLbl    = enLabel ? 'Available' : 'Sẵn có';
+  const maintLbl    = enLabel ? 'Maintenance' : 'Bảo trì';
+  const onLoanLbl   = enLabel ? 'On Loan' : 'Cho mượn';
+
+  statusBar.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;flex-wrap:wrap;">
+      <div style="font-size:13px;font-weight:700;color:var(--text2);min-width:160px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 21V3"/><path d="M2 11h20"/></svg>
+        ${dict.asset_status_summary}
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0;"></span>
+          <span style="font-size:13px;color:var(--text2);">${inUseLbl}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--teal);">${inUseA}</span>
+          <span style="font-size:11px;color:var(--text3);">(${totalA > 0 ? ((inUseA/totalA)*100).toFixed(0) : 0}%)</span>
+        </div>
+        <div style="width:1px;height:24px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></span>
+          <span style="font-size:13px;color:var(--text2);">${availLbl}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--green);">${availA}</span>
+          <span style="font-size:11px;color:var(--text3);">(${totalA > 0 ? ((availA/totalA)*100).toFixed(0) : 0}%)</span>
+        </div>
+        <div style="width:1px;height:24px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span>
+          <span style="font-size:13px;color:var(--text2);">${maintLbl}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--amber);">${maintA}</span>
+        </div>
+        <div style="width:1px;height:24px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:var(--purple);flex-shrink:0;"></span>
+          <span style="font-size:13px;color:var(--text2);">${onLoanLbl}</span>
+          <span style="font-size:16px;font-weight:800;color:var(--purple);">${onLoanA}</span>
+        </div>
+        <div style="margin-left:auto;font-size:12px;color:var(--text3);">Total: <b style="color:var(--text);font-weight:700;">${totalA}</b> devices</div>
+      </div>
+    </div>
+  `;
+
+  // Asset model chart
+  const modelCounts = {};
+  assets.forEach(a => { if (a.model) modelCounts[a.model] = (modelCounts[a.model]||0)+1; });
+  const modelLabels = Object.keys(modelCounts).sort();
+  const modelData = modelLabels.map(k=>modelCounts[k]);
+  const ctx1 = document.getElementById('chart-asset-type').getContext('2d');
+  if (chartAssetType) chartAssetType.destroy();
+  chartAssetType = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: modelLabels,
+      datasets: [{
+        label: 'Assets',
+        data: modelData,
+        backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899','#64748b'],
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}}, beginAtZero:true },
+        y: { grid:{display:false}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}, autoSkip:false} }
+      }
+    }
+  });
+
+  // Department chart
+  const deptCounts = {};
+  employees.forEach(e => deptCounts[e.dept] = (deptCounts[e.dept]||0)+1);
+  const deptLabels = Object.keys(deptCounts);
+  const deptData = deptLabels.map(k=>deptCounts[k]);
+  const ctx2 = document.getElementById('chart-dept').getContext('2d');
+  if (chartDept) chartDept.destroy();
+  chartDept = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: deptLabels,
+      datasets: [{
+        data: deptData,
+        backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899'],
+        borderColor: '#12152a', borderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'right', labels:{color:'#94a3b8',font:{family:'Inter',size:11},padding:12} }
+      },
+      cutout: '60%',
+    }
+  });
+
+  // New Hires by Month chart
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthCounts = Array(12).fill(0);
+  newHires.forEach(h => {
+    if (!h.joinDate) return;
+    const m = new Date(h.joinDate);
+    if (!isNaN(m) && m.getFullYear() === 2026) {
+      monthCounts[m.getMonth()]++;
+    }
+  });
+  const monthLabels = monthNames;
+  const ctx3 = document.getElementById('chart-newhires-month').getContext('2d');
+  if (chartNewHiresMonth) chartNewHiresMonth.destroy();
+  chartNewHiresMonth = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels: monthLabels,
+      datasets: [{
+        label: 'New Hires',
+        data: monthCounts,
+        backgroundColor: '#14b8a6',
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}} },
+        y: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}}, beginAtZero: true }
+      }
+    }
+  });
+
+  // Recent assets
+  const recentEl = document.getElementById('dash-recent-assets');
+  recentEl.innerHTML = assets.slice(-5).reverse().map(a => `
+    <div class="mini-item">
+      <div class="mini-icon" style="background:rgba(99,102,241,.15);">${assetTypeIcon(a.type)}</div>
+      <div class="mini-content">
+        <div class="mini-title">${a.brand} ${a.model}</div>
+        <div class="mini-sub">${a.id} · ${a.dept}</div>
+      </div>
+      <div class="mini-right">${statusBadge(a.status)}</div>
+    </div>
+  `).join('');
+
+  // Pending hires
+  const pendingEl = document.getElementById('dash-pending-hires');
+  const ph = newHires.filter(h=>h.itStatus!=='Completed');
+  pendingEl.innerHTML = ph.length ? ph.map(h => `
+    <div class="mini-item">
+      <div class="mini-icon" style="background:rgba(20,184,166,.15);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="mini-content">
+        <div class="mini-title">${h.name}</div>
+        <div class="mini-sub">Joins ${formatDate(h.joinDate)} · ${h.dept}</div>
+      </div>
+      <div class="mini-right">${itStatusBadge(h.itStatus)}</div>
+    </div>
+  `).join('') : '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:6px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>All hires completed!</div>';
+
+  // Detailed Inventory by Model Table
+  const modelInventory = {};
+  assets.forEach(a => {
+    if (!a.model) return;
+    if (!modelInventory[a.model]) modelInventory[a.model] = { total: 0, inUse: 0, avail: 0, maint: 0 };
+    modelInventory[a.model].total++;
+    if (a.status === 'In Use') modelInventory[a.model].inUse++;
+    else if (a.status === 'Available') modelInventory[a.model].avail++;
+    else if (a.status === 'Maintenance') modelInventory[a.model].maint++;
+  });
+
+  const mTableEl = document.getElementById('dash-model-inventory');
+  if (mTableEl) {
+    mTableEl.innerHTML = Object.keys(modelInventory).sort().map(m => {
+      const d = modelInventory[m];
+      const fr = d.total > 0 ? ((d.maint / d.total) * 100).toFixed(1) : '0.0';
+      return `
+        <tr>
+          <td style="font-weight:600; color:var(--text);">${m}</td>
+          <td style="text-align:center;">${d.total}</td>
+          <td style="text-align:center; color:var(--teal);">${d.inUse}</td>
+          <td style="text-align:center; color:var(--sky);">${d.avail}</td>
+          <td style="text-align:center; color:var(--amber);">${d.maint}</td>
+          <td style="text-align:right; color:${fr >= 10 ? 'var(--rose)' : 'var(--text3)'}; font-weight:600;">${fr}%</td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  renderAlerts();
+}
+
+function renderAlerts() {
+  const alerts = [];
+  const now = new Date();
+  
+  const dict = TRANSLATIONS[currentLang];
+  // 1. Warranty expiring in 30 days
+  const upcomingWarranties = assets.filter(a => {
+    if (!a.warranty) return false;
+    const wDate = new Date(a.warranty);
+    const diffDays = (wDate - now) / (1000 * 3600 * 24);
+    return diffDays >= 0 && diffDays <= 30;
+  });
+  if (upcomingWarranties.length > 0) {
+    alerts.push(`
+      <div class="alert-card amber">
+        <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">${upcomingWarranties.length} ${dict.warranty_expire_alert}</div>
+            <div class="alert-sub">${currentLang==='en'?'Warranties expire within the next 30 days.':'Hợp đồng bảo hành sẽ hết hạn trong 30 ngày tới.'}</div>
+          </div>
+          <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-search').value=''; renderAssets();">${currentLang==='en'?'View Assets':'Xem tài sản'}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // 2. Unassigned Available Assets
+  const unassigned = assets.filter(a => a.status === 'Available' && !a.user);
+  if (unassigned.length > 0) {
+    alerts.push(`
+      <div class="alert-card sky">
+        <div class="alert-icon">ℹ️</div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">${unassigned.length} ${dict.unassigned_alert}</div>
+            <div class="alert-sub">${currentLang==='en'?'Consider reassigning properly.':'Nên xem xét cấp phát lại cho phù hợp.'}</div>
+          </div>
+          <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-filter-status').value='Available'; renderAssets();">${currentLang==='en'?'Filter':'Lọc dữ liệu'}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // 3. Low Stock Warning — models with TOTAL count < 3
+  const modelTotalCounts = {};
+  assets.forEach(a => { if (a.model) modelTotalCounts[a.model] = (modelTotalCounts[a.model] || 0) + 1; });
+  const allModels = Object.keys(modelTotalCounts);
+  const lowModels = allModels
+    .filter(m => modelTotalCounts[m] < 3 && modelTotalCounts[m] > 0)
+    .map(m => `<b>${m}</b> (${modelTotalCounts[m]})`);
+  const zeroModels = allModels.filter(m => !modelTotalCounts[m]);
+
+  if (lowModels.length > 0) {
+    alerts.push(`
+      <div class="alert-card rose">
+        <div class="alert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">${lowModels.length} ${dict.low_stock_alert}</div>
+            <div class="alert-sub" style="font-size:11px;margin-top:4px;">${currentLang==='en'?'Models with total < 3 units':'Model có tổng < 3 chiếc'}: ${lowModels.join(', ')}</div>
+            ${zeroModels.length > 0 ? `<div class="alert-sub" style="font-size:11px;color:var(--rose);margin-top:4px;">${currentLang==='en'?'Out of stock (0 available)':'Hết hàng (0 sẵn có)'}: ${zeroModels.map(m=>`<b>${m}</b>`).join(', ')}</div>` : ''}
+          </div>
+          <div class="alert-action" onclick="navigate('assets');">${currentLang==='en'?'View':'Xem kho'}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // 4. Devices On Loan (In Use with a user assigned)
+  const onLoan = assets.filter(a => a.status === 'In Use' && a.user);
+  if (onLoan.length > 0) {
+    alerts.push(`
+      <div class="alert-card amber">
+        <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">${onLoan.length} ${dict.devices_borrowed}</div>
+            <div class="alert-sub">${currentLang==='en'?'Devices deployed to users.':'Thiết bị đang được sử dụng.'}</div>
+          </div>
+          <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-filter-status').value='In Use'; renderAssets();">${currentLang==='en'?'View':'Xem'}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  // 5. New Hires approaching start date
+  const upcomingHires = newHires.filter(h => {
+    if (h.itStatus === 'Completed' || h.itStatus === 'Ready') return false;
+    const jDate = new Date(h.joinDate);
+    const diffDays = (jDate - now) / (1000 * 3600 * 24);
+    return diffDays >= -1 && diffDays <= 7;
+  });
+  if (upcomingHires.length > 0) {
+    alerts.push(`
+      <div class="alert-card rose">
+        <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">${upcomingHires.length} ${dict.imminent_hire_alert}</div>
+            <div class="alert-sub">${currentLang==='en'?'Prepare equipment immediately.':'Cần chuẩn bị thiết bị ngay lập tức.'}</div>
+          </div>
+          <div class="alert-action" onclick="navigate('onboarding');">${currentLang==='en'?'Pipeline':'Quy trình'}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  const containerEl = document.getElementById('dash-alerts-container');
+  const dashAlerts = document.getElementById('dash-alerts');
+  if (alerts.length > 0) {
+    containerEl.style.display = 'block';
+    dashAlerts.innerHTML = alerts.join('');
+  } else {
+    containerEl.style.display = 'none';
+    dashAlerts.innerHTML = '';
+  }
+}
+
+// ===================================================
+//   ASSETS
+// ===================================================
+function populateAssetDeptFilter() {
+  const sel = document.getElementById('asset-filter-dept');
+  const depts = [...new Set(assets.map(a=>a.dept))].sort();
+  sel.innerHTML = '<option value="">All Departments</option>' + depts.map(d=>`<option>${d}</option>`).join('');
+}
+
+function renderAssets() {
+  const search = document.getElementById('asset-search').value.toLowerCase();
+  const filterType = document.getElementById('asset-filter-type').value;
+  const filterStatus = document.getElementById('asset-filter-status').value;
+  const filterDept = document.getElementById('asset-filter-dept').value;
+
+  let filtered = assets.filter(a => {
+    const matchSearch = !search || [a.id,a.brand,a.model,a.serial,a.user,a.dept,a.location,a.spec||''].join(' ').toLowerCase().includes(search);
+    const matchType = !filterType || a.type===filterType;
+    const matchStatus = !filterStatus || a.status===filterStatus;
+    const matchDept = !filterDept || a.dept===filterDept;
+    return matchSearch && matchType && matchStatus && matchDept;
+  });
+
+  const tbody = document.getElementById('assets-tbody');
+  const emptyEl = document.getElementById('assets-empty');
+
+  if (!filtered.length) {
+    tbody.closest('.table-wrap').style.display='none';
+    emptyEl.style.display='block';
+    return;
+  }
+  tbody.closest('.table-wrap').style.display='';
+  emptyEl.style.display='none';
+
+  tbody.innerHTML = filtered.map(a => `
+    <tr id="asset-row-${a.id}" class="${selectedAssetIds.has(a.id) ? 'selected-row' : ''}">
+      <td class="td-cb"><input type="checkbox" ${selectedAssetIds.has(a.id) ? 'checked' : ''} onchange="toggleAssetSelection('${a.id}', this.checked)"></td>
+      <td><span style="font-weight:600;color:var(--accent2)">${a.id}</span></td>
+      <td><span style="font-size:14px;">${assetTypeIcon(a.type)}</span> ${a.type}</td>
+      <td style="color:var(--text)">${a.brand} <span style="color:var(--text2)">${a.model}</span></td>
+      <td style="font-size:11px;color:var(--text3);max-width:220px;white-space:normal;line-height:1.4;">${a.spec||'—'}</td>
+      <td style="font-family:monospace;font-size:12px;">${a.serial}</td>
+      <td>
+        ${a.user
+          ? `<div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+              <span style="white-space:nowrap;">${a.user}</span>
+              <button class="btn btn-outline btn-sm" onclick="unassignAsset('${a.id}')" title="Unassign" style="padding:2px 7px;font-size:11px;border-color:var(--rose);color:var(--rose);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>`
+          : '<span style="color:var(--text3)">Unassigned</span>'
+        }
+      </td>
+      <td>${a.dept}</td>
+      <td>${a.location}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td>${a.warranty ? formatDate(a.warranty) : '—'}</td>
+      <td>
+        <div class="action-btns" data-role-only="admin,itstaff">
+          <button class="btn btn-outline btn-sm" onclick="openAssignAsset('${a.id}')" title="Assign">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="editAsset('${a.id}')" title="Edit">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAsset('${a.id}')" title="Delete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function editAsset(id) {
+  const a = assets.find(x=>x.id===id);
+  if (!a) return;
+  editingAssetId = id;
+  document.getElementById('modal-asset-title').textContent = 'Edit Asset';
+  document.getElementById('f-asset-id').value = a.id || '';
+  document.getElementById('f-asset-type').value = a.type || 'Laptop';
+  document.getElementById('f-asset-brand').value = a.brand || '';
+  document.getElementById('f-asset-model').value = a.model || '';
+  document.getElementById('f-asset-spec').value = a.spec || '';
+  document.getElementById('f-asset-serial').value = a.serial || '';
+  document.getElementById('f-asset-status').value = a.status || 'Available';
+  document.getElementById('f-asset-user').value = a.user || '';
+  document.getElementById('f-asset-dept').value = a.dept || '';
+  document.getElementById('f-asset-location').value = a.location || '';
+  document.getElementById('f-asset-warranty').value = a.warranty || '';
+  openModal('modal-asset');
+}
+
+async function deleteAsset(id) {
+  if (!confirm('Delete this asset?')) return;
+  try {
+    const res = await authFetch('/api/assets/' + id, { method: 'DELETE' });
+    if (!res.ok) throw new Error('API error');
+    assets = assets.filter(a=>a.id!==id);
+    renderAssets();
+    renderDashboard();
+    showToast('Asset deleted.', 'success');
+  } catch(e) { showToast('Failed to delete asset — is the backend running?', 'error'); }
+}
+
+function openAssignAsset(id) {
+  const a = assets.find(x => x.id === id);
+  if (!a) return;
+
+  document.getElementById('f-assign-asset-id').value = a.id;
+  document.getElementById('f-assign-asset-info').textContent =
+    `${a.brand} ${a.model} — ${a.serial || a.id}`;
+  document.getElementById('f-assign-dept').value = a.dept || '';
+  document.getElementById('f-assign-location').value = a.location || '';
+
+  // Populate employee dropdown from headcount
+  const sel = document.getElementById('f-assign-emp');
+  sel.innerHTML = '<option value="">— Select Employee —</option>' +
+    employees.map(e => `<option value="${e.id}">${e.name} (${e.dept})</option>`).join('');
+
+  document.getElementById('f-assign-emp').value = '';
+  document.getElementById('f-assign-emp-info').style.display = 'none';
+  document.getElementById('btn-confirm-assign').disabled = true;
+  openModal('modal-assign');
+}
+
+function onAssignEmpChange() {
+  const empId = document.getElementById('f-assign-emp').value;
+  const infoEl = document.getElementById('f-assign-emp-info');
+  const deptEl = document.getElementById('f-assign-dept');
+  const locEl = document.getElementById('f-assign-location');
+  const btn = document.getElementById('btn-confirm-assign');
+
+  if (!empId) {
+    infoEl.style.display = 'none';
+    btn.disabled = true;
+    return;
+  }
+
+  const e = employees.find(emp => emp.id === empId);
+  if (e) {
+    infoEl.style.display = 'block';
+    infoEl.innerHTML = `<div style="font-weight:600;color:var(--accent2);margin-bottom:4px;">${e.name}</div>
+      <div style="font-size:12px;color:var(--text2);">${e.role || ''} &bull; ${e.dept} &bull; ${e.location || '—'}</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:2px;">${e.email || ''}</div>`;
+    if (!deptEl.value) deptEl.value = e.dept || '';
+    if (!locEl.value) locEl.value = e.location || '';
+  }
+  btn.disabled = false;
+}
+
+async function confirmAssetAssign() {
+  const assetId = document.getElementById('f-assign-asset-id').value;
+  const empId = document.getElementById('f-assign-emp').value;
+  const dept = document.getElementById('f-assign-dept').value;
+  const location = document.getElementById('f-assign-location').value;
+
+  if (!empId) { showToast('Please select an employee', 'error'); return; }
+
+  const emp = employees.find(e => e.id === empId);
+  const assetIdx = assets.findIndex(a => a.id === assetId);
+  const oldUser = assets[assetIdx]?.user || '';
+  const oldStatus = assets[assetIdx]?.status || '';
+
+  // Update asset: assign user, set status to In Use
+  const updatedAsset = { ...assets[assetIdx], user: emp.name, dept: dept || emp.dept, location: location || emp.location, status: 'In Use' };
+
+  try {
+    const res = await authFetch('/api/assets', { method: 'POST', body: JSON.stringify(updatedAsset) });
+    if (!res.ok) throw new Error('API error');
+
+    assets[assetIdx] = updatedAsset;
+    closeModal('modal-assign');
+    renderAssets();
+    renderDashboard();
+    showToast(`Asset assigned to ${emp.name}`, 'success');
+  } catch(e) {
+    showToast('Failed to assign asset', 'error');
+  }
+}
+
+async function unassignAsset(id) {
+  const assetIdx = assets.findIndex(a => a.id === id);
+  if (assetIdx < 0) return;
+  const a = { ...assets[assetIdx], user: '', status: 'Available' };
+  try {
+    await authFetch('/api/assets', { method: 'POST', body: JSON.stringify(a) });
+    assets[assetIdx] = a;
+    renderAssets();
+    renderDashboard();
+    showToast('Asset unassigned', 'success');
+  } catch(e) { showToast('Failed to unassign asset', 'error'); }
+}
+
+function openAddAsset() {
+  editingAssetId = null;
+  document.getElementById('modal-asset-title').textContent = 'Add Asset';
+  const nextId = 'AST-' + Date.now().toString().slice(-6);
+  document.getElementById('f-asset-id').value = nextId;
+  ['f-asset-type','f-asset-status'].forEach(id => document.getElementById(id).selectedIndex=0);
+  ['f-asset-brand','f-asset-model','f-asset-serial','f-asset-user','f-asset-location','f-asset-warranty'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-asset');
+}
+
+async function saveAsset() {
+  const obj = {
+    id: document.getElementById('f-asset-id').value,
+    type: document.getElementById('f-asset-type').value,
+    brand: document.getElementById('f-asset-brand').value,
+    model: document.getElementById('f-asset-model').value,
+    spec: document.getElementById('f-asset-spec').value,
+    serial: document.getElementById('f-asset-serial').value,
+    status: document.getElementById('f-asset-status').value,
+    user: document.getElementById('f-asset-user').value,
+    dept: document.getElementById('f-asset-dept').value,
+    location: document.getElementById('f-asset-location').value,
+    warranty: document.getElementById('f-asset-warranty').value,
+  };
+  if (!obj.id || !obj.model) { showToast('ID and Model are required.','error'); return; }
+  
+  try {
+    const res = await authFetch('/api/assets', {
+      method: 'POST',
+      body: JSON.stringify(obj)
+    });
+    if (!res.ok) throw new Error('API Error');
+    await initializeData();
+    closeModal('modal-asset');
+    showToast(editingAssetId ? 'Asset updated.' : 'Asset added.', 'success');
+  } catch(e) { showToast('Error saving asset','error'); }
+}
+
+// ===================================================
+//   SELECTION & BULK ACTIONS
+// ===================================================
+function toggleAssetSelection(id, checked) {
+  if (checked) selectedAssetIds.add(id);
+  else selectedAssetIds.delete(id);
+  updateBulkActionsUI();
+  // Check if all filtered are now selected
+  updateMasterCheckbox();
+}
+
+function updateMasterCheckbox() {
+  const master = document.getElementById('assets-select-all');
+  if (!master) return;
+  const filtered = assets.filter(a => {
+    const search = document.getElementById('asset-search').value.toLowerCase();
+    const filterType = document.getElementById('asset-filter-type').value;
+    const filterStatus = document.getElementById('asset-filter-status').value;
+    const filterDept = document.getElementById('asset-filter-dept').value;
+    return (!search || [a.id,a.brand,a.model,a.serial,a.user,a.dept,a.location,a.spec||''].join(' ').toLowerCase().includes(search)) &&
+           (!filterType || a.type===filterType) &&
+           (!filterStatus || a.status===filterStatus) &&
+           (!filterDept || a.dept===filterDept);
+  });
+  if (filtered.length === 0) { master.checked = false; return; }
+  master.checked = filtered.every(a => selectedAssetIds.has(a.id));
+}
+
+function toggleAllAssets(checked) {
+  const filtered = assets.filter(a => {
+    const search = document.getElementById('asset-search').value.toLowerCase();
+    const filterType = document.getElementById('asset-filter-type').value;
+    const filterStatus = document.getElementById('asset-filter-status').value;
+    const filterDept = document.getElementById('asset-filter-dept').value;
+    return (!search || [a.id,a.brand,a.model,a.serial,a.user,a.dept,a.location,a.spec||''].join(' ').toLowerCase().includes(search)) &&
+           (!filterType || a.type===filterType) &&
+           (!filterStatus || a.status===filterStatus) &&
+           (!filterDept || a.dept===filterDept);
+  });
+  
+  filtered.forEach(a => {
+    if (checked) selectedAssetIds.add(a.id);
+    else selectedAssetIds.delete(a.id);
+  });
+  
+  renderAssets();
+  updateBulkActionsUI();
+}
+
+function clearSelection() {
+  selectedAssetIds.clear();
+  const master = document.getElementById('assets-select-all');
+  if (master) master.checked = false;
+  renderAssets();
+  updateBulkActionsUI();
+}
+
+function updateBulkActionsUI() {
+  const bar = document.getElementById('asset-bulk-bar');
+  const countSpan = document.getElementById('selected-count');
+  const count = selectedAssetIds.size;
+  
+  if (count > 0) {
+    countSpan.textContent = count;
+    bar.style.display = 'flex';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function deleteSelectedAssets() {
+  const count = selectedAssetIds.size;
+  if (count === 0) return;
+  const dict = TRANSLATIONS[currentLang];
+  const msg = currentLang === 'en' ? `Delete ${count} selected assets?` : `Xóa ${count} tài sản đã chọn?`;
+  if (!confirm(msg)) return;
+
+  const idsToDelete = [...selectedAssetIds];
+  let success = 0, failed = 0;
+  for (const id of idsToDelete) {
+    try {
+      const res = await authFetch('/api/assets/' + id, { method: 'DELETE' });
+      if (res.ok) {
+        assets = assets.filter(x => x.id !== id);
+        success++;
+      } else {
+        failed++;
+      }
+    } catch(e) { failed++; }
+  }
+
+  selectedAssetIds.clear();
+  renderAssets();
+  renderDashboard();
+  updateBulkActionsUI();
+  updateMasterCheckbox();
+
+  if (failed === 0) {
+    showToast(`${currentLang==='en'?'Deleted':'Đã xóa'} ${success} ${currentLang==='en'?'assets':'tài sản'}.`, 'success');
+  } else {
+    showToast(`${success} ${currentLang==='en'?'deleted,':''} ${failed} ${currentLang==='en'?'failed':'thất bại'}.`, failed === success ? 'error' : 'info');
+  }
+}
+
+// ============ EMPLOYEE BULK DELETE ============
+function toggleEmployeeSelection(id, checked) {
+  if (checked) selectedEmployeeIds.add(id);
+  else selectedEmployeeIds.delete(id);
+  updateEmpBulkUI();
+  updateEmpMasterCheckbox();
+}
+
+function updateEmpMasterCheckbox() {
+  const master = document.getElementById('employees-select-all');
+  if (!master) return;
+  const filtered = getFilteredEmployees();
+  if (filtered.length === 0) { master.checked = false; return; }
+  master.checked = filtered.every(e => selectedEmployeeIds.has(e.id));
+}
+
+function getFilteredEmployees() {
+  const search = document.getElementById('hc-search').value.toLowerCase();
+  const filterDept = document.getElementById('hc-filter-dept').value;
+  const filterStatus = document.getElementById('hc-filter-status').value;
+  return employees.filter(e => {
+    return (!search || [e.name,e.role,e.email,e.dept,e.location,e.manager].join(' ').toLowerCase().includes(search)) &&
+           (!filterDept || e.dept === filterDept) &&
+           (!filterStatus || e.status === filterStatus);
+  });
+}
+
+function toggleAllEmployees(checked) {
+  getFilteredEmployees().forEach(e => {
+    if (checked) selectedEmployeeIds.add(e.id);
+    else selectedEmployeeIds.delete(e.id);
+  });
+  renderHeadcount();
+  updateEmpBulkUI();
+}
+
+function clearEmpSelection() {
+  selectedEmployeeIds.clear();
+  const master = document.getElementById('employees-select-all');
+  if (master) master.checked = false;
+  renderHeadcount();
+  updateEmpBulkUI();
+}
+
+function updateEmpBulkUI() {
+  const bar = document.getElementById('emp-bulk-bar');
+  if (!bar) return;
+  const count = selectedEmployeeIds.size;
+  const countSpan = document.getElementById('emp-selected-count');
+  if (countSpan) countSpan.textContent = count;
+  bar.style.display = count > 0 ? 'flex' : 'none';
+}
+
+async function deleteSelectedEmployees() {
+  const count = selectedEmployeeIds.size;
+  if (count === 0) return;
+  const msg = currentLang === 'en' ? `Delete ${count} selected employees?` : `Xóa ${count} nhân viên đã chọn?`;
+  if (!confirm(msg)) return;
+  const idsToDelete = [...selectedEmployeeIds];
+  let success = 0, failed = 0;
+  for (const id of idsToDelete) {
+    try {
+      const res = await authFetch('/api/employees/' + id, { method: 'DELETE' });
+      if (res.ok) { employees = employees.filter(x => x.id !== id); success++; }
+      else failed++;
+    } catch(e) { failed++; }
+  }
+  selectedEmployeeIds.clear();
+  renderHeadcount();
+  renderDashboard();
+  updateEmpBulkUI();
+  updateEmpMasterCheckbox();
+  if (failed === 0) {
+    showToast(`${currentLang==='en'?'Deleted':'Đã xóa'} ${success} ${currentLang==='en'?'employees':'nhân viên'}.`, 'success');
+  } else {
+    showToast(`${success} ${currentLang==='en'?'deleted,':''} ${failed} ${currentLang==='en'?'failed':'thất bại'}.`, failed === success ? 'error' : 'info');
+  }
+}
+
+// ============ NEW HIRE BULK DELETE ============
+function toggleNewHireSelection(id, checked) {
+  if (checked) selectedNewHireIds.add(id);
+  else selectedNewHireIds.delete(id);
+  updateNhBulkUI();
+  updateNhMasterCheckbox();
+}
+
+function updateNhMasterCheckbox() {
+  const master = document.getElementById('newhires-select-all');
+  if (!master) return;
+  const filtered = getFilteredNewHires();
+  if (filtered.length === 0) { master.checked = false; return; }
+  master.checked = filtered.every(h => selectedNewHireIds.has(h.id));
+}
+
+function getFilteredNewHires() {
+  const search = document.getElementById('nh-search').value.toLowerCase();
+  const filterStatus = document.getElementById('nh-filter-status').value;
+  const filterStage = document.getElementById('nh-filter-stage').value;
+  return newHires.filter(h => {
+    return (!search || [h.name,h.dept,h.role,h.manager].join(' ').toLowerCase().includes(search)) &&
+           (!filterStatus || h.itStatus === filterStatus) &&
+           (!filterStage || PIPELINE_STAGES[h.pipelineStage] === filterStage);
+  });
+}
+
+function toggleAllNewHires(checked) {
+  getFilteredNewHires().forEach(h => {
+    if (checked) selectedNewHireIds.add(h.id);
+    else selectedNewHireIds.delete(h.id);
+  });
+  renderNewHires();
+  updateNhBulkUI();
+}
+
+function clearNhSelection() {
+  selectedNewHireIds.clear();
+  const master = document.getElementById('newhires-select-all');
+  if (master) master.checked = false;
+  renderNewHires();
+  updateNhBulkUI();
+}
+
+function updateNhBulkUI() {
+  const bar = document.getElementById('nh-bulk-bar');
+  if (!bar) return;
+  const count = selectedNewHireIds.size;
+  const countSpan = document.getElementById('nh-selected-count');
+  if (countSpan) countSpan.textContent = count;
+  bar.style.display = count > 0 ? 'flex' : 'none';
+}
+
+async function deleteSelectedNewHires() {
+  const count = selectedNewHireIds.size;
+  if (count === 0) return;
+  const msg = currentLang === 'en' ? `Delete ${count} selected new hires?` : `Xóa ${count} nhân viên mới đã chọn?`;
+  if (!confirm(msg)) return;
+  const idsToDelete = [...selectedNewHireIds];
+  let success = 0, failed = 0;
+  for (const id of idsToDelete) {
+    try {
+      const res = await authFetch('/api/newhires/' + id, { method: 'DELETE' });
+      if (res.ok) { newHires = newHires.filter(x => x.id !== id); success++; }
+      else failed++;
+    } catch(e) { failed++; }
+  }
+  selectedNewHireIds.clear();
+  renderNewHires();
+  renderDashboard();
+  updateNhBulkUI();
+  updateNhMasterCheckbox();
+  if (failed === 0) {
+    showToast(`${currentLang==='en'?'Deleted':'Đã xóa'} ${success} ${currentLang==='en'?'new hires':'nhân viên mới'}.`, 'success');
+  } else {
+    showToast(`${success} ${currentLang==='en'?'deleted,':''} ${failed} ${currentLang==='en'?'failed':'thất bại'}.`, failed === success ? 'error' : 'info');
+  }
+}
+
+// ===================================================
+//   HEADCOUNT
+// ===================================================
+function populateHcDeptFilter() {
+  const sel = document.getElementById('hc-filter-dept');
+  const depts = [...new Set(employees.map(e=>e.dept))].sort();
+  sel.innerHTML = '<option value="">All Departments</option>' + depts.map(d=>`<option>${d}</option>`).join('');
+}
+
+function renderHeadcount() {
+  const search = document.getElementById('hc-search').value.toLowerCase();
+  const filterDept = document.getElementById('hc-filter-dept').value;
+  const filterStatus = document.getElementById('hc-filter-status').value;
+
+  let filtered = employees.filter(e => {
+    const matchSearch = !search || [e.name,e.role,e.email,e.dept,e.location].join(' ').toLowerCase().includes(search);
+    const matchDept = !filterDept || e.dept===filterDept;
+    const matchStatus = !filterStatus || e.status===filterStatus;
+    return matchSearch && matchDept && matchStatus;
+  });
+
+  const tbody = document.getElementById('headcount-tbody');
+  const emptyEl = document.getElementById('headcount-empty');
+  if (!filtered.length) { tbody.closest('.table-wrap').style.display='none'; emptyEl.style.display='block'; return; }
+  tbody.closest('.table-wrap').style.display=''; emptyEl.style.display='none';
+
+  tbody.innerHTML = filtered.map(e => {
+    const assetCount = assets.filter(a=>a.user===e.name).length;
+    return `
+    <tr class="${selectedEmployeeIds.has(e.id) ? 'selected-row' : ''}">
+      <td class="td-cb"><input type="checkbox" ${selectedEmployeeIds.has(e.id) ? 'checked' : ''} onchange="toggleEmployeeSelection('${e.id}', this.checked)"></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--teal));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${e.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+          <div>
+            <div style="font-weight:600;color:var(--text)">${e.name}</div>
+            <div style="font-size:11px;color:var(--text3)">${e.id}</div>
+          </div>
+        </div>
+      </td>
+      <td>${e.dept}</td>
+      <td>${e.role}</td>
+      <td style="color:var(--accent2)">${e.email}</td>
+      <td>${e.location}</td>
+      <td>${e.manager}</td>
+      <td>${empStatusBadge(e.status)}</td>
+      <td><span style="font-weight:600;color:${assetCount?'var(--accent2)':'var(--text3)'}">${assetCount} asset${assetCount!==1?'s':''}</span></td>
+      <td>
+        <div class="action-btns" data-role-only="admin,hr">
+          <button class="btn btn-outline btn-sm" onclick="editEmployee('${e.id}')" title="Edit">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${e.id}')" title="Delete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openAddEmployee() {
+  editingEmployeeId = null;
+  document.getElementById('modal-emp-title').textContent = 'Add Employee';
+  ['f-emp-name','f-emp-email','f-emp-role','f-emp-location','f-emp-manager'].forEach(id=>document.getElementById(id).value='');
+  openModal('modal-employee');
+}
+
+function editEmployee(id) {
+  const e = employees.find(x=>x.id===id);
+  if (!e) return;
+  editingEmployeeId = id;
+  document.getElementById('modal-emp-title').textContent = 'Edit Employee';
+  document.getElementById('f-emp-name').value = e.name;
+  document.getElementById('f-emp-email').value = e.email;
+  document.getElementById('f-emp-dept').value = e.dept;
+  document.getElementById('f-emp-role').value = e.role;
+  document.getElementById('f-emp-location').value = e.location;
+  document.getElementById('f-emp-manager').value = e.manager;
+  document.getElementById('f-emp-status').value = e.status;
+  openModal('modal-employee');
+}
+
+async function deleteEmployee(id) {
+  if (!confirm('Delete this employee?')) return;
+  try {
+    const res = await authFetch('/api/employees/' + id, { method: 'DELETE' });
+    if (!res.ok) throw new Error('API error');
+    employees = employees.filter(e=>e.id!==id);
+    renderHeadcount();
+    renderDashboard();
+    showToast('Employee removed.','success');
+  } catch(e) { showToast('Failed to delete employee — is the backend running?','error'); }
+}
+
+async function saveEmployee() {
+  const name = document.getElementById('f-emp-name').value.trim();
+  if (!name) { showToast('Name is required.','error'); return; }
+  const obj = {
+    id: editingEmployeeId || `EMP-${Date.now().toString().slice(-6)}`,
+    name, email: document.getElementById('f-emp-email').value.trim(),
+    dept: document.getElementById('f-emp-dept').value,
+    role: document.getElementById('f-emp-role').value.trim(),
+    location: document.getElementById('f-emp-location').value.trim(),
+    manager: document.getElementById('f-emp-manager').value.trim(),
+    status: document.getElementById('f-emp-status').value,
+  };
+  
+  try {
+    const res = await authFetch('/api/employees', {
+      method: 'POST',
+      body: JSON.stringify(obj)
+    });
+    if (!res.ok) throw new Error('API Error');
+
+    if (editingEmployeeId) {
+      const idx = employees.findIndex(e=>e.id===editingEmployeeId);
+      if (idx>=0) employees[idx] = obj;
+      showToast('Employee updated!','success');
+    } else {
+      employees.push(obj);
+      showToast('Employee added!','success');
+    }
+    closeModal('modal-employee');
+    renderHeadcount();
+    renderDashboard();
+  } catch(e) { showToast('Error saving employee','error'); }
+}
+
+// ===================================================
+//   NEW HIRES
+// ===================================================
+const IT_STATUSES = ['Pending','In Progress','Ready','Completed'];
+
+function renderNewHires() {
+  const search = document.getElementById('nh-search').value.toLowerCase();
+  const filterStatus = document.getElementById('nh-filter-status').value;
+  const filterStage = document.getElementById('nh-filter-stage').value;
+  let filtered = newHires.filter(h => {
+    const matchSearch = !search || [h.name,h.dept,h.role,h.manager].join(' ').toLowerCase().includes(search);
+    const matchStatus = !filterStatus || h.itStatus===filterStatus;
+    const matchStage = !filterStage || (PIPELINE_STAGES[h.pipelineStage] === filterStage);
+    return matchSearch && matchStatus && matchStage;
+  });
+
+  const tbody = document.getElementById('newhires-tbody');
+  const emptyEl = document.getElementById('newhires-empty');
+  if (!filtered.length) { tbody.closest('.table-wrap').style.display='none'; emptyEl.style.display='block'; return; }
+  tbody.closest('.table-wrap').style.display=''; emptyEl.style.display='none';
+
+  tbody.innerHTML = filtered.map(h => `
+    <tr class="${selectedNewHireIds.has(h.id) ? 'selected-row' : ''}">
+      <td class="td-cb"><input type="checkbox" ${selectedNewHireIds.has(h.id) ? 'checked' : ''} onchange="toggleNewHireSelection('${h.id}', this.checked)"></td>
+      <td><div style="font-weight:600;color:var(--text)">${h.name}</div><div style="font-size:11px;color:var(--text3)">${h.id}</div></td>
+      <td>${h.dept}</td>
+      <td>${h.type || 'New Hire'}</td>
+      <td>${h.role}</td>
+      <td>${formatDate(h.joinDate)}</td>
+      <td>${h.manager}</td>
+      <td><span style="font-size:12px;color:var(--text2);">${h.equipment}</span></td>
+      <td>
+        <select class="inline-select" onchange="updateHireStatus('${h.id}',this.value)">
+          ${IT_STATUSES.map(s=>`<option${s===h.itStatus?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <div class="action-btns">
+          <button class="btn btn-outline btn-sm" onclick="navigate('onboarding')">Pipeline</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteHire('${h.id}')" data-role-only="admin,hr" title="Delete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function updateHireStatus(id, status) {
+  const h = newHires.find(x=>x.id===id);
+  if (!h) return;
+  const oldStatus = h.itStatus;
+  const oldStage = h.pipelineStage;
+
+  h.itStatus = status;
+  const stageMap = {'Pending':0,'In Progress':1,'Ready':3,'Completed':5};
+  if (stageMap[status]!==undefined) h.pipelineStage = stageMap[status];
+
+  try {
+    await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+
+    // Auto-transfer to headcount when Completed
+    if (status === 'Completed') {
+      const newEmp = {
+        id: `EMP-${Date.now().toString().slice(-6)}`,
+        name: h.name,
+        dept: h.dept,
+        role: h.role || '',
+        email: '',
+        location: '',
+        manager: h.manager || '',
+        status: 'Active'
+      };
+      await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
+      await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      showToast(`${h.name} completed onboarding — added to Headcount`, 'success');
+      await initializeData();
+    } else {
+      renderNewHires();
+      renderOnboarding();
+      showToast(`IT status updated to "${status}"`,'success');
+    }
+  } catch(e) {
+    h.itStatus = oldStatus; h.pipelineStage = oldStage;
+    showToast('Failed to update status', 'error');
+  }
+}
+
+async function deleteHire(id) {
+  if (!confirm('Remove this new hire?')) return;
+  try {
+    const res = await authFetch('/api/newhires/' + id, { method: 'DELETE' });
+    if (!res.ok) throw new Error('API error');
+    newHires = newHires.filter(h=>h.id!==id);
+    renderNewHires();
+    renderDashboard();
+    showToast('New hire removed.','success');
+  } catch(e) { showToast('Failed to delete hire — is the backend running?','error'); }
+}
+
+function openAddHire() {
+  ['f-hire-name','f-hire-manager','f-hire-equipment'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-hire-joindate').value = '';
+  document.getElementById('f-hire-dept').selectedIndex = 0;
+  document.getElementById('f-hire-type').selectedIndex = 0;
+  openModal('modal-hire');
+}
+
+async function saveHire() {
+  const name = document.getElementById('f-hire-name').value.trim();
+  if (!name) { showToast('Name is required.','error'); return; }
+  const obj = {
+    id: `NH-${Date.now().toString().slice(-6)}`,
+    name, dept: document.getElementById('f-hire-dept').value,
+    type: document.getElementById('f-hire-type').value,
+    role: document.getElementById('f-hire-role').value.trim(),
+    joinDate: document.getElementById('f-hire-joindate').value,
+    manager: document.getElementById('f-hire-manager').value.trim(),
+    equipment: document.getElementById('f-hire-equipment').value.trim(),
+    itStatus: 'Pending', pipelineStage: 0,
+  };
+  
+  try {
+    const res = await authFetch('/api/newhires', {
+      method: 'POST',
+      body: JSON.stringify(obj)
+    });
+    if (!res.ok) throw new Error('API Error');
+    newHires.push(obj);
+    closeModal('modal-hire');
+    renderNewHires();
+    renderDashboard();
+    showToast('New hire added!','success');
+  } catch(e) { showToast('Error saving hire', 'error'); }
+}
+
+// ===================================================
+//   ONBOARDING PIPELINE
+// ===================================================
+function renderOnboarding() {
+  const filterStage = document.getElementById('ob-filter-stage').value;
+  let filtered = newHires.filter(h => !filterStage || PIPELINE_STAGES[h.pipelineStage]===filterStage);
+
+  const container = document.getElementById('onboarding-list');
+  const emptyEl = document.getElementById('onboarding-empty');
+  if (!filtered.length) { container.style.display='none'; emptyEl.style.display='block'; return; }
+  container.style.display=''; emptyEl.style.display='none';
+
+  container.innerHTML = filtered.map(h => {
+    const progress = Math.round((h.pipelineStage / (PIPELINE_STAGES.length-1)) * 100);
+    const stageIcons = [
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="22" height="6" rx="1"/><rect x="1" y="15" width="22" height="6" rx="1"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="6" y1="9" x2="6" y2="11"/><line x1="18" y1="9" x2="18" y2="11"/><line x1="6" y1="13" x2="6" y2="15"/><line x1="18" y1="13" x2="18" y2="15"/></svg>',
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    ];
+    const stagesHtml = PIPELINE_STAGES.map((s,i) => {
+      const isDone = i < h.pipelineStage;
+      const isActive = i === h.pipelineStage;
+      return `
+        <div class="stage-step${isDone?' done':''}${isActive?' active-stage':''}" onclick="setStage('${h.id}',${i})" title="Set stage: ${s}">
+          <div class="stage-dot">${isDone?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':stageIcons[i]}</div>
+          <div class="stage-label">${s}</div>
+        </div>`;
+    }).join('');
+
+    const barColor = progress===100 ? 'var(--green)' : progress>50 ? 'var(--accent)' : 'var(--amber)';
+
+    return `
+    <div class="pipeline-card">
+      <div class="pipeline-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;">${h.name[0]}</div>
+            <div>
+              <div class="pipeline-name">${h.name}</div>
+              <div class="pipeline-meta">
+                <span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  ${h.dept}
+                </span>
+                <span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+                  ${h.role}
+                </span>
+                <span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  ${formatDate(h.joinDate)}
+                </span>
+                <span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Manager: ${h.manager}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          ${itStatusBadge(h.itStatus)}
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Stage: ${PIPELINE_STAGES[h.pipelineStage]}</div>
+        </div>
+      </div>
+      <div class="stages-track">${stagesHtml}</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+        <div class="progress-bar-wrap" style="flex:1;">
+          <div class="progress-bar-fill" style="width:${progress}%;background:${barColor};"></div>
+        </div>
+        <span style="font-size:12px;font-weight:700;color:${barColor};min-width:36px;text-align:right;">${progress}%</span>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--text2);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Equipment: ${h.equipment}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function setStage(id, stageIndex) {
+  const h = newHires.find(x=>x.id===id);
+  if (!h) return;
+  const oldStage = h.pipelineStage;
+  const oldStatus = h.itStatus;
+
+  h.pipelineStage = stageIndex;
+  const statusMap = {0:'Pending',1:'In Progress',2:'In Progress',3:'In Progress',4:'Ready',5:'Completed'};
+  h.itStatus = statusMap[stageIndex] || 'Pending';
+
+  try {
+    await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+
+    // Auto-transfer to headcount when Completed
+    if (stageIndex === 5) {
+      const newEmp = {
+        id: `EMP-${Date.now().toString().slice(-6)}`,
+        name: h.name,
+        dept: h.dept,
+        role: h.role || '',
+        email: '',
+        location: '',
+        manager: h.manager || '',
+        status: 'Active'
+      };
+      await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
+      await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      showToast(`${h.name} completed onboarding — added to Headcount`, 'success');
+      // Re-fetch all data
+      await initializeData();
+    } else {
+      renderOnboarding();
+      renderNewHires();
+      showToast(`${h.name}: stage set to "${PIPELINE_STAGES[stageIndex]}"`,'success');
+    }
+  } catch(e) {
+    h.pipelineStage = oldStage; h.itStatus = oldStatus;
+    showToast('Failed to save stage','error');
+  }
+}
+
+// ===================================================
+//   CSV IMPORT / EXPORT
+// ===================================================
+
+// Smart CSV parser — handles quoted fields with commas inside, double-quote escaping, CRLF
+function smartCSVParse(text) {
+  const rows = [];
+  let i = 0;
+  let len = text.length;
+
+  function parseRow() {
+    const cells = [];
+    while (i < len) {
+      let cell = '';
+      if (text[i] === '"') {
+        i++; // skip opening quote
+        while (i < len) {
+          if (text[i] === '"' && text[i+1] === '"') {
+            cell += '"'; i += 2; // escaped quote
+          } else if (text[i] === '"') {
+            i++; break; // closing quote
+          } else {
+            cell += text[i++];
+          }
+        }
+        // skip comma or newline after closing quote
+        if (text[i] === ',') i++;
+      } else {
+        while (i < len && text[i] !== ',' && text[i] !== '\n' && text[i] !== '\r') {
+          cell += text[i++];
+        }
+        if (text[i] === ',') i++;
+      }
+      cells.push(cell.trim().replace(/^"|"$/g, ''));
+      if (text[i-1] === ',' && (i >= len || text[i] === '\n' || text[i] === '\r')) {
+        // trailing empty cell from comma at end
+      }
+      if (i >= len || text[i] === '\n' || (text[i] === '\r' && text[i+1] === '\n')) {
+        if (text[i] === '\r') i++;
+        if (text[i] === '\n') i++;
+        break;
+      }
+    }
+    return cells;
+  }
+
+  while (i < len) {
+    const row = parseRow();
+    if (row.length > 0 && row.some(c => c !== '')) rows.push(row);
+    if (i >= len) break;
+  }
+  return rows;
+}
+
+// Auto-detect best system field for a CSV column header
+function matchField(header, type) {
+  const h = (header || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const map = {
+    assets: {
+      id:['assetid','asset_id','id','serialnumber'],type:['assettype','devicetype','category','type'],
+      brand:['brand','manufacturer','make'],model:['model','modelname','modelno','device'],
+      spec:['spec','specs','specification','configuration','cpu'],
+      serial:['serial','serialnumber','sn'],
+      user:['user','assignedto','assignee','assetowner','employee','staff','name'],
+      dept:['dept','department','ownerdepartment'],location:['location','assetlocation','site','office'],
+      status:['status','assetstatus','condition'],warranty:['warranty','warrantyexpiry','warrantyperiod','expiry','expiredate'],
+    },
+    headcount: {
+      id:['employeeid','empid','emp_id','id'],name:['name','fullname','employeename','staffname'],
+      dept:['dept','department','team'],role:['role','jobrole','position','title','jobtitle'],
+      email:['email','emailaddress','mail'],location:['location','site','office','branch'],
+      manager:['manager','supervisor','reportingto'],status:['status','employmentstatus'],
+    },
+    newhires: {
+      id:['newhireid','hireid','id'],name:['name','fullname','newhirename'],
+      dept:['dept','department','team'],role:['role','jobrole','position','title','jobtitle'],
+      joinDate:['joindate','startdate','joiningdate','start','joineddate'],
+      manager:['manager','supervisor','reportingto'],equipment:['equipment','equipmentneeded','itpackage'],
+      itStatus:['itstatus','itready','readiness'],type:['type','category','employeetype'],
+    }
+  };
+  const fields = map[type] || {};
+  for (const [fieldId, aliases] of Object.entries(fields)) {
+    for (const alias of aliases) {
+      if (h === alias || h.includes(alias) || alias.includes(h)) return fieldId;
+    }
+  }
+  return null;
+}
+
+// Return system fields list for each import type
+function getFields(type) {
+  return {
+    assets: [
+      {k:'id',l:'Asset ID'},{k:'tag',l:'Asset tag'},{k:'isNew',l:'Is new'},{k:'serial',l:'Serial number'},{k:'financeTag',l:'Finance tag'},
+      {k:'type',l:'Asset type'},{k:'model',l:'Model name'},{k:'doNumber',l:'DO number'},{k:'software',l:'Software installed'},{k:'entity',l:'Entity'},
+      {k:'region',l:'Origin Region'},{k:'warranty',l:'Warranty period'},{k:'lastAudit',l:'Last audit date'},{k:'assetTag',l:'Tag'},{k:'remark',l:'Remark'},
+      {k:'processor',l:'Processor'},{k:'ram',l:'RAM (GB)'},{k:'storage',l:'Storage (GB)'},{k:'status',l:'Status'},
+      {k:'site',l:'Site(Region code + Site)'},{k:'storeroom',l:'Storeroom'},{k:'rack',l:'Rack'},{k:'row',l:'Row'},
+      {k:'owner',l:'Asset owner'},{k:'dept',l:'Owner department'},{k:'location',l:'Asset location'},{k:'assignedDate',l:'Assigned date'},{k:'confirmDate',l:'Asset confirmation date'}
+    ],
+    headcount: [
+      {k:'id',l:'Employee ID'},{k:'name',l:'Name'},{k:'dept',l:'Department'},{k:'role',l:'Role'},
+      {k:'email',l:'Email'},{k:'location',l:'Location'},{k:'manager',l:'Manager'},{k:'status',l:'Status'}
+    ],
+    newhires: [
+      {k:'id',l:'ID'},{k:'name',l:'Name'},{k:'dept',l:'Department'},{k:'type',l:'Type'},{k:'role',l:'Role'},
+      {k:'joinDate',l:'Join Date'},{k:'manager',l:'Manager'},{k:'equipment',l:'Equipment'},{k:'itStatus',l:'IT Status'}
+    ],
+  }[type] || [];
+}
+
+function switchImportTab(type, el) {
+  currentImportType = type;
+  document.querySelectorAll('.import-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const titles = {assets:'Import Assets',headcount:'Import Headcount',newhires:'Import New Hires'};
+  document.getElementById('import-panel-title').textContent = titles[type];
+  document.getElementById('preview-section').style.display = 'none';
+  document.getElementById('csv-file-input').value = '';
+  pendingCSVData = null;
+}
+
+const csvTemplates = {
+  assets: `Asset ID,Asset tag,Is new,Serial number,Finance tag,Asset type,Model name,DO number,Software installed,Entity,Origin Region,Warranty period,Last audit date,Tag,Remark,Processor,RAM (GB),Storage (GB),Status,Site(Region code + Site),Storeroom,Rack,Row,Asset owner,Owner department,Asset location,Assigned date,Asset confirmation date
+AST-001,AST-TAG-001,Yes,SN-001,FIN-001,Laptop,Dell Latitude 3460 (16GB),DO-001,"Windows 11,Office 365",Main Entity,VN,2028-06-17,2026-01-15,AST-TAG-001,Good condition,Intel i5,16,512,Available,VN-HCM-SITE-A,STK-01,Rack-01,Row-A,Nguyen Van A,Product,Ho Chi Minh,2026-05-01,2026-05-01`,
+  headcount: `Employee ID,Name,Department,Role,Email,Location,Manager,Status\nEMP-001,Jane Smith,Engineering,Developer,jane@co.com,HQ F3,Bob Lee,Active`,
+  newhires: `ID,Name,Department,Role,Join Date,Manager,Equipment Needed,IT Status\nNH-001,Alex Brown,Engineering,Backend Dev,2026-05-01,Tom Walsh,"Laptop, Monitor",Pending`,
+};
+
+function downloadTemplate() {
+  const csv = csvTemplates[currentImportType] || '';
+  downloadCSVString(csv, `template_${currentImportType}.csv`);
+  showToast('Template downloaded!','success');
+}
+
+function handleDragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('dragover'); }
+function handleDragLeave() { document.getElementById('drop-zone').classList.remove('dragover'); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('drop-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processCSVFile(file);
+}
+function handleFileSelect(e) { const file = e.target.files[0]; if (file) processCSVFile(file); }
+
+function processCSVFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const text = ev.target.result;
+    const rows = smartCSVParse(text);
+    pendingCSVData = rows;
+    showPreview(rows);
+    showToast(`Loaded ${rows.length-1} records — review column mapping and confirm.`,'info');
+  };
+  reader.readAsText(file);
+}
+
+function showPreview(rows) {
+  const fields = getFields(currentImportType);
+  const headers = rows[0] || [];
+  const preview = rows.slice(0, 6);
+
+  let html = `<table><thead>`;
+  html += `<tr class="mapping-row">`;
+  headers.forEach((h, i) => {
+    const suggested = matchField(h, currentImportType);
+    let options = `<option value="">— Skip —</option>`;
+    fields.forEach(f => {
+      const isSelected = f.k === suggested;
+      options += `<option value="${f.k}" ${isSelected ? 'selected' : ''}>${f.l}</option>`;
+    });
+    const badge = suggested
+      ? `<span style="font-size:9px;font-weight:700;background:var(--green);color:#fff;padding:1px 5px;border-radius:8px;margin-left:4px;">${suggested}</span>`
+      : '';
+    html += `<th>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;">${h}${badge}</div>
+        <select class="mapping-select" id="map-col-${i}">${options}</select>
+      </div>
+    </th>`;
+  });
+  html += `</tr>`;
+  html += `<tr>${headers.map((h,i) => `<th style="font-size:10px;color:var(--accent2);font-weight:600;">${h}</th>`).join('')}</tr></thead>`;
+  html += `<tbody>`;
+  preview.slice(1).forEach(r => {
+    html += `<tr>${r.map(c => `<td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c}">${c}</td>`).join('')}</tr>`;
+  });
+  html += `</tbody></table>`;
+
+  document.getElementById('csv-preview').innerHTML = html;
+  document.getElementById('preview-section').style.display = 'block';
+}
+
+async function confirmImport() {
+  if (!pendingCSVData) return;
+  const rows = pendingCSVData.slice(1);
+  const headers = pendingCSVData[0];
+  
+  // Get mapping from dropdowns
+  const mapping = {};
+  headers.forEach((h, i) => {
+    const val = document.getElementById(`map-col-${i}`).value;
+    if (val) mapping[val] = i;
+  });
+
+  if (Object.keys(mapping).length === 0) {
+    showToast('Please map at least one column to a system field.', 'error');
+    return;
+  }
+
+  let count = 0, failed = 0;
+  try {
+    for (const r of rows) {
+      if (!r || r.length < 1) continue;
+      
+      let obj = {};
+      let endpoint = '';
+      
+      if (currentImportType === 'assets') {
+        const getVal = (k) => (mapping[k] !== undefined && r[mapping[k]]) || '';
+        let warrantyVal = getVal('warranty');
+        if (warrantyVal.includes(' - ')) warrantyVal = warrantyVal.split(' - ').pop().trim();
+        obj = {
+          id: getVal('id') || `AST-${Date.now()}-${count}`,
+          tag: getVal('tag'),
+          isNew: getVal('isNew'),
+          serial: getVal('serial'),
+          financeTag: getVal('financeTag'),
+          type: getVal('type') || 'Other',
+          model: getVal('model'),
+          doNumber: getVal('doNumber'),
+          software: getVal('software'),
+          entity: getVal('entity'),
+          region: getVal('region'),
+          warranty: warrantyVal,
+          lastAudit: getVal('lastAudit'),
+          assetTag: getVal('assetTag'),
+          remark: getVal('remark'),
+          processor: getVal('processor'),
+          ram: getVal('ram'),
+          storage: getVal('storage'),
+          status: getVal('status') || 'Available',
+          site: getVal('site'),
+          storeroom: getVal('storeroom'),
+          rack: getVal('rack'),
+          row: getVal('row'),
+          owner: getVal('owner'),
+          dept: getVal('dept'),
+          location: getVal('location'),
+          assignedDate: getVal('assignedDate'),
+          confirmDate: getVal('confirmDate'),
+          brand: getVal('brand'),
+          user: getVal('user')
+        };
+        endpoint = '/api/assets';
+      } else if (currentImportType === 'headcount') {
+        const getVal = (k) => (mapping[k] !== undefined && r[mapping[k]]) || '';
+        obj = {
+          id: getVal('id') || `EMP-${Date.now()}-${count}`,
+          name: getVal('name') || 'Unknown',
+          dept: getVal('dept') || 'IT',
+          role: getVal('role'),
+          email: getVal('email'),
+          location: getVal('location'),
+          manager: getVal('manager'),
+          status: getVal('status') || 'Active'
+        };
+        endpoint = '/api/employees';
+      } else if (currentImportType === 'newhires') {
+        const getVal = (k) => (mapping[k] !== undefined && r[mapping[k]]) || '';
+        obj = {
+          id: getVal('id') || `NH-${Date.now()}-${count}`,
+          name: getVal('name') || 'Unknown',
+          dept: getVal('dept') || 'IT',
+          type: getVal('type') || 'New Hire',
+          role: getVal('role'),
+          joinDate: getVal('joinDate'),
+          manager: getVal('manager'),
+          equipment: getVal('equipment'),
+          itStatus: getVal('itStatus') || 'Pending',
+          pipelineStage: 0
+        };
+        endpoint = '/api/newhires';
+      }
+
+      if ((!obj.id || !obj.id.trim()) && (!obj.name || !obj.name.trim())) continue;
+
+      const res = await authFetch(endpoint, { method: 'POST', body: JSON.stringify(obj) });
+      if (res.ok) count++; else failed++;
+    }
+
+    pendingCSVData = null;
+    document.getElementById('preview-section').style.display = 'none';
+    document.getElementById('csv-file-input').value = '';
+
+    showToast(failed === 0
+      ? `${count} records imported successfully!`
+      : `${count} imported, ${failed} failed.`,
+      failed === count ? 'error' : 'info'
+    );
+    initializeData();
+  } catch (err) {
+    console.error(err);
+    showToast('Import failed — is the backend running?', 'error');
+  }
+}
+
+function exportCSV(type) {
+  let headers, rows, filename;
+  if (type==='assets') {
+    headers = ['Asset ID','Type','Brand','Model','Serial','Assigned To','Department','Location','Status','Warranty'];
+    rows = assets.map(a=>[a.id,a.type,a.brand,a.model,a.serial,a.user,a.dept,a.location,a.status,a.warranty]);
+    filename = 'assets_export.csv';
+  } else if (type==='headcount') {
+    headers = ['Employee ID','Name','Department','Role','Email','Location','Manager','Status'];
+    rows = employees.map(e=>[e.id,e.name,e.dept,e.role,e.email,e.location,e.manager,e.status]);
+    filename = 'headcount_export.csv';
+  } else if (type==='newhires') {
+    headers = ['ID','Name','Department','Role','Join Date','Manager','Equipment Needed','IT Status'];
+    rows = newHires.map(h=>[h.id,h.name,h.dept,h.role,h.joinDate,h.manager,h.equipment,h.itStatus]);
+    filename = 'newhires_export.csv';
+  }
+  const csv = [headers, ...rows].map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadCSVString(csv, filename);
+  showToast(`${filename} downloaded!`,'success');
+}
+
+function downloadCSVString(csv, filename) {
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===================================================
+//   REPORTS
+// ===================================================
+const reportCharts = {};
+
+function renderReports() {
+  const grid = document.getElementById('report-grid');
+  const chartDefs = [
+    {id:'rpt-asset-type',   title:'Assets by Type',         sub:'Hardware category breakdown',    type:'bar'},
+    {id:'rpt-asset-status', title:'Assets by Status',       sub:'Operational status distribution', type:'doughnut'},
+    {id:'rpt-asset-dept',   title:'Assets by Department',   sub:'Cross-department allocation',     type:'bar'},
+    {id:'rpt-emp-dept',     title:'Headcount by Department',sub:'Staff distribution',              type:'doughnut'},
+    {id:'rpt-emp-status',   title:'Employee Status',         sub:'Active / On Leave / Inactive',   type:'pie'},
+    {id:'rpt-hire-status',  title:'New Hire IT Readiness',  sub:'Onboarding status overview',     type:'bar'},
+  ];
+  grid.innerHTML = chartDefs.map(d=>`
+    <div class="card">
+      <div style="margin-bottom:14px;">
+        <div style="font-size:14px;font-weight:700;">${d.title}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">${d.sub}</div>
+      </div>
+      <div class="chart-wrap"><canvas id="${d.id}"></canvas></div>
+    </div>
+  `).join('');
+
+  setTimeout(() => {
+    buildReportChart('rpt-asset-type','bar',
+      countBy(assets,'type'),
+      ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899','#64748b']);
+
+    buildReportChart('rpt-asset-status','doughnut',
+      countBy(assets,'status'),
+      {'In Use':'#6366f1','Available':'#22c55e','Maintenance':'#f59e0b','Retired':'#64748b'});
+
+    buildReportChart('rpt-asset-dept','bar',
+      countBy(assets,'dept'),
+      ['#14b8a6','#6366f1','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899']);
+
+    buildReportChart('rpt-emp-dept','doughnut',
+      countBy(employees,'dept'),
+      ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899']);
+
+    buildReportChart('rpt-emp-status','pie',
+      countBy(employees,'status'),
+      {'Active':'#22c55e','On Leave':'#f59e0b','Inactive':'#64748b'});
+
+    buildReportChart('rpt-hire-status','bar',
+      countBy(newHires,'itStatus'),
+      {'Pending':'#f59e0b','In Progress':'#6366f1','Ready':'#38bdf8','Completed':'#22c55e'});
+  }, 50);
+}
+
+function buildReportChart(canvasId, chartType, dataObj, colors) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (reportCharts[canvasId]) reportCharts[canvasId].destroy();
+  const labels = Object.keys(dataObj);
+  const data = labels.map(k=>dataObj[k]);
+  let bgColors;
+  if (Array.isArray(colors)) {
+    bgColors = labels.map((_,i)=>colors[i%colors.length]);
+  } else {
+    bgColors = labels.map(l=>colors[l]||'#6366f1');
+  }
+  reportCharts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: chartType,
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: bgColors,
+        borderColor: chartType==='bar' ? bgColors : '#12152a',
+        borderWidth: chartType==='bar' ? 0 : 3,
+        borderRadius: chartType==='bar' ? 6 : 0,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend: {
+          display: chartType!=='bar',
+          position:'bottom',
+          labels:{color:'#94a3b8',font:{family:'Inter',size:11},padding:10,boxWidth:12}
+        }
+      },
+      scales: chartType==='bar' ? {
+        x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#94a3b8',font:{size:11}}},
+        y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#94a3b8',font:{size:11}},beginAtZero:true}
+      } : {},
+      cutout: chartType==='doughnut' ? '55%' : undefined,
+    }
+  });
+}
+
+function regenerateReports() { renderReports(); showToast('Reports refreshed!','success'); }
+
+function countBy(arr, key) {
+  const obj = {};
+  arr.forEach(item => { const v = item[key]||'Unknown'; obj[v]=(obj[v]||0)+1; });
+  return obj;
+}
+
+// ===================================================
+//   MODAL HELPERS
+// ===================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target===overlay) overlay.classList.remove('open'); });
+});
+
+// ===================================================
+//   TOAST
+// ===================================================
+function showToast(message, type='info') {
+  const icons = {
+    success: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    error: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    info: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span class="toast-icon">${icons[type]||icons.info}</span><span>${message}</span>`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(20px)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); }, 3000);
+}
+
+// ===================================================
+//   UTILITIES
+// ===================================================
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  } catch { return dateStr; }
+}
+
+function assetTypeIcon(type) {
+  const icons = {
+    Laptop:   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    Desktop:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="5" y1="21" x2="5" y2="17"/><line x1="19" y1="21" x2="19" y2="17"/></svg>',
+    Monitor:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    Phone:    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+    Tablet:   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+    Printer:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+    Network:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="22" height="6" rx="1"/><rect x="1" y="15" width="22" height="6" rx="1"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="6" y1="9" x2="6" y2="11"/><line x1="18" y1="9" x2="18" y2="11"/><line x1="6" y1="13" x2="6" y2="15"/><line x1="18" y1="13" x2="18" y2="15"/></svg>',
+    Software: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+    Other:    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>'
+  };
+  return icons[type]||icons.Other;
+}
+
+function statusBadge(status) {
+  const map = {'In Use':'teal','Available':'green','Maintenance':'amber','Retired':'text3'};
+  const cls = map[status]||'sky';
+  return `<span class="badge ${cls}">● ${status}</span>`;
+}
+
+function itStatusBadge(status) {
+  const map = {'Pending':'amber','In Progress':'sky','Ready':'teal','Completed':'green'};
+  const cls = map[status]||'text3';
+  return `<span class="badge ${cls}">${status}</span>`;
+}
+
+function empStatusBadge(status) {
+  const map = {'Active':'green','On Leave':'amber','Inactive':'text3'};
+  return `<span class="badge ${map[status]||'text3'}">${status}</span>`;
+}
+
+
+// ===================================================
+//   USER MANAGEMENT
+// ===================================================
+async function renderUsers() {
+  const tbody = document.getElementById('users-tbody');
+  if (!tbody) return;
+  try {
+    const res = await authFetch('/api/auth/users');
+    if (!res.ok) { tbody.innerHTML = '<tr><td colspan="5">Failed to load users.</td></tr>'; return; }
+    const users = await res.json();
+    tbody.innerHTML = users.map(u => {
+      const initials = (u.name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      return `<tr>
+        <td><div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar-sm" style="width:28px;height:28px;font-size:10px;">${initials}</div>
+          <span style="font-weight:500;">${u.username}</span>
+        </div></td>
+        <td>${u.name}</td>
+        <td>${roleBadge(u.role)}</td>
+        <td><span style="color:var(--text3);font-size:12px;">${u.createdAt ? u.createdAt.slice(0,10) : '—'}</span></td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="openEditUser('${u.id}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit
+            </button>
+            <button class="btn btn-outline btn-sm" style="color:var(--rose);border-color:var(--rose);" onclick="deleteUser('${u.id}')" ${u.id === currentUser?.id ? 'disabled title="Cannot delete yourself"' : ''}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Delete
+            </button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="5">Error loading users.</td></tr>';
+  }
+}
+
+function openAddUserModal() {
+  document.getElementById('modal-user-title').textContent = 'Add User';
+  document.getElementById('f-user-id').value = '';
+  document.getElementById('f-user-username').value = '';
+  document.getElementById('f-user-name').value = '';
+  document.getElementById('f-user-role').value = 'viewer';
+  document.getElementById('f-user-password').value = '';
+  document.getElementById('f-user-password').required = true;
+  document.getElementById('f-user-pw-label').innerHTML = 'Password <span style="color:var(--rose)">*</span>';
+  openModal('modal-user');
+}
+
+async function openEditUser(id) {
+  document.getElementById('modal-user-title').textContent = 'Edit User';
+  try {
+    const res = await authFetch('/api/auth/users');
+    if (!res.ok) return;
+    const users = await res.json();
+    const u = users.find(x => x.id === id);
+    if (!u) return;
+    document.getElementById('f-user-id').value = u.id;
+    document.getElementById('f-user-username').value = u.username;
+    document.getElementById('f-user-name').value = u.name || '';
+    document.getElementById('f-user-role').value = u.role;
+    document.getElementById('f-user-password').value = '';
+    document.getElementById('f-user-password').required = false;
+    document.getElementById('f-user-pw-label').innerHTML = 'Password <span style="font-size:11px;color:var(--text3)">(leave blank to keep existing)</span>';
+    openModal('modal-user');
+  } catch(e) { console.error(e); }
+}
+
+async function saveUser() {
+  const id = document.getElementById('f-user-id').value;
+  const username = document.getElementById('f-user-username').value.trim();
+  const name = document.getElementById('f-user-name').value.trim();
+  const role = document.getElementById('f-user-role').value;
+  const password = document.getElementById('f-user-password').value;
+  if (!username || !name) { showToast('Username and full name are required', 'error'); return; }
+  if (!id && !password) { showToast('Password is required for new users', 'error'); return; }
+  const body = { username, name, role };
+  if (password) body.password = password;
+  try {
+    const res = id
+      ? await authFetch(`/api/auth/users/${id}`, { method: 'PUT', body: JSON.stringify(body) })
+      : await authFetch('/api/auth/users', { method: 'POST', body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Failed to save user', 'error'); return; }
+    closeModal('modal-user');
+    showToast(id ? 'User updated' : 'User created', 'success');
+    renderUsers();
+  } catch(e) { showToast('Error saving user', 'error'); }
+}
+
+async function deleteUser(id) {
+  if (!confirm('Delete this user?')) return;
+  try {
+    const res = await authFetch(`/api/auth/users/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (!res.ok) { showToast(data.error || 'Failed to delete', 'error'); return; }
+    showToast('User deleted', 'success');
+    renderUsers();
+  } catch(e) { showToast('Error deleting user', 'error'); }
+}
+
+
+// ===================================================
+//   INIT
+// ===================================================
+(async () => {
+  await checkSession();
+  if (currentUser) await initializeData();
+})();
+
+</script>
+</body>
+</html>

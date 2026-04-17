@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Database (per-instance, not shared)
+database.sqlite
+database.sqlite-journal
+database/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build output
+dist/
+build/
+
+# Env files
+.env
+.env.local
