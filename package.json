@@ -2,10 +2,13 @@
   "name": "it-asset-hub",
   "version": "1.0.0",
   "description": "IT Asset & Onboarding Hub",
-  "main": "auth_server.js",
+  "main": "electron-main.js",
   "scripts": {
     "start": "node auth_server.js",
-    "dev": "node auth_server.js"
+    "dev": "node auth_server.js",
+    "electron": "electron .",
+    "build": "electron-builder --win --x64",
+    "build:dir": "electron-builder --win --x64 --dir"
   },
   "keywords": ["asset-management", "onboarding"],
   "author": "",
@@ -17,5 +20,35 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "electron": "^41.2.1",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.ithub.itassethub",
+    "productName": "IT Asset Hub",
+    "directories": {
+      "output": "dist"
+    },
+    "npmRebuild": false,
+    "asar": false,
+    "files": [
+      "electron-main.js",
+      "index.html",
+      "auth_server.js",
+      "database.js",
+      "notifications.js",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": null,
+      "signAndEditExecutable": false
+    },
+    "nsis": null
   }
 }

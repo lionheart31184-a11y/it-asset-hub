@@ -26,3 +26,14 @@ build/
 # Env files
 .env
 .env.local
+
+# Temp/fix scripts (dev only)
+fix_*.js
+temp_*.js
+extracted.js
+update_dropdowns.js
+server.js
+data.db
+
+# Claude settings
+.claude/

@@ -44,16 +44,24 @@ function initDB() {
     )`);
 
     // 2. Employees
-    db.run(`CREATE TABLE IF NOT EXISTS employees (
+    db.run(`DROP TABLE IF EXISTS employees`);
+    db.run(`CREATE TABLE employees (
       id TEXT PRIMARY KEY,
       name TEXT,
       dept TEXT,
       role TEXT,
+      type TEXT,
       email TEXT,
       location TEXT,
       manager TEXT,
-      status TEXT
+      status TEXT,
+      joinDate TEXT,
+      offboardDate TEXT,
+      offboardReason TEXT
     )`);
+    // Migration for existing DBs
+    db.run("ALTER TABLE employees ADD COLUMN offboardDate TEXT", () => {});
+    db.run("ALTER TABLE employees ADD COLUMN offboardReason TEXT", () => {});
 
     // 3. New Hires
     db.run(`DROP TABLE IF EXISTS new_hires`);
@@ -63,12 +71,14 @@ function initDB() {
       dept TEXT,
       type TEXT,
       role TEXT,
+      email TEXT,
       joinDate TEXT,
       manager TEXT,
       equipment TEXT,
       itStatus TEXT,
       pipelineStage INTEGER
     )`);
+    db.run("ALTER TABLE new_hires ADD COLUMN email TEXT", () => {});
 
     // 4. Q2 Plan
     db.run(`CREATE TABLE IF NOT EXISTS q2_plan (
@@ -166,12 +176,12 @@ function seedDB() {
   });
   stmtAsset.finalize();
 
-  const stmtEmp = db.prepare('INSERT OR IGNORE INTO employees VALUES (?,?,?,?,?,?,?,?)');
-  employees.forEach(e => stmtEmp.run(e.id, e.name, e.dept, e.role, e.email, e.location, e.manager, e.status));
+  const stmtEmp = db.prepare('INSERT OR IGNORE INTO employees (id,name,dept,role,type,email,location,manager,status,joinDate) VALUES (?,?,?,?,?,?,?,?,?,?)');
+  employees.forEach(e => stmtEmp.run(e.id, e.name, e.dept, e.role, e.type||'', e.email, e.location, e.manager, e.status, e.joinDate||''));
   stmtEmp.finalize();
 
-  const stmtHire = db.prepare('INSERT OR IGNORE INTO new_hires VALUES (?,?,?,?,?,?,?,?,?,?)');
-  newHires.forEach(h => stmtHire.run(h.id, h.name, h.dept, h.type||'New Hire', h.role, h.joinDate, h.manager, h.equipment, h.itStatus, h.pipelineStage));
+  const stmtHire = db.prepare('INSERT OR IGNORE INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+  newHires.forEach(h => stmtHire.run(h.id, h.name, h.dept, h.type||'New Hire', h.role, h.email||'', h.joinDate||'', h.manager||'', h.equipment||'', h.itStatus||'Pending', h.pipelineStage||0));
   stmtHire.finalize();
 
   const stmtQ2 = db.prepare('INSERT INTO q2_plan (group_name, role, type, model, spec, capitalFTE, capitalBPO, sgcFTE, sgcBPO, q2Total, newHiresJoint) VALUES (?,?,?,?,?,?,?,?,?,?,?)');

@@ -124,6 +124,21 @@ body {
 }
 .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
 
+.nav-sub-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 12px 7px 36px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12.5px; font-weight: 500;
+  color: var(--text3);
+  transition: var(--trans);
+  margin-bottom: 1px;
+  user-select: none;
+}
+.nav-sub-item:hover { background: rgba(99,102,241,.08); color: var(--text2); }
+.nav-sub-item.active { background: rgba(99,102,241,.14); color: var(--accent2); }
+.nav-sub-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; opacity: .7; }
+
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border);
@@ -687,8 +702,17 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
     </div>
     <div class="nav-section">Management</div>
-    <div class="nav-item" data-page="assets" id="nav-assets" onclick="navigate('assets')">
+    <div class="nav-item" data-page="assets" id="nav-assets" onclick="navigateAssets('')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span> Assets
+    </div>
+    <div class="nav-sub-item" id="nav-assets-laptop" onclick="navigateAssets('Laptop')">
+      <span class="nav-sub-dot"></span> Laptop
+    </div>
+    <div class="nav-sub-item" id="nav-assets-desktop" onclick="navigateAssets('Desktop')">
+      <span class="nav-sub-dot"></span> Desktop
+    </div>
+    <div class="nav-sub-item" id="nav-assets-monitor" onclick="navigateAssets('Monitor')">
+      <span class="nav-sub-dot"></span> Monitor
     </div>
     <div class="nav-item" data-page="headcount" id="nav-headcount" onclick="navigate('headcount')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Headcount
@@ -696,10 +720,16 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="nav-item" data-page="newhires" id="nav-newhires" onclick="navigate('newhires')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span> New Hires
     </div>
+    <div class="nav-item" data-page="offboarded" id="nav-offboarded" onclick="navigate('offboarded')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Offboarded
+    </div>
     <div class="nav-item" data-page="onboarding" id="nav-onboarding" onclick="navigate('onboarding')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></span> Onboarding Pipeline
     </div>
     <div class="nav-section">Data</div>
+    <div class="nav-item" data-page="audit" id="nav-audit" onclick="navigate('audit')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Quarterly Audit
+    </div>
     <div class="nav-item" data-page="csvimport" id="nav-csvimport" onclick="navigate('csvimport')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span> CSV Import
     </div>
@@ -757,6 +787,19 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </div>
         <div id="dash-alerts"></div>
       </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:16px;font-weight:700;color:var(--text);">Dashboard</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('reports-headcount')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Headcount
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('reports-assets')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Assets
+          </button>
+        </div>
+      </div>
       <div class="stats-grid" id="dash-stats"></div>
       <div class="grid-2" style="margin-bottom:20px;">
         <div class="card">
@@ -770,54 +813,76 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </div>
         <div class="card">
           <div class="section-header">
-            <div class="section-title" data-i18n="recent_assets">Recent Assets</div>
-            <button class="btn btn-outline btn-sm" onclick="navigate('assets')">View All</button>
-          </div>
-          <div class="mini-list" id="dash-recent-assets"></div>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-header">
             <div>
-              <div class="section-title" data-i18n="headcount_by_dept">Headcount by Department</div>
-              <div class="section-sub">Employee distribution across departments</div>
+              <div class="section-title">Headcount by Dept</div>
+              <div class="section-sub">Active staff distribution</div>
             </div>
           </div>
           <div class="chart-wrap"><canvas id="chart-dept"></canvas></div>
         </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:20px;">
         <div class="card">
           <div class="section-header">
             <div>
-              <div class="section-title" data-i18n="newhires_by_month">New Hires by Month</div>
-              <div class="section-sub">2026 Onboarding pipeline</div>
+              <div class="section-title">Headcount by Month</div>
+              <div class="section-sub">Joined staff by month — 2026</div>
             </div>
           </div>
           <div class="chart-wrap"><canvas id="chart-newhires-month"></canvas></div>
         </div>
-      </div>
-      <div class="card" style="grid-column: 1 / -1;">
+        <div class="card">
           <div class="section-header">
             <div>
-              <div class="section-title" data-i18n="detailed_inventory">Detailed Inventory by Model</div>
-              <div class="section-sub">Hardware count breakdown & Maintenance rate</div>
+              <div class="section-title">Headcount by Type</div>
+              <div class="section-sub">New Hire / Replace / Part Time</div>
             </div>
           </div>
-          <div class="table-wrap" style="max-height: 280px; overflow-y: auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th style="position: sticky; top: 0; z-index: 1;">Model</th>
-                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Total</th>
-                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">In Use</th>
-                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Available</th>
-                  <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Maintenance</th>
-                  <th style="position: sticky; top: 0; z-index: 1; text-align:right;">Failure Rate %</th>
-                </tr>
-              </thead>
-              <tbody id="dash-model-inventory"></tbody>
-            </table>
+          <div style="padding:16px;">
+            <div id="dash-hire-type-stats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;"></div>
+            <div class="chart-wrap" style="height:160px;"><canvas id="chart-newhires-type"></canvas></div>
           </div>
+        </div>
+      </div>
+      <div class="card" style="grid-column:1/-1;">
+        <div class="section-header">
+          <div class="section-title">Pending Onboarding</div>
+          <div class="section-sub">Active new hire pipeline</div>
+        </div>
+        <div class="mini-list" id="dash-pending-hires"></div>
+      </div>
+      <div class="card" style="grid-column:1/-1;">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Upcoming / Recent Onboardings</div>
+            <div class="section-sub">Headcount staff by join date</div>
+          </div>
+        </div>
+        <div style="padding:8px 0 4px 0;">
+          <div id="dash-upcoming-hires"></div>
+        </div>
+      </div>
+      <div class="card" style="grid-column:1/-1;">
+        <div class="section-header">
+          <div>
+            <div class="section-title" data-i18n="detailed_inventory">Detailed Inventory by Model</div>
+            <div class="section-sub">Hardware count breakdown & Maintenance rate</div>
+          </div>
+        </div>
+        <div class="table-wrap" style="max-height: 280px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="position: sticky; top: 0; z-index: 1;">Model</th>
+                <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Total</th>
+                <th style="position: sticky; top: 0; z-index: 1; text-align:center;">In Use</th>
+                <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Available</th>
+                <th style="position: sticky; top: 0; z-index: 1; text-align:center;">Maintenance</th>
+                <th style="position: sticky; top: 0; z-index: 1; text-align:right;">Failure Rate %</th>
+              </tr>
+            </thead>
+            <tbody id="dash-model-inventory"></tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -964,17 +1029,39 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </select>
         <select class="filter-select" id="hc-filter-status" onchange="renderHeadcount()">
           <option value="">All Statuses</option>
-          <option>Active</option><option>On Leave</option><option>Inactive</option>
+          <option>Active</option><option>On Leave</option>
         </select>
+        <select class="filter-select" id="hc-filter-month" onchange="renderHeadcount()" style="min-width:110px;">
+          <option value="">All Months</option>
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+          <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        </select>
+        <select class="filter-select" id="hc-filter-year" onchange="renderHeadcount()" style="min-width:90px;">
+          <option value="">All Years</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+        </select>
+      </div>
+      <div id="hc-month-summary" style="margin-bottom:12px;display:none;">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:600;color:var(--text2);">Showing onboards for:</span>
+          <span id="hc-month-label" style="font-size:13px;font-weight:700;color:var(--accent2);"></span>
+          <span id="hc-month-count" style="font-size:12px;color:var(--text3);"></span>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('hc-filter-month').value='';document.getElementById('hc-filter-year').value='';renderHeadcount();" style="margin-left:auto;">Clear</button>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th style="width:36px;"><input type="checkbox" id="employees-select-all" onchange="toggleAllEmployees(this.checked)"></th>
-              <th>Employee</th><th>Department</th><th>Role</th>
+              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th>
               <th>Email</th><th>Location</th><th>Manager</th>
-              <th>Status</th><th>IT Assets</th><th>Actions</th>
+              <th>Onboard Date</th><th>Status</th><th>IT Assets</th><th>Actions</th>
             </tr>
           </thead>
           <tbody id="headcount-tbody"></tbody>
@@ -1044,6 +1131,67 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       </div>
     </section>
 
+    <!-- ============ OFFBOARDED STAFF ============ -->
+    <section class="page" id="page-offboarded">
+      <div class="section-header">
+        <div>
+          <div class="section-title" style="color:var(--amber);">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Offboarded Staff
+          </div>
+          <div class="section-sub">History of employees who have left the organisation</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportOffboardedCSV()">⬇ Export CSV</button>
+        </div>
+      </div>
+      <div class="filters-row">
+        <div class="search-box">
+          <span class="search-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input id="ob-search" placeholder="Search by name, department, role…" oninput="renderOffboarded()">
+        </div>
+        <select class="filter-select" id="ob-filter-reason" onchange="renderOffboarded()">
+          <option value="">All Reasons</option>
+          <option>Resignation</option><option>End of Contract</option><option>Redundancy</option>
+          <option>Termination</option><option>Retirement</option><option>Transfer</option><option>Other</option>
+        </select>
+        <select class="filter-select" id="ob-filter-month" onchange="renderOffboarded()" style="min-width:110px;">
+          <option value="">All Months</option>
+          <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+          <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+          <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        </select>
+        <select class="filter-select" id="ob-filter-year" onchange="renderOffboarded()" style="min-width:90px;">
+          <option value="">All Years</option>
+          <option value="2024">2024</option><option value="2025">2025</option>
+          <option value="2026">2026</option><option value="2027">2027</option>
+        </select>
+      </div>
+      <div id="ob-summary-bar" style="margin-bottom:12px;display:none;">
+        <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-sm);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="font-size:12px;font-weight:600;color:var(--amber);">Offboarded:</span>
+          <span id="ob-summary-label" style="font-size:13px;font-weight:700;color:var(--text);"></span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th>
+              <th>Onboard Date</th><th>Offboard Date</th><th>Tenure</th><th>Reason</th><th>Notes</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="offboarded-tbody"></tbody>
+        </table>
+      </div>
+      <div id="offboarded-empty" class="empty-state" style="display:none;">
+        <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+        <div class="empty-title">No offboarded staff</div>
+        <div class="empty-sub">Employees who leave will appear here.</div>
+      </div>
+    </section>
+
     <!-- ============ ONBOARDING PIPELINE ============ -->
     <section class="page" id="page-onboarding">
       <div class="section-header">
@@ -1101,12 +1249,152 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
           <div class="section-title">Reports & Analytics</div>
           <div class="section-sub">Distribution charts across all dimensions</div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="regenerateReports()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-          Refresh
-        </button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('reports-headcount')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Headcount
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV('reports-assets')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Assets
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="regenerateReports()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Refresh
+          </button>
+        </div>
       </div>
       <div class="report-grid" id="report-grid"></div>
+    </section>
+
+    <!-- ============ QUARTERLY AUDIT ============ -->
+    <section class="page" id="page-audit">
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Quarterly Headcount &amp; Asset Audit
+          </div>
+          <div class="section-sub">Reconcile onboarded staff, upcoming hires, and IT asset allocation</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select class="filter-select" id="audit-quarter" onchange="renderQuarterlyAudit()">
+            <option value="1">Q1 (Jan–Mar)</option>
+            <option value="2">Q2 (Apr–Jun)</option>
+            <option value="3">Q3 (Jul–Sep)</option>
+            <option value="4">Q4 (Oct–Dec)</option>
+          </select>
+          <select class="filter-select" id="audit-year" onchange="renderQuarterlyAudit()">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+          </select>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;">
+            <span style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;">HC Target:</span>
+            <input type="number" id="audit-hc-target" min="0" placeholder="0"
+              style="width:64px;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-weight:700;font-family:inherit;text-align:center;"
+              oninput="renderQuarterlyAudit()"/>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="exportAuditCSV()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Audit CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="stats-grid" id="audit-stats" style="margin-bottom:24px;"></div>
+
+      <!-- Section 1: Onboarded this quarter -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="section-header" style="margin-bottom:14px;">
+          <div>
+            <div class="section-title" style="color:var(--green);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>
+              Onboarded This Quarter
+            </div>
+            <div class="section-sub">Employees who joined in the selected period</div>
+          </div>
+          <div id="audit-onboarded-count" style="font-size:24px;font-weight:800;color:var(--green);"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Department</th><th>Role</th><th>Type</th>
+                <th>Join Date</th><th>Manager</th><th>Assets Assigned</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="audit-onboarded-tbody"></tbody>
+          </table>
+        </div>
+        <div id="audit-onboarded-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">👥</div>
+          <div class="empty-title">No onboardings this quarter</div>
+        </div>
+      </div>
+
+      <!-- Section 2: Upcoming new hires this quarter -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="section-header" style="margin-bottom:14px;">
+          <div>
+            <div class="section-title" style="color:var(--amber);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              Upcoming New Hires This Quarter
+            </div>
+            <div class="section-sub">New hires in onboarding pipeline with join date in selected period</div>
+          </div>
+          <div id="audit-upcoming-count" style="font-size:24px;font-weight:800;color:var(--amber);"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Department</th><th>Role</th><th>Type</th>
+                <th>Join Date</th><th>Manager</th><th>Equipment Needed</th><th>IT Status</th><th>Days Until Start</th>
+              </tr>
+            </thead>
+            <tbody id="audit-upcoming-tbody"></tbody>
+          </table>
+        </div>
+        <div id="audit-upcoming-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">📋</div>
+          <div class="empty-title">No upcoming new hires this quarter</div>
+        </div>
+      </div>
+
+      <!-- Section 3: Asset Reconciliation -->
+      <div class="card">
+        <div class="section-header" style="margin-bottom:14px;">
+          <div>
+            <div class="section-title" style="color:var(--accent2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              Asset Reconciliation
+            </div>
+            <div class="section-sub">Available laptops vs incoming headcount — readiness check</div>
+          </div>
+        </div>
+        <div id="audit-asset-summary" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;"></div>
+        <div class="section-title" style="font-size:13px;margin-bottom:10px;color:var(--text2);">Asset Inventory by Model</div>
+        <div class="table-wrap" style="margin-bottom:20px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th style="text-align:center;">Total in Stock</th>
+                <th style="text-align:center;">In Use (All)</th>
+                <th style="text-align:center;">Assigned This Quarter</th>
+                <th style="text-align:center;">Available</th>
+                <th style="text-align:center;">Maintenance</th>
+                <th style="text-align:right;">Remaining After Hires</th>
+              </tr>
+            </thead>
+            <tbody id="audit-asset-tbody"></tbody>
+          </table>
+        </div>
+        <div class="section-title" style="font-size:13px;margin-bottom:10px;color:var(--text2);">Readiness: Upcoming Hires vs Available Assets</div>
+        <div id="audit-readiness"></div>
+      </div>
     </section>
 
     </div><!-- /content -->
@@ -1130,7 +1418,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <div class="form-field">
         <label class="form-label" data-i18n="type">Type</label>
         <select class="form-select" id="f-asset-type">
-          <option>Desktop</option><option>Laptop</option>
+          <option>Desktop</option><option>Laptop</option><option>Monitor</option>
         </select>
       </div>
       <div class="form-field">
@@ -1144,7 +1432,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <label class="form-label" data-i18n="model">Model</label>
         <select class="form-select" id="f-asset-model">
           <option value="">— Select Model —</option>
-          <option>Dell Precision T3680</option><option>Dell OptiPlex 7040 (High)</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
+          <option>Dell Precision T3680</option><option>Dell OptiPlex 7040 (High)</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>Dell UltraSharp 24-inch Monitor - U2422H</option><option>Dell UltraSharp 24-inch Monitor - U2419H</option><option>Dell UltraSharp 24-inch Monitor - U2417H</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
         </select>
       </div>
       <div class="form-field">
@@ -1166,14 +1454,12 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <input class="form-input" id="f-asset-user" placeholder="Employee name"/>
       </div>
       <div class="form-field">
-        <label class="form-label">Department</label>
-        <select class="form-select" id="f-asset-dept">
-          <option>Product</option><option>Marketing</option><option>Esports</option><option>Platform</option><option>Creative</option><option>Strategy &amp; Operations</option><option>Game Dev (Craftland)</option><option>Game Dev (In-house)</option><option>Development</option><option>Admin &amp; Support</option><option>HR</option><option>Legal</option><option>Finance</option><option>IT</option><option>Operations</option><option>Additional / Backfill</option>
-        </select>
-      </div>
-      <div class="form-field">
         <label class="form-label" data-i18n="location">Location</label>
-        <input class="form-input" id="f-asset-location" placeholder="e.g. HQ Floor 3"/>
+        <select class="form-select" id="f-asset-location">
+          <option value="">— Select Location —</option>
+          <option>Capital Place</option>
+          <option>Saigon Center</option>
+        </select>
       </div>
       <div class="form-field">
         <label class="form-label" data-i18n="warranty">Warranty Expiry</label>
@@ -1258,12 +1544,23 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </select>
       </div>
       <div class="form-field">
+        <label class="form-label">Type</label>
+        <select class="form-select" id="f-emp-type">
+          <option value="">— None —</option>
+          <option>New Hire</option><option>Replace</option><option>Part Time</option>
+        </select>
+      </div>
+      <div class="form-field">
         <label class="form-label">Location</label>
         <input class="form-input" id="f-emp-location" placeholder="e.g. Singapore"/>
       </div>
       <div class="form-field">
         <label class="form-label">Manager</label>
         <input class="form-input" id="f-emp-manager" placeholder="Manager name"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Date Onboard</label>
+        <input class="form-input" type="date" id="f-emp-joindate"/>
       </div>
       <div class="form-field">
         <label class="form-label">Status</label>
@@ -1312,6 +1609,10 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </select>
       </div>
       <div class="form-field">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="f-hire-email" placeholder="hire@corp.com"/>
+      </div>
+      <div class="form-field">
         <label class="form-label">Join Date</label>
         <input class="form-input" type="date" id="f-hire-joindate"/>
       </div>
@@ -1327,6 +1628,59 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="form-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-hire')">Cancel</button>
       <button class="btn btn-primary" onclick="saveHire()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Offboard Modal -->
+<div class="modal-overlay" id="modal-offboard">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title" style="color:var(--amber);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:8px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Offboard Employee
+      </div>
+      <span class="modal-close" onclick="closeModal('modal-offboard')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <input type="hidden" id="f-offboard-id"/>
+    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:18px;">
+      <div id="f-offboard-name" style="font-size:15px;font-weight:700;color:var(--text);"></div>
+      <div id="f-offboard-meta" style="font-size:12px;color:var(--text2);margin-top:3px;"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-field full">
+        <label class="form-label">Offboard Date <span style="color:var(--rose)">*</span></label>
+        <input class="form-input" type="date" id="f-offboard-date"/>
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Reason for Leaving <span style="color:var(--rose)">*</span></label>
+        <select class="form-select" id="f-offboard-reason">
+          <option value="">— Select reason —</option>
+          <option>Resignation</option>
+          <option>End of Contract</option>
+          <option>Redundancy</option>
+          <option>Termination</option>
+          <option>Retirement</option>
+          <option>Transfer</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label class="form-label">Notes</label>
+        <input class="form-input" id="f-offboard-notes" placeholder="Additional notes (optional)"/>
+      </div>
+      <div class="form-field full">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text2);">
+          <input type="checkbox" id="f-offboard-unassign" checked style="accent-color:var(--accent);width:15px;height:15px;"/>
+          Automatically unassign all IT assets from this employee
+        </label>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-offboard')">Cancel</button>
+      <button class="btn btn-sm" onclick="confirmOffboard()" style="background:var(--amber);color:#fff;">Confirm Offboard</button>
     </div>
   </div>
 </div>
@@ -1525,6 +1879,8 @@ const TRANSLATIONS = {
     csvimport: 'CSV Import',
     reports: 'Reports',
     users: 'User Management',
+    audit: 'Quarterly Audit',
+    offboarded: 'Offboarded Staff',
     overview: 'Overview',
     management: 'Management',
     data: 'Data',
@@ -1557,15 +1913,17 @@ const TRANSLATIONS = {
     warranty_expire_alert: 'assets have warranties expiring soon',
     unassigned_alert: 'assets are available but unassigned',
     imminent_hire_alert: 'imminent new hire(s) lack IT readiness',
-    devices_borrowed: 'devices are currently on loan',
+    devices_borrowed: 'devices are currently assigned',
     low_stock_model_alert: 'Models with fewer than 3 units',
     cancel: 'Cancel', save: 'Save Changes',
     type: 'Type', brand: 'Brand', model: 'Model', role: 'Role', dept: 'Department', serial: 'Serial Number', status: 'Status', assigned_to: 'Assigned To', location: 'Location', warranty: 'Warranty Expiry',
     name: 'Full Name', email: 'Email Address', dept: 'Department', role: 'Job Role', manager: 'Direct Manager',
-    in_use_label: 'In Use', available_label: 'Available', on_loan_label: 'On Loan',
+    in_use_label: 'In Use', available_label: 'Available', on_loan_label: 'Assigned',
     asset_status_summary: 'Asset Status Summary'
   },
   vi: {
+    audit: 'Kiểm toán quý',
+    offboarded: 'Nhân viên đã nghỉ',
     dashboard: 'Bảng điều khiển',
     assets: 'Tài sản IT',
     headcount: 'Nhân sự',
@@ -1605,12 +1963,12 @@ const TRANSLATIONS = {
     warranty_expire_alert: 'tài sản sắp hết hạn bảo hành',
     unassigned_alert: 'tài sản sẵn có chưa cấp phát',
     imminent_hire_alert: 'nhân viên sắp vào chưa chuẩn bị IT',
-    devices_borrowed: 'thiết bị đang cho mượn',
+    devices_borrowed: 'thiết bị đang được gán',
     low_stock_model_alert: 'Model còn dưới 3 chiếc',
     cancel: 'Hủy bỏ', save: 'Lưu thay đổi',
     type: 'Loại thiết bị', brand: 'Hãng sản xuất', model: 'Dòng máy (Model)', role: 'Chức danh', dept: 'Phòng ban', serial: 'Số Serial', status: 'Trạng thái', assigned_to: 'Cấp phát cho', location: 'Vị trí', warranty: 'Hạn bảo hành',
     name: 'Họ và tên', email: 'Địa chỉ Email', dept: 'Phòng ban', role: 'Chức danh', manager: 'Quản lý trực tiếp',
-    in_use_label: 'Đang sử dụng', available_label: 'Sẵn có', on_loan_label: 'Đang cho mượn',
+    in_use_label: 'Đang sử dụng', available_label: 'Sẵn có', on_loan_label: 'Đã gán',
     asset_status_summary: 'Tổng hợp trạng thái tài sản'
   }
 };
@@ -1663,7 +2021,7 @@ function applyLanguage() {
 const navigateMap = {
   'dashboard': 'dashboard', 'assets': 'assets', 'headcount': 'headcount',
   'newhires': 'newhires', 'onboarding': 'onboarding',
-  'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports'
+  'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports', 'audit': 'audit', 'offboarded': 'offboarded'
 };
 
 let pendingCSVData = null;
@@ -1707,6 +2065,8 @@ const pageConfig = {
   csvimport:   { title:'CSV Import / Export', sub:'Bulk import data or download CSV templates', action:'', actionFn:''},
   reports:     { title:'Reports & Analytics', sub:'Distribution charts and insights across all dimensions', action:'', actionFn:''},
   users:       { title:'User Management', sub:'Manage user accounts and permissions', action:'', actionFn:''},
+  audit:       { title:'Quarterly Audit', sub:'Reconcile headcount and IT asset allocation by quarter', action:'', actionFn:''},
+  offboarded:  { title:'Offboarded Staff', sub:'History of employees who have left the organisation', action:'', actionFn:''},
 };
 
 function navigate(pageId) {
@@ -1714,6 +2074,13 @@ function navigate(pageId) {
   const dict = TRANSLATIONS[currentLang];
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  // Clear asset sub-item highlight when navigating away from assets
+  if (pageId !== 'assets') {
+    ['laptop','desktop','monitor'].forEach(t => {
+      const el = document.getElementById('nav-assets-' + t);
+      if (el) el.classList.remove('active');
+    });
+  }
   
   const navEl = document.getElementById(`nav-${pageId}`);
   if (navEl) navEl.classList.add('active');
@@ -1740,10 +2107,23 @@ function navigate(pageId) {
   if (pageId === 'onboarding') renderOnboarding();
   if (pageId === 'reports')    renderReports();
   if (pageId === 'users')      renderUsers();
+  if (pageId === 'audit')      { if (!window._auditInitialized) { setDefaultAuditQuarter(); window._auditInitialized = true; } renderQuarterlyAudit(); }
+  if (pageId === 'offboarded') renderOffboarded();
 
   applyRoleUI();
 }
 
+
+function navigateAssets(type) {
+  navigate('assets');
+  const sel = document.getElementById('asset-filter-type');
+  if (sel) { sel.value = type; renderAssets(); }
+  // Update sub-item active state
+  ['Laptop','Desktop','Monitor'].forEach(t => {
+    const el = document.getElementById('nav-assets-' + t.toLowerCase());
+    if (el) el.classList.toggle('active', t === type && type !== '');
+  });
+}
 
 function openTopbarAction() {
   const active = document.querySelector('.nav-item.active');
@@ -1814,8 +2194,8 @@ function renderDashboard() {
   const inUseA = assets.filter(a => a.status === 'In Use').length;
   const availA = assets.filter(a => a.status === 'Available').length;
   const maintA = assets.filter(a => a.status === 'Maintenance').length;
-  const onLoanA = assets.filter(a => a.status === 'In Use' && a.user).length;
-  const selfUseA = inUseA - onLoanA; // In Use but not on loan (self use)
+  // Assigned = In Use assets whose user is in headcount
+  const onLoanA = assets.filter(a => a.status === 'In Use' && a.user && employees.some(e => e.name === a.user)).length;
 
   const statusBar = document.getElementById('dash-status-bar') || (() => {
     const div = document.createElement('div');
@@ -1825,10 +2205,10 @@ function renderDashboard() {
   })();
 
   const enLabel = currentLang === 'en';
-  const inUseLbl    = enLabel ? 'In Use' : 'Đang sử dụng';
-  const availLbl    = enLabel ? 'Available' : 'Sẵn có';
-  const maintLbl    = enLabel ? 'Maintenance' : 'Bảo trì';
-  const onLoanLbl   = enLabel ? 'On Loan' : 'Cho mượn';
+  const inUseLbl  = enLabel ? 'In Use' : 'Đang sử dụng';
+  const availLbl  = enLabel ? 'Available' : 'Sẵn có';
+  const maintLbl  = enLabel ? 'Maintenance' : 'Bảo trì';
+  const assignedLbl = enLabel ? 'Assigned' : 'Đã gán';
 
   statusBar.innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;flex-wrap:wrap;">
@@ -1859,8 +2239,9 @@ function renderDashboard() {
         <div style="width:1px;height:24px;background:var(--border);"></div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="width:10px;height:10px;border-radius:50%;background:var(--purple);flex-shrink:0;"></span>
-          <span style="font-size:13px;color:var(--text2);">${onLoanLbl}</span>
+          <span style="font-size:13px;color:var(--text2);">${assignedLbl}</span>
           <span style="font-size:16px;font-weight:800;color:var(--purple);">${onLoanA}</span>
+          <span style="font-size:11px;color:var(--text3);">/${inUseA}</span>
         </div>
         <div style="margin-left:auto;font-size:12px;color:var(--text3);">Total: <b style="color:var(--text);font-weight:700;">${totalA}</b> devices</div>
       </div>
@@ -1923,12 +2304,19 @@ function renderDashboard() {
     }
   });
 
-  // New Hires by Month chart
+  // Headcount by Month chart (new hires + employees with joinDate)
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const monthCounts = Array(12).fill(0);
   newHires.forEach(h => {
     if (!h.joinDate) return;
     const m = new Date(h.joinDate);
+    if (!isNaN(m) && m.getFullYear() === 2026) {
+      monthCounts[m.getMonth()]++;
+    }
+  });
+  employees.forEach(e => {
+    if (!e.joinDate) return;
+    const m = new Date(e.joinDate);
     if (!isNaN(m) && m.getFullYear() === 2026) {
       monthCounts[m.getMonth()]++;
     }
@@ -1941,7 +2329,7 @@ function renderDashboard() {
     data: {
       labels: monthLabels,
       datasets: [{
-        label: 'New Hires',
+        label: 'Headcount',
         data: monthCounts,
         backgroundColor: '#14b8a6',
         borderRadius: 4,
@@ -1958,34 +2346,89 @@ function renderDashboard() {
     }
   });
 
-  // Recent assets
-  const recentEl = document.getElementById('dash-recent-assets');
-  recentEl.innerHTML = assets.slice(-5).reverse().map(a => `
-    <div class="mini-item">
-      <div class="mini-icon" style="background:rgba(99,102,241,.15);">${assetTypeIcon(a.type)}</div>
-      <div class="mini-content">
-        <div class="mini-title">${a.brand} ${a.model}</div>
-        <div class="mini-sub">${a.id} · ${a.dept}</div>
-      </div>
-      <div class="mini-right">${statusBadge(a.status)}</div>
+  // ── New Hire by Type chart ───────────────────────────────────────────
+  const allTypeCounts = {};
+  newHires.forEach(h => { const t = h.type || 'New Hire'; allTypeCounts[t] = (allTypeCounts[t]||0)+1; });
+  employees.forEach(e => { const t = e.type || 'New Hire'; if (t) allTypeCounts[t] = (allTypeCounts[t]||0)+1; });
+  const typeLabels = Object.keys(allTypeCounts);
+  const typeData = typeLabels.map(k => allTypeCounts[k]);
+  const typeColors = { 'New Hire': '#14b8a6', 'Replace': '#f59e0b', 'Part Time': '#818cf8' };
+  const typeBgColors = typeLabels.map(k => typeColors[k] || '#6366f1');
+
+  // Stat cards for hire types
+  const hireTypeStatsEl = document.getElementById('dash-hire-type-stats');
+  hireTypeStatsEl.innerHTML = typeLabels.map(k => `
+    <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;color:${typeColors[k]||'var(--accent2)'};">${allTypeCounts[k]}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;">${k}</div>
     </div>
   `).join('');
+
+  const ctx4 = document.getElementById('chart-newhires-type').getContext('2d');
+  if (window.chartNewHiresType) window.chartNewHiresType.destroy();
+  window.chartNewHiresType = new Chart(ctx4, {
+    type: 'doughnut',
+    data: { labels: typeLabels, datasets: [{ data: typeData, backgroundColor: typeBgColors, borderColor: '#12152a', borderWidth: 3 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, padding: 12, boxWidth: 12 }
+        }
+      }
+    }
+  });
 
   // Pending hires
   const pendingEl = document.getElementById('dash-pending-hires');
   const ph = newHires.filter(h=>h.itStatus!=='Completed');
+  const typeBadgeColors = { 'New Hire': 'teal', 'Replace': 'amber', 'Part Time': 'sky' };
   pendingEl.innerHTML = ph.length ? ph.map(h => `
     <div class="mini-item">
       <div class="mini-icon" style="background:rgba(20,184,166,.15);">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </div>
       <div class="mini-content">
-        <div class="mini-title">${h.name}</div>
-        <div class="mini-sub">Joins ${formatDate(h.joinDate)} · ${h.dept}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+          <div style="font-weight:600;color:var(--text);font-size:13px;">${h.name}</div>
+          ${h.type ? `<span class="badge ${typeBadgeColors[h.type]||'teal'}">${h.type}</span>` : ''}
+        </div>
+        <div class="mini-sub">Onboard: ${formatDate(h.joinDate)||'TBD'} · ${h.dept} · ${h.role||''}</div>
       </div>
       <div class="mini-right">${itStatusBadge(h.itStatus)}</div>
     </div>
   `).join('') : '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;margin-right:6px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>All hires completed!</div>';
+
+  // Upcoming / Recent Headcount by Onboard Date
+  const sortedEmp = [...employees]
+    .filter(e => e.joinDate)
+    .sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate))
+    .slice(0, 8);
+  const upcomingEl = document.getElementById('dash-upcoming-hires');
+  if (sortedEmp.length === 0) {
+    upcomingEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text3);font-size:13px;">No upcoming onboardings</div>';
+  } else {
+    upcomingEl.innerHTML = sortedEmp.map(e => {
+      const empTypeColors = { 'New Hire': 'teal', 'Replace': 'amber', 'Part Time': 'sky' };
+      return `
+        <div class="mini-item">
+          <div class="mini-icon" style="background:rgba(99,102,241,.15);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="mini-content">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+              <div style="font-weight:600;color:var(--text);font-size:13px;">${e.name}</div>
+              ${e.type ? `<span class="badge ${empTypeColors[e.type]||'teal'}">${e.type}</span>` : ''}
+            </div>
+            <div class="mini-sub">Onboard: ${formatDate(e.joinDate)||'—'} · ${e.dept} · ${e.role||''}</div>
+          </div>
+          <div class="mini-right">${empStatusBadge(e.status)}</div>
+        </div>
+      `;
+    }).join('');
+  }
 
   // Detailed Inventory by Model Table
   const modelInventory = {};
@@ -2088,7 +2531,7 @@ function renderAlerts() {
     `);
   }
 
-  // 4. Devices On Loan (In Use with a user assigned)
+  // 4. Devices Assigned (In Use with a headcount employee)
   const onLoan = assets.filter(a => a.status === 'In Use' && a.user);
   if (onLoan.length > 0) {
     alerts.push(`
@@ -2097,7 +2540,7 @@ function renderAlerts() {
         <div class="alert-content">
           <div>
             <div class="alert-title">${onLoan.length} ${dict.devices_borrowed}</div>
-            <div class="alert-sub">${currentLang==='en'?'Devices deployed to users.':'Thiết bị đang được sử dụng.'}</div>
+            <div class="alert-sub">${currentLang==='en'?'Devices deployed to headcount staff.':'Thiết bị đang được gán cho nhân viên.'}</div>
           </div>
           <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-filter-status').value='In Use'; renderAssets();">${currentLang==='en'?'View':'Xem'}</div>
         </div>
@@ -2225,7 +2668,6 @@ function editAsset(id) {
   document.getElementById('f-asset-serial').value = a.serial || '';
   document.getElementById('f-asset-status').value = a.status || 'Available';
   document.getElementById('f-asset-user').value = a.user || '';
-  document.getElementById('f-asset-dept').value = a.dept || '';
   document.getElementById('f-asset-location').value = a.location || '';
   document.getElementById('f-asset-warranty').value = a.warranty || '';
   openModal('modal-asset');
@@ -2338,7 +2780,8 @@ function openAddAsset() {
   const nextId = 'AST-' + Date.now().toString().slice(-6);
   document.getElementById('f-asset-id').value = nextId;
   ['f-asset-type','f-asset-status'].forEach(id => document.getElementById(id).selectedIndex=0);
-  ['f-asset-brand','f-asset-model','f-asset-serial','f-asset-user','f-asset-location','f-asset-warranty'].forEach(id=>document.getElementById(id).value='');
+  ['f-asset-brand','f-asset-model','f-asset-serial','f-asset-user','f-asset-warranty'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-asset-location').selectedIndex = 0;
   openModal('modal-asset');
 }
 
@@ -2352,7 +2795,6 @@ async function saveAsset() {
     serial: document.getElementById('f-asset-serial').value,
     status: document.getElementById('f-asset-status').value,
     user: document.getElementById('f-asset-user').value,
-    dept: document.getElementById('f-asset-dept').value,
     location: document.getElementById('f-asset-location').value,
     warranty: document.getElementById('f-asset-warranty').value,
   };
@@ -2494,10 +2936,22 @@ function getFilteredEmployees() {
   const search = document.getElementById('hc-search').value.toLowerCase();
   const filterDept = document.getElementById('hc-filter-dept').value;
   const filterStatus = document.getElementById('hc-filter-status').value;
+  const filterMonth = document.getElementById('hc-filter-month')?.value || '';
+  const filterYear = document.getElementById('hc-filter-year')?.value || '';
   return employees.filter(e => {
+    let matchMonth = true;
+    if (filterMonth || filterYear) {
+      if (!e.joinDate) { matchMonth = false; }
+      else {
+        const d = new Date(e.joinDate);
+        if (filterMonth && (d.getMonth()+1) !== parseInt(filterMonth)) matchMonth = false;
+        if (filterYear && d.getFullYear() !== parseInt(filterYear)) matchMonth = false;
+      }
+    }
     return (!search || [e.name,e.role,e.email,e.dept,e.location,e.manager].join(' ').toLowerCase().includes(search)) &&
            (!filterDept || e.dept === filterDept) &&
-           (!filterStatus || e.status === filterStatus);
+           (!filterStatus || e.status === filterStatus) &&
+           matchMonth;
   });
 }
 
@@ -2645,13 +3099,42 @@ function renderHeadcount() {
   const search = document.getElementById('hc-search').value.toLowerCase();
   const filterDept = document.getElementById('hc-filter-dept').value;
   const filterStatus = document.getElementById('hc-filter-status').value;
+  const filterMonth = document.getElementById('hc-filter-month')?.value || '';
+  const filterYear = document.getElementById('hc-filter-year')?.value || '';
 
   let filtered = employees.filter(e => {
     const matchSearch = !search || [e.name,e.role,e.email,e.dept,e.location].join(' ').toLowerCase().includes(search);
     const matchDept = !filterDept || e.dept===filterDept;
     const matchStatus = !filterStatus || e.status===filterStatus;
-    return matchSearch && matchDept && matchStatus;
+    let matchMonth = true;
+    if (filterMonth || filterYear) {
+      if (!e.joinDate) { matchMonth = false; }
+      else {
+        const d = new Date(e.joinDate);
+        if (filterMonth && (d.getMonth()+1) !== parseInt(filterMonth)) matchMonth = false;
+        if (filterYear && d.getFullYear() !== parseInt(filterYear)) matchMonth = false;
+      }
+    }
+    return matchSearch && matchDept && matchStatus && matchMonth;
   });
+
+  // Month summary bar
+  const summaryEl = document.getElementById('hc-month-summary');
+  const labelEl = document.getElementById('hc-month-label');
+  const countEl = document.getElementById('hc-month-count');
+  if (summaryEl) {
+    if (filterMonth || filterYear) {
+      summaryEl.style.display = 'block';
+      const monthNames = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+      const parts = [];
+      if (filterMonth) parts.push(monthNames[parseInt(filterMonth)]);
+      if (filterYear) parts.push(filterYear);
+      if (labelEl) labelEl.textContent = parts.join(' ');
+      if (countEl) countEl.textContent = `— ${filtered.length} employee${filtered.length !== 1 ? 's' : ''} onboarded`;
+    } else {
+      summaryEl.style.display = 'none';
+    }
+  }
 
   const tbody = document.getElementById('headcount-tbody');
   const emptyEl = document.getElementById('headcount-empty');
@@ -2674,9 +3157,11 @@ function renderHeadcount() {
       </td>
       <td>${e.dept}</td>
       <td>${e.role}</td>
+      <td>${e.type ? `<span class="badge ${e.type==='New Hire'?'teal':e.type==='Replace'?'amber':'sky'}">${e.type}</span>` : '—'}</td>
       <td style="color:var(--accent2)">${e.email}</td>
       <td>${e.location}</td>
       <td>${e.manager}</td>
+      <td style="font-size:12px;color:var(--text3);">${e.joinDate ? formatDate(e.joinDate) : '—'}</td>
       <td>${empStatusBadge(e.status)}</td>
       <td><span style="font-weight:600;color:${assetCount?'var(--accent2)':'var(--text3)'}">${assetCount} asset${assetCount!==1?'s':''}</span></td>
       <td>
@@ -2684,6 +3169,10 @@ function renderHeadcount() {
           <button class="btn btn-outline btn-sm" onclick="editEmployee('${e.id}')" title="Edit">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
+          <button class="btn btn-sm" onclick="openOffboardModal('${e.id}')" title="Offboard" style="background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.3);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Offboard
+          </button>
             <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${e.id}')" title="Delete">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
@@ -2696,7 +3185,7 @@ function renderHeadcount() {
 function openAddEmployee() {
   editingEmployeeId = null;
   document.getElementById('modal-emp-title').textContent = 'Add Employee';
-  ['f-emp-name','f-emp-email','f-emp-role','f-emp-location','f-emp-manager'].forEach(id=>document.getElementById(id).value='');
+  ['f-emp-name','f-emp-email','f-emp-role','f-emp-location','f-emp-manager','f-emp-joindate','f-emp-type'].forEach(id=>document.getElementById(id).value='');
   openModal('modal-employee');
 }
 
@@ -2712,6 +3201,8 @@ function editEmployee(id) {
   document.getElementById('f-emp-location').value = e.location;
   document.getElementById('f-emp-manager').value = e.manager;
   document.getElementById('f-emp-status').value = e.status;
+  document.getElementById('f-emp-joindate').value = e.joinDate || '';
+  document.getElementById('f-emp-type').value = e.type || '';
   openModal('modal-employee');
 }
 
@@ -2732,12 +3223,15 @@ async function saveEmployee() {
   if (!name) { showToast('Name is required.','error'); return; }
   const obj = {
     id: editingEmployeeId || `EMP-${Date.now().toString().slice(-6)}`,
-    name, email: document.getElementById('f-emp-email').value.trim(),
+    name: name,
     dept: document.getElementById('f-emp-dept').value,
     role: document.getElementById('f-emp-role').value.trim(),
+    type: document.getElementById('f-emp-type').value,
+    email: document.getElementById('f-emp-email').value.trim(),
     location: document.getElementById('f-emp-location').value.trim(),
     manager: document.getElementById('f-emp-manager').value.trim(),
     status: document.getElementById('f-emp-status').value,
+    joinDate: document.getElementById('f-emp-joindate').value,
   };
   
   try {
@@ -2829,10 +3323,12 @@ async function updateHireStatus(id, status) {
         name: h.name,
         dept: h.dept,
         role: h.role || '',
-        email: '',
+        type: h.type || '',
+        email: h.email || '',
         location: '',
         manager: h.manager || '',
-        status: 'Active'
+        status: 'Active',
+        joinDate: h.joinDate || ''
       };
       await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
       await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
@@ -2862,7 +3358,7 @@ async function deleteHire(id) {
 }
 
 function openAddHire() {
-  ['f-hire-name','f-hire-manager','f-hire-equipment'].forEach(id=>document.getElementById(id).value='');
+  ['f-hire-name','f-hire-manager','f-hire-equipment','f-hire-email'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-hire-joindate').value = '';
   document.getElementById('f-hire-dept').selectedIndex = 0;
   document.getElementById('f-hire-type').selectedIndex = 0;
@@ -2877,6 +3373,7 @@ async function saveHire() {
     name, dept: document.getElementById('f-hire-dept').value,
     type: document.getElementById('f-hire-type').value,
     role: document.getElementById('f-hire-role').value.trim(),
+    email: document.getElementById('f-hire-email').value.trim(),
     joinDate: document.getElementById('f-hire-joindate').value,
     manager: document.getElementById('f-hire-manager').value.trim(),
     equipment: document.getElementById('f-hire-equipment').value.trim(),
@@ -2999,10 +3496,12 @@ async function setStage(id, stageIndex) {
         name: h.name,
         dept: h.dept,
         role: h.role || '',
-        email: '',
+        type: h.type || '',
+        email: h.email || '',
         location: '',
         manager: h.manager || '',
-        status: 'Active'
+        status: 'Active',
+        joinDate: h.joinDate || ''
       };
       await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
       await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
@@ -3330,17 +3829,17 @@ async function confirmImport() {
 
 function exportCSV(type) {
   let headers, rows, filename;
-  if (type==='assets') {
+  if (type==='assets' || type==='reports-assets') {
     headers = ['Asset ID','Type','Brand','Model','Serial','Assigned To','Department','Location','Status','Warranty'];
     rows = assets.map(a=>[a.id,a.type,a.brand,a.model,a.serial,a.user,a.dept,a.location,a.status,a.warranty]);
-    filename = 'assets_export.csv';
-  } else if (type==='headcount') {
-    headers = ['Employee ID','Name','Department','Role','Email','Location','Manager','Status'];
-    rows = employees.map(e=>[e.id,e.name,e.dept,e.role,e.email,e.location,e.manager,e.status]);
-    filename = 'headcount_export.csv';
+    filename = type==='reports-assets' ? 'assets_report.csv' : 'assets_export.csv';
+  } else if (type==='headcount' || type==='reports-headcount') {
+    headers = ['Employee ID','Name','Department','Role','Type','Email','Location','Manager','Join Date','Status'];
+    rows = employees.map(e=>[e.id,e.name,e.dept,e.role,e.type||'',e.email,e.location,e.manager,e.joinDate||'',e.status]);
+    filename = type==='reports-headcount' ? 'headcount_report.csv' : 'headcount_export.csv';
   } else if (type==='newhires') {
-    headers = ['ID','Name','Department','Role','Join Date','Manager','Equipment Needed','IT Status'];
-    rows = newHires.map(h=>[h.id,h.name,h.dept,h.role,h.joinDate,h.manager,h.equipment,h.itStatus]);
+    headers = ['ID','Name','Department','Type','Role','Email','Join Date','Manager','Equipment Needed','IT Status'];
+    rows = newHires.map(h=>[h.id,h.name,h.dept,h.type||'New Hire',h.role,h.email||'',h.joinDate,h.manager,h.equipment,h.itStatus]);
     filename = 'newhires_export.csv';
   }
   const csv = [headers, ...rows].map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -3630,6 +4129,490 @@ async function deleteUser(id) {
   } catch(e) { showToast('Error deleting user', 'error'); }
 }
 
+
+// ===================================================
+//   OFFBOARDING
+// ===================================================
+function openOffboardModal(id) {
+  const e = employees.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('f-offboard-id').value = id;
+  document.getElementById('f-offboard-name').textContent = e.name;
+  document.getElementById('f-offboard-meta').textContent = `${e.role} · ${e.dept} · Joined: ${formatDate(e.joinDate) || '—'}`;
+  document.getElementById('f-offboard-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('f-offboard-reason').value = '';
+  document.getElementById('f-offboard-notes').value = '';
+  document.getElementById('f-offboard-unassign').checked = true;
+  openModal('modal-offboard');
+}
+
+async function confirmOffboard() {
+  const id = document.getElementById('f-offboard-id').value;
+  const offboardDate = document.getElementById('f-offboard-date').value;
+  const reason = document.getElementById('f-offboard-reason').value;
+  const notes = document.getElementById('f-offboard-notes').value.trim();
+  const unassign = document.getElementById('f-offboard-unassign').checked;
+
+  if (!offboardDate) { showToast('Please select offboard date', 'error'); return; }
+  if (!reason) { showToast('Please select a reason', 'error'); return; }
+
+  const emp = employees.find(x => x.id === id);
+  if (!emp) return;
+
+  const updatedEmp = {
+    ...emp,
+    status: 'Inactive',
+    offboardDate,
+    offboardReason: notes ? `${reason} — ${notes}` : reason,
+  };
+
+  try {
+    const res = await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(updatedEmp) });
+    if (!res.ok) throw new Error('API error');
+
+    // Unassign all assets
+    if (unassign) {
+      const assignedAssets = assets.filter(a => a.user === emp.name);
+      for (const a of assignedAssets) {
+        const updated = { ...a, user: '', status: 'Available' };
+        await authFetch('/api/assets', { method: 'POST', body: JSON.stringify(updated) });
+        const idx = assets.findIndex(x => x.id === a.id);
+        if (idx >= 0) assets[idx] = updated;
+      }
+      if (assignedAssets.length > 0) showToast(`${assignedAssets.length} asset(s) unassigned`, 'info');
+    }
+
+    const idx = employees.findIndex(x => x.id === id);
+    if (idx >= 0) employees[idx] = updatedEmp;
+
+    closeModal('modal-offboard');
+    renderHeadcount();
+    renderDashboard();
+    showToast(`${emp.name} has been offboarded`, 'success');
+  } catch(e) {
+    showToast('Failed to offboard employee', 'error');
+  }
+}
+
+function calcTenure(joinDate, offboardDate) {
+  if (!joinDate) return '—';
+  const start = new Date(joinDate);
+  const end = offboardDate ? new Date(offboardDate) : new Date();
+  if (isNaN(start)) return '—';
+  const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  if (months < 1) return '< 1 month';
+  if (months < 12) return `${months} month${months !== 1 ? 's' : ''}`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  return rem > 0 ? `${years}y ${rem}m` : `${years} year${years !== 1 ? 's' : ''}`;
+}
+
+function renderOffboarded() {
+  const search = (document.getElementById('ob-search')?.value || '').toLowerCase();
+  const filterReason = document.getElementById('ob-filter-reason')?.value || '';
+  const filterMonth = document.getElementById('ob-filter-month')?.value || '';
+  const filterYear = document.getElementById('ob-filter-year')?.value || '';
+
+  const offboarded = employees.filter(e => {
+    if (e.status !== 'Inactive') return false;
+    const matchSearch = !search || [e.name, e.dept, e.role, e.offboardReason || ''].join(' ').toLowerCase().includes(search);
+    const matchReason = !filterReason || (e.offboardReason || '').startsWith(filterReason);
+    let matchMonth = true;
+    if (filterMonth || filterYear) {
+      if (!e.offboardDate) { matchMonth = false; }
+      else {
+        const d = new Date(e.offboardDate);
+        if (filterMonth && (d.getMonth() + 1) !== parseInt(filterMonth)) matchMonth = false;
+        if (filterYear && d.getFullYear() !== parseInt(filterYear)) matchMonth = false;
+      }
+    }
+    return matchSearch && matchReason && matchMonth;
+  });
+
+  // Summary bar
+  const summaryEl = document.getElementById('ob-summary-bar');
+  const labelEl = document.getElementById('ob-summary-label');
+  if (filterMonth || filterYear || filterReason) {
+    const monthNames = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+    const parts = [];
+    if (filterMonth) parts.push(monthNames[parseInt(filterMonth)]);
+    if (filterYear) parts.push(filterYear);
+    if (filterReason) parts.push(`· ${filterReason}`);
+    if (summaryEl) summaryEl.style.display = 'block';
+    if (labelEl) labelEl.textContent = `${parts.join(' ')} — ${offboarded.length} employee${offboarded.length !== 1 ? 's' : ''}`;
+  } else {
+    if (summaryEl) summaryEl.style.display = 'none';
+  }
+
+  const tbody = document.getElementById('offboarded-tbody');
+  const emptyEl = document.getElementById('offboarded-empty');
+  if (!offboarded.length) {
+    if (tbody) tbody.innerHTML = '';
+    tbody?.closest('.table-wrap')?.style && (tbody.closest('.table-wrap').style.display = 'none');
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  tbody.closest('.table-wrap').style.display = '';
+
+  const reasonColors = {
+    'Resignation': 'amber', 'End of Contract': 'sky', 'Redundancy': 'rose',
+    'Termination': 'rose', 'Retirement': 'purple', 'Transfer': 'teal', 'Other': 'text3'
+  };
+
+  tbody.innerHTML = offboarded
+    .sort((a, b) => new Date(b.offboardDate || 0) - new Date(a.offboardDate || 0))
+    .map(e => {
+      const reasonKey = (e.offboardReason || '').split(' — ')[0];
+      const notes = (e.offboardReason || '').includes(' — ') ? e.offboardReason.split(' — ').slice(1).join(' — ') : '';
+      const badgeColor = reasonColors[reasonKey] || 'text3';
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--border2),var(--text3));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;opacity:.7;">${e.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+            <div>
+              <div style="font-weight:600;color:var(--text2);">${e.name}</div>
+              <div style="font-size:11px;color:var(--text3);">${e.id}</div>
+            </div>
+          </div>
+        </td>
+        <td>${e.dept}</td>
+        <td>${e.role}</td>
+        <td>${e.type ? `<span class="badge ${e.type==='New Hire'?'teal':e.type==='Replace'?'amber':'sky'}">${e.type}</span>` : '—'}</td>
+        <td style="color:var(--text3);font-size:12px;">${formatDate(e.joinDate)}</td>
+        <td style="font-weight:600;color:var(--rose);font-size:12px;">${formatDate(e.offboardDate)}</td>
+        <td style="font-size:12px;color:var(--text3);">${calcTenure(e.joinDate, e.offboardDate)}</td>
+        <td><span class="badge ${badgeColor}">${reasonKey || '—'}</span></td>
+        <td style="font-size:12px;color:var(--text3);max-width:160px;white-space:normal;line-height:1.4;">${notes || '—'}</td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="reinstateEmployee('${e.id}')" title="Reinstate" style="color:var(--green);border-color:rgba(34,197,94,.3);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Reinstate
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+}
+
+async function reinstateEmployee(id) {
+  const emp = employees.find(x => x.id === id);
+  if (!emp) return;
+  if (!confirm(`Reinstate ${emp.name}? Status will be set back to Active.`)) return;
+  const updated = { ...emp, status: 'Active', offboardDate: '', offboardReason: '' };
+  try {
+    const res = await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(updated) });
+    if (!res.ok) throw new Error();
+    const idx = employees.findIndex(x => x.id === id);
+    if (idx >= 0) employees[idx] = updated;
+    renderOffboarded();
+    renderDashboard();
+    showToast(`${emp.name} reinstated as Active`, 'success');
+  } catch { showToast('Failed to reinstate', 'error'); }
+}
+
+function exportOffboardedCSV() {
+  const offboarded = employees.filter(e => e.status === 'Inactive');
+  const headers = ['Employee ID','Name','Department','Role','Type','Email','Onboard Date','Offboard Date','Tenure','Reason','Manager'];
+  const rows = offboarded.map(e => [
+    e.id, e.name, e.dept, e.role, e.type||'', e.email||'',
+    e.joinDate||'', e.offboardDate||'', calcTenure(e.joinDate, e.offboardDate),
+    e.offboardReason||'', e.manager||''
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(c => `"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadCSVString(csv, 'offboarded_staff.csv');
+  showToast('Offboarded staff exported', 'success');
+}
+
+// ===================================================
+//   QUARTERLY AUDIT
+// ===================================================
+function getQuarterRange(quarter, year) {
+  const q = parseInt(quarter);
+  const y = parseInt(year);
+  const startMonth = (q - 1) * 3; // 0,3,6,9
+  const start = new Date(y, startMonth, 1);
+  const end = new Date(y, startMonth + 3, 0); // last day of last month
+  return { start, end };
+}
+
+function inQuarter(dateStr, quarter, year) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return false;
+  const { start, end } = getQuarterRange(quarter, year);
+  return d >= start && d <= end;
+}
+
+function setDefaultAuditQuarter() {
+  const now = new Date();
+  const m = now.getMonth();
+  const q = Math.floor(m / 3) + 1;
+  const sel = document.getElementById('audit-quarter');
+  if (sel) sel.value = String(q);
+  const ySel = document.getElementById('audit-year');
+  if (ySel) ySel.value = String(now.getFullYear());
+}
+
+function renderQuarterlyAudit() {
+  const quarter = document.getElementById('audit-quarter')?.value || '2';
+  const year = document.getElementById('audit-year')?.value || '2026';
+  const { start, end } = getQuarterRange(quarter, year);
+
+  // Section 1: Onboarded employees
+  const onboarded = employees.filter(e => inQuarter(e.joinDate, quarter, year));
+
+  // Section 2: Upcoming new hires (not completed)
+  const upcoming = newHires.filter(h => inQuarter(h.joinDate, quarter, year));
+
+  // Stat cards
+  const availAssets = assets.filter(a => a.status === 'Available');
+  const totalAssets = assets.length;
+  const inUseAssets = assets.filter(a => a.status === 'In Use').length;
+  const statsEl = document.getElementById('audit-stats');
+  const targetInput = document.getElementById('audit-hc-target');
+  const inputVal = targetInput ? parseInt(targetInput.value) : NaN;
+  const totalPlanned = (!isNaN(inputVal) && inputVal > 0) ? inputVal : (onboarded.length + upcoming.length);
+  const remaining = Math.max(0, totalPlanned - onboarded.length);
+
+  statsEl.innerHTML = `
+    <div class="stat-card purple">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="stat-value">${totalPlanned}</div>
+      <div class="stat-label">Total Planned Headcount</div>
+      <div class="stat-delta" style="color:var(--text3);">Q${quarter} ${year} target</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="stat-value">${onboarded.length}</div>
+      <div class="stat-label">Already Onboarded</div>
+      <div class="stat-delta delta-up">${totalPlanned > 0 ? ((onboarded.length / totalPlanned) * 100).toFixed(0) : 0}% of target</div>
+    </div>
+    <div class="stat-card ${remaining > 0 ? 'amber' : 'teal'}">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${remaining > 0 ? 'var(--amber)' : 'var(--teal)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
+      <div class="stat-value">${remaining}</div>
+      <div class="stat-label">Remaining to Hire</div>
+      <div class="stat-delta ${remaining > 0 ? 'delta-down' : 'delta-up'}">${remaining > 0 ? 'Still in pipeline' : 'All hired!'}</div>
+    </div>
+    <div class="stat-card indigo">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+      <div class="stat-value">${availAssets.length}</div>
+      <div class="stat-label">Available Assets</div>
+      <div class="stat-delta" style="color:var(--text3);">${totalAssets} total</div>
+    </div>
+    <div class="stat-card ${availAssets.length >= upcoming.length ? 'teal' : 'rose'}">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${availAssets.length >= upcoming.length ? 'var(--teal)' : 'var(--rose)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <div class="stat-value">${availAssets.length - upcoming.length}</div>
+      <div class="stat-label">Asset Buffer</div>
+      <div class="stat-delta ${availAssets.length >= upcoming.length ? 'delta-up' : 'delta-down'}">${availAssets.length >= upcoming.length ? 'Sufficient stock' : 'Shortfall — order needed'}</div>
+    </div>
+  `;
+
+  // Section 1 table
+  const ob1 = document.getElementById('audit-onboarded-count');
+  if (ob1) ob1.textContent = onboarded.length;
+  const tbody1 = document.getElementById('audit-onboarded-tbody');
+  const empty1 = document.getElementById('audit-onboarded-empty');
+  if (onboarded.length === 0) {
+    tbody1.innerHTML = '';
+    empty1.style.display = 'block';
+    tbody1.closest('.table-wrap').style.display = 'none';
+  } else {
+    empty1.style.display = 'none';
+    tbody1.closest('.table-wrap').style.display = '';
+    tbody1.innerHTML = onboarded.sort((a,b) => new Date(a.joinDate) - new Date(b.joinDate)).map(e => {
+      const assetCount = assets.filter(a => a.user === e.name).length;
+      const noAsset = assetCount === 0;
+      return `<tr style="${noAsset ? 'background:rgba(244,63,94,.05);' : ''}">
+        <td>
+          <div style="font-weight:600;color:var(--text);">${e.name}</div>
+          <div style="font-size:11px;color:var(--text3);">${e.id}</div>
+        </td>
+        <td>${e.dept}</td>
+        <td>${e.role}</td>
+        <td>${e.type ? `<span class="badge ${e.type==='New Hire'?'teal':e.type==='Replace'?'amber':'sky'}">${e.type}</span>` : '—'}</td>
+        <td>${formatDate(e.joinDate)}</td>
+        <td>${e.manager || '—'}</td>
+        <td>
+          <span style="font-weight:600;color:${assetCount > 0 ? 'var(--green)' : 'var(--rose)'};">
+            ${assetCount} asset${assetCount !== 1 ? 's' : ''}
+            ${noAsset ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-left:4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>' : ''}
+          </span>
+        </td>
+        <td>${empStatusBadge(e.status)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Section 2 table
+  const ob2 = document.getElementById('audit-upcoming-count');
+  if (ob2) ob2.textContent = upcoming.length;
+  const tbody2 = document.getElementById('audit-upcoming-tbody');
+  const empty2 = document.getElementById('audit-upcoming-empty');
+  if (upcoming.length === 0) {
+    tbody2.innerHTML = '';
+    empty2.style.display = 'block';
+    tbody2.closest('.table-wrap').style.display = 'none';
+  } else {
+    empty2.style.display = 'none';
+    tbody2.closest('.table-wrap').style.display = '';
+    const now = new Date();
+    tbody2.innerHTML = upcoming.sort((a,b) => new Date(a.joinDate) - new Date(b.joinDate)).map(h => {
+      const jDate = new Date(h.joinDate);
+      const diffDays = Math.ceil((jDate - now) / (1000 * 3600 * 24));
+      const isImminent = diffDays >= -1 && diffDays <= 7;
+      const isPast = diffDays < -1;
+      const daysLabel = isPast
+        ? `<span style="color:var(--rose);font-weight:600;">${Math.abs(diffDays)}d overdue</span>`
+        : isImminent
+          ? `<span style="color:var(--amber);font-weight:700;">${diffDays}d</span>`
+          : `<span style="color:var(--text3);">${diffDays}d</span>`;
+      return `<tr style="${isImminent ? 'background:rgba(245,158,11,.05);' : ''}${isPast ? 'background:rgba(244,63,94,.05);' : ''}">
+        <td>
+          <div style="font-weight:600;color:var(--text);">${h.name}</div>
+          <div style="font-size:11px;color:var(--text3);">${h.id}</div>
+        </td>
+        <td>${h.dept}</td>
+        <td>${h.role || '—'}</td>
+        <td>${h.type ? `<span class="badge ${h.type==='New Hire'?'teal':h.type==='Replace'?'amber':'sky'}">${h.type}</span>` : '—'}</td>
+        <td>${formatDate(h.joinDate)}</td>
+        <td>${h.manager || '—'}</td>
+        <td style="font-size:12px;color:var(--text2);">${h.equipment || '—'}</td>
+        <td>${itStatusBadge(h.itStatus)}</td>
+        <td style="text-align:center;">${daysLabel}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Section 3: Asset reconciliation
+  const summaryEl = document.getElementById('audit-asset-summary');
+  const shortfall = Math.max(0, upcoming.length - availAssets.length);
+  const surplus = Math.max(0, availAssets.length - upcoming.length);
+  summaryEl.innerHTML = `
+    <div style="flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Incoming Hires</div>
+      <div style="font-size:28px;font-weight:800;color:var(--amber);">${upcoming.length}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;">need equipment</div>
+    </div>
+    <div style="flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Available Assets</div>
+      <div style="font-size:28px;font-weight:800;color:var(--green);">${availAssets.length}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;">ready to assign</div>
+    </div>
+    <div style="flex:1;min-width:160px;background:var(--surface);border:1px solid ${shortfall > 0 ? 'rgba(244,63,94,.3)' : 'var(--border)'};border-radius:var(--radius-sm);padding:14px 16px;${shortfall > 0 ? 'background:rgba(244,63,94,.06);' : ''}">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">${shortfall > 0 ? 'Shortfall' : 'Surplus'}</div>
+      <div style="font-size:28px;font-weight:800;color:${shortfall > 0 ? 'var(--rose)' : 'var(--teal)'};">${shortfall > 0 ? shortfall : surplus}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;">${shortfall > 0 ? 'assets must be procured' : 'assets above demand'}</div>
+    </div>
+    <div style="flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;">
+      <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">In Use</div>
+      <div style="font-size:28px;font-weight:800;color:var(--purple);">${inUseAssets}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;">currently deployed</div>
+    </div>
+  `;
+
+  // Names of people onboarded this quarter (to find their assets)
+  const onboardedNames = new Set(onboarded.map(e => e.name));
+  // Names of upcoming hires (to estimate demand)
+  const upcomingNames = new Set(upcoming.map(h => h.name));
+
+  // Asset model breakdown
+  const modelMap = {};
+  assets.forEach(a => {
+    if (!a.model) return;
+    if (!modelMap[a.model]) modelMap[a.model] = { total: 0, avail: 0, inUse: 0, maint: 0, assignedThisQ: 0 };
+    modelMap[a.model].total++;
+    if (a.status === 'Available') modelMap[a.model].avail++;
+    else if (a.status === 'In Use') modelMap[a.model].inUse++;
+    else if (a.status === 'Maintenance') modelMap[a.model].maint++;
+    // Assigned to someone who onboarded this quarter
+    if (a.user && onboardedNames.has(a.user)) modelMap[a.model].assignedThisQ++;
+  });
+
+  const tbody3 = document.getElementById('audit-asset-tbody');
+  tbody3.innerHTML = Object.keys(modelMap).sort().map(m => {
+    const d = modelMap[m];
+    const afterHires = d.avail - upcoming.length; // rough buffer (avail minus total upcoming demand)
+    const remainColor = afterHires > 0 ? 'var(--green)' : afterHires === 0 ? 'var(--amber)' : 'var(--rose)';
+    return `<tr>
+      <td style="font-weight:600;color:var(--text);">${m}</td>
+      <td style="text-align:center;font-weight:700;color:var(--text);">${d.total}</td>
+      <td style="text-align:center;color:var(--teal);">${d.inUse}</td>
+      <td style="text-align:center;color:${d.assignedThisQ > 0 ? 'var(--purple)' : 'var(--text3)'}; font-weight:${d.assignedThisQ > 0 ? '700' : '400'};">${d.assignedThisQ}</td>
+      <td style="text-align:center;color:var(--green);font-weight:600;">${d.avail}</td>
+      <td style="text-align:center;color:var(--amber);">${d.maint}</td>
+      <td style="text-align:right;font-weight:700;color:${remainColor};">${d.avail > 0 ? d.avail : '—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px;">No assets recorded</td></tr>';
+
+  // Readiness check
+  const readinessEl = document.getElementById('audit-readiness');
+  if (upcoming.length === 0) {
+    readinessEl.innerHTML = '<div style="padding:16px;color:var(--text3);font-size:13px;">No upcoming hires — nothing to reconcile.</div>';
+  } else if (shortfall > 0) {
+    readinessEl.innerHTML = `
+      <div class="alert-card rose" style="margin-bottom:0;">
+        <div class="alert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title">Asset Shortfall: ${shortfall} unit${shortfall > 1 ? 's' : ''} needed</div>
+            <div class="alert-sub">You have ${availAssets.length} available asset${availAssets.length !== 1 ? 's' : ''} but ${upcoming.length} incoming hire${upcoming.length !== 1 ? 's' : ''} this quarter. Procure ${shortfall} more unit${shortfall > 1 ? 's' : ''} before the quarter ends.</div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    readinessEl.innerHTML = `
+      <div class="alert-card" style="border-left:4px solid var(--green);background:rgba(34,197,94,.04);margin-bottom:0;">
+        <div class="alert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="alert-content">
+          <div>
+            <div class="alert-title" style="color:var(--green);">Ready — sufficient assets available</div>
+            <div class="alert-sub">${availAssets.length} available asset${availAssets.length !== 1 ? 's' : ''} covers ${upcoming.length} incoming hire${upcoming.length !== 1 ? 's' : ''} with a surplus of ${surplus} unit${surplus !== 1 ? 's' : ''}.</div>
+          </div>
+        </div>
+      </div>`;
+  }
+}
+
+function exportAuditCSV() {
+  const quarter = document.getElementById('audit-quarter')?.value || '2';
+  const year = document.getElementById('audit-year')?.value || '2026';
+  const qLabel = `Q${quarter}-${year}`;
+
+  const onboarded = employees.filter(e => inQuarter(e.joinDate, quarter, year));
+  const upcoming = newHires.filter(h => inQuarter(h.joinDate, quarter, year));
+
+  const lines = [];
+
+  lines.push([`QUARTERLY AUDIT REPORT — ${qLabel}`]);
+  lines.push([]);
+  lines.push(['=== SECTION 1: Onboarded Employees ===']);
+  lines.push(['Employee ID','Name','Department','Role','Type','Join Date','Manager','Assets Assigned','Status']);
+  onboarded.forEach(e => {
+    const ac = assets.filter(a => a.user === e.name).length;
+    lines.push([e.id, e.name, e.dept, e.role, e.type||'', e.joinDate||'', e.manager||'', ac, e.status]);
+  });
+
+  lines.push([]);
+  lines.push(['=== SECTION 2: Upcoming New Hires ===']);
+  lines.push(['ID','Name','Department','Role','Type','Join Date','Manager','Equipment Needed','IT Status']);
+  upcoming.forEach(h => {
+    lines.push([h.id, h.name, h.dept, h.role||'', h.type||'', h.joinDate||'', h.manager||'', h.equipment||'', h.itStatus]);
+  });
+
+  lines.push([]);
+  lines.push(['=== SECTION 3: Asset Summary ===']);
+  lines.push(['Metric','Value']);
+  const avail = assets.filter(a => a.status === 'Available').length;
+  lines.push(['Total Assets', assets.length]);
+  lines.push(['Available', avail]);
+  lines.push(['In Use', assets.filter(a => a.status === 'In Use').length]);
+  lines.push(['Incoming Hires This Quarter', upcoming.length]);
+  lines.push(['Asset Surplus/Shortfall', avail - upcoming.length]);
+
+  const csv = lines.map(r => r.map(c => `"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadCSVString(csv, `audit_${qLabel}.csv`);
+  showToast(`Audit report exported: audit_${qLabel}.csv`, 'success');
+}
 
 // ===================================================
 //   INIT

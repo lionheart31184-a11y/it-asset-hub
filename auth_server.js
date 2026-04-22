@@ -4,6 +4,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { db, initDB } = require('./database');
+const notif = require('./notifications');
 
 const app = express();
 app.use(cors());
@@ -192,11 +193,12 @@ app.get('/api/employees', requireAuth, (req, res) => {
 });
 
 app.post('/api/employees', requireAuth, requireRole('admin','hr'), (req, res) => {
-  const { id, name, dept, role, email, location, manager, status } = req.body;
-  const sql = `INSERT INTO employees VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
-    name=excluded.name, dept=excluded.dept, role=excluded.role, email=excluded.email,
-    location=excluded.location, manager=excluded.manager, status=excluded.status`;
-  db.run(sql, [id, name||'', dept||'', role||'', email||'', location||'', manager||'', status||''], function(err) {
+  const { id, name, dept, role, type, email, location, manager, status, joinDate, offboardDate, offboardReason } = req.body;
+  const sql = `INSERT INTO employees (id,name,dept,role,type,email,location,manager,status,joinDate,offboardDate,offboardReason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+    name=excluded.name, dept=excluded.dept, role=excluded.role, type=excluded.type, email=excluded.email,
+    location=excluded.location, manager=excluded.manager, status=excluded.status, joinDate=excluded.joinDate,
+    offboardDate=excluded.offboardDate, offboardReason=excluded.offboardReason`;
+  db.run(sql, [id, name||'', dept||'', role||'', type||'', email||'', location||'', manager||'', status||'', joinDate||'', offboardDate||'', offboardReason||''], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, id });
   });
@@ -218,11 +220,11 @@ app.get('/api/newhires', requireAuth, (req, res) => {
 });
 
 app.post('/api/newhires', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
-  const { id, name, dept, type, role, joinDate, manager, equipment, itStatus, pipelineStage } = req.body;
-  const sql = `INSERT INTO new_hires VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
-    name=excluded.name, dept=excluded.dept, type=excluded.type, role=excluded.role, joinDate=excluded.joinDate,
+  const { id, name, dept, type, role, email, joinDate, manager, equipment, itStatus, pipelineStage } = req.body;
+  const sql = `INSERT INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+    name=excluded.name, dept=excluded.dept, type=excluded.type, role=excluded.role, email=excluded.email, joinDate=excluded.joinDate,
     manager=excluded.manager, equipment=excluded.equipment, itStatus=excluded.itStatus, pipelineStage=excluded.pipelineStage`;
-  db.run(sql, [id||'', name||'', dept||'', type||'', role||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0], function(err) {
+  db.run(sql, [id||'', name||'', dept||'', type||'', role||'', email||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, id: id||'' });
   });
