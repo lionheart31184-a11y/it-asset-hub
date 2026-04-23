@@ -7,9 +7,8 @@ const db = new sqlite3.Database(dbPath);
 
 function initDB() {
   db.serialize(() => {
-    // 1. Assets (Reverted to stable 11-field structure)
-    db.run("DROP TABLE IF EXISTS assets");
-    db.run(`CREATE TABLE assets (
+    // 1. Assets
+    db.run(`CREATE TABLE IF NOT EXISTS assets (
       id TEXT PRIMARY KEY,
       tag TEXT,
       isNew TEXT,
@@ -44,8 +43,7 @@ function initDB() {
     )`);
 
     // 2. Employees
-    db.run(`DROP TABLE IF EXISTS employees`);
-    db.run(`CREATE TABLE employees (
+    db.run(`CREATE TABLE IF NOT EXISTS employees (
       id TEXT PRIMARY KEY,
       name TEXT,
       dept TEXT,
@@ -59,13 +57,11 @@ function initDB() {
       offboardDate TEXT,
       offboardReason TEXT
     )`);
-    // Migration for existing DBs
     db.run("ALTER TABLE employees ADD COLUMN offboardDate TEXT", () => {});
     db.run("ALTER TABLE employees ADD COLUMN offboardReason TEXT", () => {});
 
     // 3. New Hires
-    db.run(`DROP TABLE IF EXISTS new_hires`);
-    db.run(`CREATE TABLE new_hires (
+    db.run(`CREATE TABLE IF NOT EXISTS new_hires (
       id TEXT PRIMARY KEY,
       name TEXT,
       dept TEXT,
@@ -136,7 +132,7 @@ function seedDB() {
     {id:'DA-001',type:'Laptop',brand:'Dell',model:'XPS 15',spec:'Intel i7, 16GB, 512GB SSD',serial:'SN-DL001',user:'Sarah Chen',dept:'Engineering',location:'HQ F3',status:'In Use',warranty:'2026-08-15'},
     {id:'DA-002',type:'Laptop',brand:'Apple',model:'MacBook Pro 14',spec:'Apple M2 Pro, 16GB, 512GB SSD',serial:'SN-AP002',user:'Marcus Reid',dept:'Engineering',location:'HQ F3',status:'In Use',warranty:'2027-01-20'},
     {id:'DA-003',type:'Monitor',brand:'LG',model:'27UK850',spec:'27" 4K UHD IPS',serial:'SN-LG003',user:'',dept:'IT',location:'IT Storeroom',status:'Available',warranty:'2025-12-31'},
-    {id:'DA-004',type:'Desktop',brand:'HP',model:'EliteDesk 800',spec:'Intel i5, 8GB, 256GB SSD',serial:'SN-HP004',user:'Linda Torres',dept:'Finance',location:'HQ F2',status:'In Use',warranty:'2025-06-30'},
+    {id:'DA-004',type:'Desktop PC',brand:'HP',model:'EliteDesk 800',spec:'Intel i5, 8GB, 256GB SSD',serial:'SN-HP004',user:'Linda Torres',dept:'Finance',location:'HQ F2',status:'In Use',warranty:'2025-06-30'},
     {id:'DA-005',type:'Phone',brand:'Samsung',model:'Galaxy S24',spec:'Snapdragon 8 Gen 3, 12GB, 256GB',serial:'SN-SG005',user:'James Park',dept:'Sales',location:'Remote',status:'In Use',warranty:'2026-03-10'},
     {id:'DA-006',type:'Printer',brand:'Canon',model:'ImageRUNNER',spec:'Colour laser A3 MFP',serial:'SN-CN006',user:'',dept:'HR',location:'HQ F1',status:'Maintenance',warranty:'2024-12-31'},
     {id:'DA-007',type:'Network',brand:'Cisco',model:'Catalyst 9300',spec:'48-port PoE+, 25G uplink',serial:'SN-CS007',user:'',dept:'IT',location:'Server Room',status:'In Use',warranty:'2028-05-01'},

@@ -701,6 +701,9 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="nav-item active" data-page="dashboard" id="nav-dashboard" onclick="navigate('dashboard')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard
     </div>
+    <div class="nav-sub-item" id="nav-alerts" onclick="navigate('alerts')">
+      <span class="nav-sub-dot"></span> Alerts
+    </div>
     <div class="nav-section">Management</div>
     <div class="nav-item" data-page="assets" id="nav-assets" onclick="navigateAssets('')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span> Assets
@@ -708,8 +711,8 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="nav-sub-item" id="nav-assets-laptop" onclick="navigateAssets('Laptop')">
       <span class="nav-sub-dot"></span> Laptop
     </div>
-    <div class="nav-sub-item" id="nav-assets-desktop" onclick="navigateAssets('Desktop')">
-      <span class="nav-sub-dot"></span> Desktop
+    <div class="nav-sub-item" id="nav-assets-desktop" onclick="navigateAssets('Desktop PC')">
+      <span class="nav-sub-dot"></span> Desktop PC
     </div>
     <div class="nav-sub-item" id="nav-assets-monitor" onclick="navigateAssets('Monitor')">
       <span class="nav-sub-dot"></span> Monitor
@@ -776,17 +779,18 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
 
   <div class="content">
 
+    <!-- ============ ALERTS ============ -->
+    <section class="page" id="page-alerts">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span style="font-size:16px;font-weight:700;color:var(--text);">Actionable Alerts</span>
+      </div>
+      <div id="page-alerts-list"></div>
+    </section>
+
     <!-- ============ DASHBOARD ============ -->
     <section class="page active" id="page-dashboard">
-      <div id="dash-alerts-container" style="margin-bottom:20px; display:none;">
-        <div class="section-header" style="margin-bottom:12px;">
-          <div class="section-title" style="color:var(--rose);">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Actionable Alerts
-          </div>
-        </div>
-        <div id="dash-alerts"></div>
-      </div>
+      <div id="dash-alerts" style="display:none;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <div style="font-size:16px;font-weight:700;color:var(--text);">Dashboard</div>
         <div style="display:flex;gap:8px;">
@@ -916,7 +920,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </div>
         <select class="filter-select" id="asset-filter-type" onchange="renderAssets()">
           <option value="">All Types</option>
-          <option>Laptop</option><option>Desktop</option><option>Monitor</option>
+          <option>Laptop</option><option>Desktop PC</option><option>Monitor</option>
           <option>Phone</option><option>Tablet</option><option>Printer</option>
           <option>Network</option><option>Software</option><option>Other</option>
         </select>
@@ -1240,6 +1244,33 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
           <tbody id="users-tbody"></tbody>
         </table>
       </div>
+
+      <!-- SeaTalk Notification Config -->
+      <div class="card" style="margin-top:24px;">
+        <div class="section-header" style="margin-bottom:16px;">
+          <div>
+            <div class="section-title" style="font-size:14px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              SeaTalk Notifications
+            </div>
+            <div class="section-sub">Gửi thông báo qua SeaTalk Group Bot khi có New Hire mới hoặc hoàn thành onboarding</div>
+          </div>
+          <div id="seatalk-status-badge" style="font-size:12px;padding:4px 10px;border-radius:20px;background:rgba(100,116,139,.15);color:var(--text3);">Not configured</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+          <div style="flex:1;min-width:280px;">
+            <label class="form-label">SeaTalk Webhook URL</label>
+            <input class="form-input" id="seatalk-webhook-url" type="text" placeholder="https://openapi.seatalk.io/webhook/group/xxxxx" style="font-family:monospace;font-size:12px;"/>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="saveSeaTalkConfig()">Save</button>
+            <button class="btn btn-outline btn-sm" onclick="testSeaTalkConfig()" id="seatalk-test-btn" disabled>Test</button>
+          </div>
+        </div>
+        <div id="seatalk-hint" style="font-size:11px;color:var(--text3);margin-top:10px;">
+          Cách lấy Webhook URL: Mở SeaTalk Desktop → vào Group → Settings → System Accounts → Add System Account → Copy Webhook URL
+        </div>
+      </div>
     </section>
 
     <!-- ============ REPORTS ============ -->
@@ -1418,7 +1449,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <div class="form-field">
         <label class="form-label" data-i18n="type">Type</label>
         <select class="form-select" id="f-asset-type">
-          <option>Desktop</option><option>Laptop</option><option>Monitor</option>
+          <option>Desktop PC</option><option>Laptop</option><option>Monitor</option>
         </select>
       </div>
       <div class="form-field">
@@ -1432,7 +1463,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <label class="form-label" data-i18n="model">Model</label>
         <select class="form-select" id="f-asset-model">
           <option value="">— Select Model —</option>
-          <option>Dell Precision T3680</option><option>Dell OptiPlex 7040 (High)</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>Dell UltraSharp 24-inch Monitor - U2422H</option><option>Dell UltraSharp 24-inch Monitor - U2419H</option><option>Dell UltraSharp 24-inch Monitor - U2417H</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
+          <option>Dell Precision T3680</option><option>Dell Precision T3650</option><option>Dell Precision T3640</option><option>Dell Precision T3630</option><option>Dell OptiPlex 7090</option><option>Dell OptiPlex 7080</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>Dell UltraSharp 24-inch Monitor - U2422H</option><option>Dell UltraSharp 24-inch Monitor - U2419H</option><option>Dell UltraSharp 24-inch Monitor - U2417H</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
         </select>
       </div>
       <div class="form-field">
@@ -1540,7 +1571,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <div class="form-field">
         <label class="form-label">Role</label>
         <select class="form-select" id="f-emp-role">
-          <option>Producer</option><option>Product AOV/EE</option><option>Product FC/DF/New Games</option><option>Marketing AOV/EE</option><option>Marketing FC/DF/New Games</option><option>Marketing CDP</option><option>Marketing GDP (work with data analysis)</option><option>Esports AOV/EE</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+          <option>Producer</option><option>Product AOV/FF</option><option>Product FC/DF/New Games</option><option>Marketing AOV/FF</option><option>Marketing FC/DF/New Games</option><option>Marketing ODP</option><option>Marketing ODP (work with data analysis)</option><option>Esports AOV/FF</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
         </select>
       </div>
       <div class="form-field">
@@ -1580,11 +1611,12 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
 <div class="modal-overlay" id="modal-hire">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Add New Hire</div>
+      <div class="modal-title" id="modal-hire-title">Add New Hire</div>
       <span class="modal-close" onclick="closeModal('modal-hire')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </span>
     </div>
+    <input type="hidden" id="f-hire-id"/>
     <div class="form-grid">
       <div class="form-field">
         <label class="form-label">Full Name</label>
@@ -1605,7 +1637,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <div class="form-field">
         <label class="form-label">Role</label>
         <select class="form-select" id="f-hire-role">
-          <option>Producer</option><option>Product AOV/EE</option><option>Product FC/DF/New Games</option><option>Marketing AOV/EE</option><option>Marketing FC/DF/New Games</option><option>Marketing CDP</option><option>Marketing GDP (work with data analysis)</option><option>Esports AOV/EE</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+          <option>Producer</option><option>Product AOV/FF</option><option>Product FC/DF/New Games</option><option>Marketing AOV/FF</option><option>Marketing FC/DF/New Games</option><option>Marketing ODP</option><option>Marketing ODP (work with data analysis)</option><option>Esports AOV/FF</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
         </select>
       </div>
       <div class="form-field">
@@ -1890,6 +1922,7 @@ const TRANSLATIONS = {
     add_hire: '+ Add New Hire',
     export_csv: '⬇ Export CSV',
     actionable_alerts: 'Actionable Alerts',
+    alerts: 'Actionable Alerts',
     asset_by_model: 'Assets by Model',
     headcount_by_dept: 'Headcount by Department',
     newhires_by_month: 'New Hires by Month',
@@ -1940,6 +1973,7 @@ const TRANSLATIONS = {
     add_hire: '+ Thêm NV mới',
     export_csv: '⬇ Xuất file CSV',
     actionable_alerts: 'Cảnh báo quan trọng',
+    alerts: 'Cảnh báo quan trọng',
     asset_by_model: 'Tài sản theo Model',
     headcount_by_dept: 'Nhân sự theo phòng ban',
     newhires_by_month: 'Nhân sự mới theo tháng',
@@ -2021,7 +2055,8 @@ function applyLanguage() {
 const navigateMap = {
   'dashboard': 'dashboard', 'assets': 'assets', 'headcount': 'headcount',
   'newhires': 'newhires', 'onboarding': 'onboarding',
-  'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports', 'audit': 'audit', 'offboarded': 'offboarded'
+  'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports', 'audit': 'audit', 'offboarded': 'offboarded',
+  'alerts': 'alerts'
 };
 
 let pendingCSVData = null;
@@ -2067,6 +2102,7 @@ const pageConfig = {
   users:       { title:'User Management', sub:'Manage user accounts and permissions', action:'', actionFn:''},
   audit:       { title:'Quarterly Audit', sub:'Reconcile headcount and IT asset allocation by quarter', action:'', actionFn:''},
   offboarded:  { title:'Offboarded Staff', sub:'History of employees who have left the organisation', action:'', actionFn:''},
+  alerts:      { title:'Actionable Alerts', sub:'System alerts requiring attention', action:'', actionFn:''},
 };
 
 function navigate(pageId) {
@@ -2106,9 +2142,10 @@ function navigate(pageId) {
   if (pageId === 'newhires')   renderNewHires();
   if (pageId === 'onboarding') renderOnboarding();
   if (pageId === 'reports')    renderReports();
-  if (pageId === 'users')      renderUsers();
+  if (pageId === 'users')      { renderUsers(); loadSeaTalkConfig(); }
   if (pageId === 'audit')      { if (!window._auditInitialized) { setDefaultAuditQuarter(); window._auditInitialized = true; } renderQuarterlyAudit(); }
   if (pageId === 'offboarded') renderOffboarded();
+  if (pageId === 'alerts')     renderAlerts();
 
   applyRoleUI();
 }
@@ -2119,8 +2156,8 @@ function navigateAssets(type) {
   const sel = document.getElementById('asset-filter-type');
   if (sel) { sel.value = type; renderAssets(); }
   // Update sub-item active state
-  ['Laptop','Desktop','Monitor'].forEach(t => {
-    const el = document.getElementById('nav-assets-' + t.toLowerCase());
+  ['Laptop','Desktop PC','Monitor'].forEach(t => {
+    const el = document.getElementById('nav-assets-' + t.toLowerCase().replace(' ',''));
     if (el) el.classList.toggle('active', t === type && type !== '');
   });
 }
@@ -2161,7 +2198,7 @@ function renderDashboard() {
       <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="stat-value">${inUse}</div>
       <div class="stat-label">${dict.assets_in_use}</div>
-      <div class="stat-delta" style="color:var(--text3)">${((inUse/totalAssets)*100).toFixed(0)}% ${dict.utilization}</div>
+      <div class="stat-delta" style="color:var(--text3)">${totalAssets > 0 ? ((inUse/totalAssets)*100).toFixed(0) : 0}% ${dict.utilization}</div>
     </div>
     <div class="stat-card green">
       <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M12 21V3"/><path d="M2 11h20"/></svg></div>
@@ -2253,56 +2290,62 @@ function renderDashboard() {
   assets.forEach(a => { if (a.model) modelCounts[a.model] = (modelCounts[a.model]||0)+1; });
   const modelLabels = Object.keys(modelCounts).sort();
   const modelData = modelLabels.map(k=>modelCounts[k]);
-  const ctx1 = document.getElementById('chart-asset-type').getContext('2d');
-  if (chartAssetType) chartAssetType.destroy();
-  chartAssetType = new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: modelLabels,
-      datasets: [{
-        label: 'Assets',
-        data: modelData,
-        backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899','#64748b'],
-        borderRadius: 4,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}}, beginAtZero:true },
-        y: { grid:{display:false}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}, autoSkip:false} }
+  const ctx1El = document.getElementById('chart-asset-type');
+  if (ctx1El) {
+    const ctx1 = ctx1El.getContext('2d');
+    if (chartAssetType) chartAssetType.destroy();
+    chartAssetType = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: modelLabels,
+        datasets: [{
+          label: 'Assets',
+          data: modelData,
+          backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899','#64748b'],
+          borderRadius: 4,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}}, beginAtZero:true },
+          y: { grid:{display:false}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}, autoSkip:false} }
+        }
       }
-    }
-  });
+    });
+  }
 
   // Department chart
   const deptCounts = {};
   employees.forEach(e => deptCounts[e.dept] = (deptCounts[e.dept]||0)+1);
   const deptLabels = Object.keys(deptCounts);
   const deptData = deptLabels.map(k=>deptCounts[k]);
-  const ctx2 = document.getElementById('chart-dept').getContext('2d');
-  if (chartDept) chartDept.destroy();
-  chartDept = new Chart(ctx2, {
-    type: 'doughnut',
-    data: {
-      labels: deptLabels,
-      datasets: [{
-        data: deptData,
-        backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899'],
-        borderColor: '#12152a', borderWidth: 3,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position:'right', labels:{color:'#94a3b8',font:{family:'Inter',size:11},padding:12} }
+  const ctx2El = document.getElementById('chart-dept');
+  if (ctx2El) {
+    const ctx2 = ctx2El.getContext('2d');
+    if (chartDept) chartDept.destroy();
+    chartDept = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: deptLabels,
+        datasets: [{
+          data: deptData,
+          backgroundColor: ['#6366f1','#14b8a6','#f59e0b','#f43f5e','#22c55e','#38bdf8','#a855f7','#ec4899'],
+          borderColor: '#12152a', borderWidth: 3,
+        }]
       },
-      cutout: '60%',
-    }
-  });
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position:'right', labels:{color:'#94a3b8',font:{family:'Inter',size:11},padding:12} }
+        },
+        cutout: '60%',
+      }
+    });
+  }
 
   // Headcount by Month chart (new hires + employees with joinDate)
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -2322,7 +2365,8 @@ function renderDashboard() {
     }
   });
   const monthLabels = monthNames;
-  const ctx3 = document.getElementById('chart-newhires-month').getContext('2d');
+  const ctx3El = document.getElementById('chart-newhires-month');
+  if (ctx3El) { const ctx3 = ctx3El.getContext('2d');
   if (chartNewHiresMonth) chartNewHiresMonth.destroy();
   chartNewHiresMonth = new Chart(ctx3, {
     type: 'bar',
@@ -2344,7 +2388,7 @@ function renderDashboard() {
         y: { grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#94a3b8',font:{family:'Inter',size:11}}, beginAtZero: true }
       }
     }
-  });
+  }); } // end ctx3El
 
   // ── New Hire by Type chart ───────────────────────────────────────────
   const allTypeCounts = {};
@@ -2357,29 +2401,34 @@ function renderDashboard() {
 
   // Stat cards for hire types
   const hireTypeStatsEl = document.getElementById('dash-hire-type-stats');
-  hireTypeStatsEl.innerHTML = typeLabels.map(k => `
-    <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center;">
-      <div style="font-size:24px;font-weight:800;color:${typeColors[k]||'var(--accent2)'};">${allTypeCounts[k]}</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:3px;">${k}</div>
-    </div>
-  `).join('');
+  if (hireTypeStatsEl) {
+    hireTypeStatsEl.innerHTML = typeLabels.map(k => `
+      <div style="flex:1;min-width:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center;">
+        <div style="font-size:24px;font-weight:800;color:${typeColors[k]||'var(--accent2)'};">${allTypeCounts[k]}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:3px;">${k}</div>
+      </div>
+    `).join('');
+  }
 
-  const ctx4 = document.getElementById('chart-newhires-type').getContext('2d');
-  if (window.chartNewHiresType) window.chartNewHiresType.destroy();
-  window.chartNewHiresType = new Chart(ctx4, {
-    type: 'doughnut',
-    data: { labels: typeLabels, datasets: [{ data: typeData, backgroundColor: typeBgColors, borderColor: '#12152a', borderWidth: 3 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '60%',
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, padding: 12, boxWidth: 12 }
+  const ctx4El = document.getElementById('chart-newhires-type');
+  if (ctx4El) {
+    const ctx4 = ctx4El.getContext('2d');
+    if (window.chartNewHiresType) window.chartNewHiresType.destroy();
+    window.chartNewHiresType = new Chart(ctx4, {
+      type: 'doughnut',
+      data: { labels: typeLabels, datasets: [{ data: typeData, backgroundColor: typeBgColors, borderColor: '#12152a', borderWidth: 3 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, padding: 12, boxWidth: 12 }
+          }
         }
       }
-    }
-  });
+    });
+  }
 
   // Pending hires
   const pendingEl = document.getElementById('dash-pending-hires');
@@ -2434,16 +2483,33 @@ function renderDashboard() {
   const modelInventory = {};
   assets.forEach(a => {
     if (!a.model) return;
-    if (!modelInventory[a.model]) modelInventory[a.model] = { total: 0, inUse: 0, avail: 0, maint: 0 };
+    if (!modelInventory[a.model]) modelInventory[a.model] = { total: 0, inUse: 0, avail: 0, maint: 0, lastAssigned: null };
     modelInventory[a.model].total++;
     if (a.status === 'In Use') modelInventory[a.model].inUse++;
     else if (a.status === 'Available') modelInventory[a.model].avail++;
     else if (a.status === 'Maintenance') modelInventory[a.model].maint++;
+    // Track most recent assignedDate across all assets of this model
+    if (a.assignedDate) {
+      const d = new Date(a.assignedDate);
+      if (!isNaN(d) && (!modelInventory[a.model].lastAssigned || d > modelInventory[a.model].lastAssigned)) {
+        modelInventory[a.model].lastAssigned = d;
+      }
+    }
+  });
+
+  // Sort: models with a recent assignedDate first (newest → oldest), then unassigned models alphabetically
+  const sortedModels = Object.keys(modelInventory).sort((a, b) => {
+    const da = modelInventory[a].lastAssigned;
+    const db = modelInventory[b].lastAssigned;
+    if (da && db) return db - da;
+    if (da) return -1;
+    if (db) return 1;
+    return a.localeCompare(b);
   });
 
   const mTableEl = document.getElementById('dash-model-inventory');
   if (mTableEl) {
-    mTableEl.innerHTML = Object.keys(modelInventory).sort().map(m => {
+    mTableEl.innerHTML = sortedModels.map(m => {
       const d = modelInventory[m];
       const fr = d.total > 0 ? ((d.maint / d.total) * 100).toFixed(1) : '0.0';
       return `
@@ -2463,10 +2529,10 @@ function renderDashboard() {
 }
 
 function renderAlerts() {
-  const alerts = [];
   const now = new Date();
-  
   const dict = TRANSLATIONS[currentLang];
+  const sections = [];
+
   // 1. Warranty expiring in 30 days
   const upcomingWarranties = assets.filter(a => {
     if (!a.warranty) return false;
@@ -2475,15 +2541,15 @@ function renderAlerts() {
     return diffDays >= 0 && diffDays <= 30;
   });
   if (upcomingWarranties.length > 0) {
-    alerts.push(`
-      <div class="alert-card amber">
+    sections.push(`
+      <div class="alert-card amber" style="margin-bottom:12px;">
         <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
         <div class="alert-content">
           <div>
             <div class="alert-title">${upcomingWarranties.length} ${dict.warranty_expire_alert}</div>
             <div class="alert-sub">${currentLang==='en'?'Warranties expire within the next 30 days.':'Hợp đồng bảo hành sẽ hết hạn trong 30 ngày tới.'}</div>
           </div>
-          <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-search').value=''; renderAssets();">${currentLang==='en'?'View Assets':'Xem tài sản'}</div>
+          <div class="alert-action" onclick="navigate('assets');">${currentLang==='en'?'View Assets':'Xem tài sản'}</div>
         </div>
       </div>
     `);
@@ -2492,8 +2558,8 @@ function renderAlerts() {
   // 2. Unassigned Available Assets
   const unassigned = assets.filter(a => a.status === 'Available' && !a.user);
   if (unassigned.length > 0) {
-    alerts.push(`
-      <div class="alert-card sky">
+    sections.push(`
+      <div class="alert-card sky" style="margin-bottom:12px;">
         <div class="alert-icon">ℹ️</div>
         <div class="alert-content">
           <div>
@@ -2506,49 +2572,54 @@ function renderAlerts() {
     `);
   }
 
-  // 3. Low Stock Warning — models with TOTAL count < 3
+  // 3. Low Stock Warning — table format
   const modelTotalCounts = {};
-  assets.forEach(a => { if (a.model) modelTotalCounts[a.model] = (modelTotalCounts[a.model] || 0) + 1; });
-  const allModels = Object.keys(modelTotalCounts);
-  const lowModels = allModels
+  const modelAvailCounts = {};
+  assets.forEach(a => {
+    if (!a.model) return;
+    modelTotalCounts[a.model] = (modelTotalCounts[a.model] || 0) + 1;
+    if (a.status === 'Available') modelAvailCounts[a.model] = (modelAvailCounts[a.model] || 0) + 1;
+  });
+  const lowStockModels = Object.keys(modelTotalCounts)
     .filter(m => modelTotalCounts[m] < 3 && modelTotalCounts[m] > 0)
-    .map(m => `<b>${m}</b> (${modelTotalCounts[m]})`);
-  const zeroModels = allModels.filter(m => !modelTotalCounts[m]);
+    .sort((a, b) => modelTotalCounts[a] - modelTotalCounts[b]);
 
-  if (lowModels.length > 0) {
-    alerts.push(`
-      <div class="alert-card rose">
-        <div class="alert-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <div class="alert-content">
-          <div>
-            <div class="alert-title">${lowModels.length} ${dict.low_stock_alert}</div>
-            <div class="alert-sub" style="font-size:11px;margin-top:4px;">${currentLang==='en'?'Models with total < 3 units':'Model có tổng < 3 chiếc'}: ${lowModels.join(', ')}</div>
-            ${zeroModels.length > 0 ? `<div class="alert-sub" style="font-size:11px;color:var(--rose);margin-top:4px;">${currentLang==='en'?'Out of stock (0 available)':'Hết hàng (0 sẵn có)'}: ${zeroModels.map(m=>`<b>${m}</b>`).join(', ')}</div>` : ''}
-          </div>
-          <div class="alert-action" onclick="navigate('assets');">${currentLang==='en'?'View':'Xem kho'}</div>
+  if (lowStockModels.length > 0) {
+    const rows = lowStockModels.map(m => {
+      const total = modelTotalCounts[m];
+      const avail = modelAvailCounts[m] || 0;
+      const color = total === 1 ? 'var(--rose)' : 'var(--amber)';
+      return `<tr>
+        <td style="font-weight:600;color:var(--text);">${m}</td>
+        <td style="text-align:center;font-weight:700;color:${color};">${total}</td>
+        <td style="text-align:center;color:var(--teal);">${avail}</td>
+        <td style="text-align:center;color:${color};font-weight:600;">${currentLang==='en'?(total===1?'Critical':'Low'):(total===1?'Nguy cấp':'Thấp')}</td>
+      </tr>`;
+    }).join('');
+    sections.push(`
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span style="font-size:13px;font-weight:700;color:var(--rose);">${currentLang==='en'?'Low Stock Models':'Model Cạn Kho'} (${lowStockModels.length})</span>
+          <span style="font-size:11px;color:var(--text3);margin-left:4px;">${currentLang==='en'?'< 3 units in stock':'Dưới 3 chiếc trong kho'}</span>
+        </div>
+        <table class="data-table" style="width:100%;">
+          <thead><tr>
+            <th>${currentLang==='en'?'Model':'Model'}</th>
+            <th style="text-align:center;">${currentLang==='en'?'Total':'Tổng'}</th>
+            <th style="text-align:center;">${currentLang==='en'?'Available':'Sẵn có'}</th>
+            <th style="text-align:center;">${currentLang==='en'?'Status':'Mức độ'}</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="margin-top:10px;text-align:right;">
+          <button class="btn btn-outline btn-sm" onclick="navigate('assets');">${currentLang==='en'?'View Assets':'Xem kho tài sản'}</button>
         </div>
       </div>
     `);
   }
 
-  // 4. Devices Assigned (In Use with a headcount employee)
-  const onLoan = assets.filter(a => a.status === 'In Use' && a.user);
-  if (onLoan.length > 0) {
-    alerts.push(`
-      <div class="alert-card amber">
-        <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        <div class="alert-content">
-          <div>
-            <div class="alert-title">${onLoan.length} ${dict.devices_borrowed}</div>
-            <div class="alert-sub">${currentLang==='en'?'Devices deployed to headcount staff.':'Thiết bị đang được gán cho nhân viên.'}</div>
-          </div>
-          <div class="alert-action" onclick="navigate('assets'); document.getElementById('asset-filter-status').value='In Use'; renderAssets();">${currentLang==='en'?'View':'Xem'}</div>
-        </div>
-      </div>
-    `);
-  }
-
-  // 5. New Hires approaching start date
+  // 4. New Hires approaching start date
   const upcomingHires = newHires.filter(h => {
     if (h.itStatus === 'Completed' || h.itStatus === 'Ready') return false;
     const jDate = new Date(h.joinDate);
@@ -2556,8 +2627,8 @@ function renderAlerts() {
     return diffDays >= -1 && diffDays <= 7;
   });
   if (upcomingHires.length > 0) {
-    alerts.push(`
-      <div class="alert-card rose">
+    sections.push(`
+      <div class="alert-card rose" style="margin-bottom:12px;">
         <div class="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
         <div class="alert-content">
           <div>
@@ -2570,14 +2641,11 @@ function renderAlerts() {
     `);
   }
 
-  const containerEl = document.getElementById('dash-alerts-container');
-  const dashAlerts = document.getElementById('dash-alerts');
-  if (alerts.length > 0) {
-    containerEl.style.display = 'block';
-    dashAlerts.innerHTML = alerts.join('');
-  } else {
-    containerEl.style.display = 'none';
-    dashAlerts.innerHTML = '';
+  const pageAlertsList = document.getElementById('page-alerts-list');
+  if (pageAlertsList) {
+    pageAlertsList.innerHTML = sections.length > 0
+      ? sections.join('')
+      : `<div style="color:var(--text3);font-size:14px;padding:24px 0;">${currentLang==='en'?'No active alerts.':'Không có cảnh báo nào.'}</div>`;
   }
 }
 
@@ -3294,6 +3362,9 @@ function renderNewHires() {
       <td>
         <div class="action-btns">
           <button class="btn btn-outline btn-sm" onclick="navigate('onboarding')">Pipeline</button>
+          <button class="btn btn-outline btn-sm" onclick="openEditHire('${h.id}')" data-role-only="admin,hr,itstaff" title="Edit">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
           <button class="btn btn-danger btn-sm" onclick="deleteHire('${h.id}')" data-role-only="admin,hr" title="Delete">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
             </button>
@@ -3358,6 +3429,8 @@ async function deleteHire(id) {
 }
 
 function openAddHire() {
+  document.getElementById('modal-hire-title').textContent = 'Add New Hire';
+  document.getElementById('f-hire-id').value = '';
   ['f-hire-name','f-hire-manager','f-hire-equipment','f-hire-email'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-hire-joindate').value = '';
   document.getElementById('f-hire-dept').selectedIndex = 0;
@@ -3365,33 +3438,67 @@ function openAddHire() {
   openModal('modal-hire');
 }
 
+function openEditHire(id) {
+  const h = newHires.find(x => x.id === id);
+  if (!h) return;
+  document.getElementById('modal-hire-title').textContent = 'Edit New Hire';
+  document.getElementById('f-hire-id').value = h.id;
+  document.getElementById('f-hire-name').value = h.name || '';
+  document.getElementById('f-hire-email').value = h.email || '';
+  document.getElementById('f-hire-joindate').value = h.joinDate || '';
+  document.getElementById('f-hire-manager').value = h.manager || '';
+  document.getElementById('f-hire-equipment').value = h.equipment || '';
+  // Set select values
+  const deptSel = document.getElementById('f-hire-dept');
+  const typeSel = document.getElementById('f-hire-type');
+  const roleSel = document.getElementById('f-hire-role');
+  [...deptSel.options].forEach(o => o.selected = o.value === h.dept);
+  [...typeSel.options].forEach(o => o.selected = o.value === h.type);
+  [...roleSel.options].forEach(o => o.selected = o.value === h.role);
+  openModal('modal-hire');
+}
+
 async function saveHire() {
   const name = document.getElementById('f-hire-name').value.trim();
   if (!name) { showToast('Name is required.','error'); return; }
+  const existingId = document.getElementById('f-hire-id').value;
+  const isEdit = !!existingId;
+  const existing = isEdit ? newHires.find(x => x.id === existingId) : null;
   const obj = {
-    id: `NH-${Date.now().toString().slice(-6)}`,
-    name, dept: document.getElementById('f-hire-dept').value,
+    id: isEdit ? existingId : `NH-${Date.now().toString().slice(-6)}`,
+    name,
+    dept: document.getElementById('f-hire-dept').value,
     type: document.getElementById('f-hire-type').value,
-    role: document.getElementById('f-hire-role').value.trim(),
+    role: document.getElementById('f-hire-role').value,
     email: document.getElementById('f-hire-email').value.trim(),
     joinDate: document.getElementById('f-hire-joindate').value,
     manager: document.getElementById('f-hire-manager').value.trim(),
     equipment: document.getElementById('f-hire-equipment').value.trim(),
-    itStatus: 'Pending', pipelineStage: 0,
+    itStatus: existing ? existing.itStatus : 'Pending',
+    pipelineStage: existing ? existing.pipelineStage : 0,
   };
-  
+
+  let saved = false;
   try {
-    const res = await authFetch('/api/newhires', {
-      method: 'POST',
-      body: JSON.stringify(obj)
-    });
-    if (!res.ok) throw new Error('API Error');
-    newHires.push(obj);
+    const res = await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(obj) });
+    if (!res.ok) {
+      const errData = await res.json().catch(()=>({}));
+      throw new Error(errData.error || `HTTP ${res.status}`);
+    }
+    if (isEdit) {
+      const idx = newHires.findIndex(x => x.id === existingId);
+      if (idx >= 0) newHires[idx] = obj;
+    } else {
+      newHires.push(obj);
+    }
+    saved = true;
+  } catch(e) { showToast('Error saving hire: ' + e.message, 'error'); }
+  if (saved) {
     closeModal('modal-hire');
     renderNewHires();
     renderDashboard();
-    showToast('New hire added!','success');
-  } catch(e) { showToast('Error saving hire', 'error'); }
+    showToast(isEdit ? 'New hire updated!' : 'New hire added!', 'success');
+  }
 }
 
 // ===================================================
@@ -3668,13 +3775,28 @@ function handleFileSelect(e) { const file = e.target.files[0]; if (file) process
 function processCSVFile(file) {
   const reader = new FileReader();
   reader.onload = ev => {
-    const text = ev.target.result;
+    let text = ev.target.result;
+    // Strip UTF-8 BOM if present
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
     const rows = smartCSVParse(text);
     pendingCSVData = rows;
     showPreview(rows);
     showToast(`Loaded ${rows.length-1} records — review column mapping and confirm.`,'info');
   };
-  reader.readAsText(file);
+  // Try UTF-8 first; if file has BOM or is Windows-1252, handle below
+  reader.onerror = () => {
+    const r2 = new FileReader();
+    r2.onload = ev => {
+      let text = ev.target.result;
+      if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      const rows = smartCSVParse(text);
+      pendingCSVData = rows;
+      showPreview(rows);
+      showToast(`Loaded ${rows.length-1} records.`,'info');
+    };
+    r2.readAsText(file, 'windows-1252');
+  };
+  reader.readAsText(file, 'utf-8');
 }
 
 function showPreview(rows) {
@@ -3848,7 +3970,9 @@ function exportCSV(type) {
 }
 
 function downloadCSVString(csv, filename) {
-  const blob = new Blob([csv], {type:'text/csv'});
+  // Add UTF-8 BOM so Excel opens Vietnamese characters correctly
+  const bom = '﻿';
+  const blob = new Blob([bom + csv], {type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = filename; a.click();
@@ -3998,7 +4122,7 @@ function formatDate(dateStr) {
 function assetTypeIcon(type) {
   const icons = {
     Laptop:   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
-    Desktop:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="5" y1="21" x2="5" y2="17"/><line x1="19" y1="21" x2="19" y2="17"/></svg>',
+    'Desktop PC':  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="5" y1="21" x2="5" y2="17"/><line x1="19" y1="21" x2="19" y2="17"/></svg>',
     Monitor:  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
     Phone:    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
     Tablet:   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
@@ -4031,6 +4155,47 @@ function empStatusBadge(status) {
 // ===================================================
 //   USER MANAGEMENT
 // ===================================================
+// ===================================================
+//   SEATALK NOTIFICATION CONFIG
+// ===================================================
+async function loadSeaTalkConfig() {
+  try {
+    const res = await authFetch('/api/notifications/config');
+    if (!res.ok) return;
+    const data = await res.json();
+    const input = document.getElementById('seatalk-webhook-url');
+    const badge = document.getElementById('seatalk-status-badge');
+    const testBtn = document.getElementById('seatalk-test-btn');
+    if (input) input.value = data.webhookUrl || '';
+    if (badge) {
+      badge.textContent = data.configured ? 'Connected' : 'Not configured';
+      badge.style.background = data.configured ? 'rgba(20,184,166,.15)' : 'rgba(100,116,139,.15)';
+      badge.style.color = data.configured ? 'var(--teal)' : 'var(--text3)';
+    }
+    if (testBtn) testBtn.disabled = !data.configured;
+  } catch(e) {}
+}
+
+async function saveSeaTalkConfig() {
+  const url = (document.getElementById('seatalk-webhook-url').value || '').trim();
+  try {
+    const res = await authFetch('/api/notifications/config', {
+      method: 'POST', body: JSON.stringify({ webhookUrl: url })
+    });
+    if (!res.ok) throw new Error();
+    showToast(url ? 'SeaTalk webhook saved!' : 'Webhook URL cleared', 'success');
+    loadSeaTalkConfig();
+  } catch(e) { showToast('Failed to save config', 'error'); }
+}
+
+async function testSeaTalkConfig() {
+  try {
+    const res = await authFetch('/api/notifications/test', { method: 'POST' });
+    if (res.ok) showToast('Test message sent to SeaTalk!', 'success');
+    else showToast('Failed — check webhook URL', 'error');
+  } catch(e) { showToast('Failed to send test', 'error'); }
+}
+
 async function renderUsers() {
   const tbody = document.getElementById('users-tbody');
   if (!tbody) return;

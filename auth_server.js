@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -14,7 +15,7 @@ app.use(express.static(__dirname));
 // Initialize Database
 initDB();
 
-const JWT_SECRET = 'it-asset-hub-secret-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'it-asset-hub-secret-2026';
 const SALT_ROUNDS = 10;
 
 // ============================================================
@@ -221,12 +222,25 @@ app.get('/api/newhires', requireAuth, (req, res) => {
 
 app.post('/api/newhires', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
   const { id, name, dept, type, role, email, joinDate, manager, equipment, itStatus, pipelineStage } = req.body;
-  const sql = `INSERT INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
-    name=excluded.name, dept=excluded.dept, type=excluded.type, role=excluded.role, email=excluded.email, joinDate=excluded.joinDate,
-    manager=excluded.manager, equipment=excluded.equipment, itStatus=excluded.itStatus, pipelineStage=excluded.pipelineStage`;
-  db.run(sql, [id||'', name||'', dept||'', type||'', role||'', email||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ success: true, id: id||'' });
+
+  // Check if this is a new record (not an update)
+  db.get('SELECT id, itStatus FROM new_hires WHERE id = ?', [id||''], (err, existing) => {
+    const sql = `INSERT INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+      name=excluded.name, dept=excluded.dept, type=excluded.type, role=excluded.role, email=excluded.email, joinDate=excluded.joinDate,
+      manager=excluded.manager, equipment=excluded.equipment, itStatus=excluded.itStatus, pipelineStage=excluded.pipelineStage`;
+    db.run(sql, [id||'', name||'', dept||'', type||'', role||'', email||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0], function(dbErr) {
+      if (dbErr) return res.status(500).json({ error: dbErr.message });
+      res.json({ success: true, id: id||'' });
+
+      // Notifications (fire-and-forget)
+      if (!existing) {
+        // New hire added
+        notif.notifyNewHire(name, dept, joinDate).catch(()=>{});
+      } else if (existing.itStatus !== 'Completed' && itStatus === 'Completed') {
+        // Onboarding just completed
+        notif.notifyCompletedOnboarding(name, dept).catch(()=>{});
+      }
+    });
   });
 });
 
@@ -298,6 +312,33 @@ app.delete('/api/planning/:id', requireAuth, requireRole('admin'), (req, res) =>
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, deleted: this.changes });
   });
+});
+
+// ============================================================
+// NOTIFICATIONS CONFIG
+// ============================================================
+
+// GET /api/notifications/config — get current webhook URL (admin only)
+app.get('/api/notifications/config', requireAuth, requireRole('admin'), (req, res) => {
+  res.json({ webhookUrl: notif.getWebhookUrl(), configured: notif.isConfigured() });
+});
+
+// POST /api/notifications/config — set SeaTalk webhook URL (admin only)
+app.post('/api/notifications/config', requireAuth, requireRole('admin'), (req, res) => {
+  const { webhookUrl } = req.body;
+  notif.setWebhookUrl(webhookUrl || '');
+  res.json({ success: true, configured: notif.isConfigured() });
+});
+
+// POST /api/notifications/test — send a test message (admin only)
+app.post('/api/notifications/test', requireAuth, requireRole('admin'), async (req, res) => {
+  if (!notif.isConfigured()) return res.status(400).json({ error: 'Webhook URL not configured' });
+  try {
+    await notif.sendMessage('[IT Asset Hub] Test notification — SeaTalk bot is connected!');
+    res.json({ success: true });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // ============================================================
