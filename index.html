@@ -232,6 +232,7 @@ body {
 }
 .stat-card.indigo::before { background: linear-gradient(90deg, var(--accent), var(--purple)); }
 .stat-card.teal::before { background: linear-gradient(90deg, var(--teal), var(--sky)); }
+.stat-card.blue::before { background: linear-gradient(90deg, var(--sky), var(--accent)); }
 .stat-card.rose::before { background: linear-gradient(90deg, var(--rose), var(--amber)); }
 .stat-card.green::before { background: linear-gradient(90deg, var(--green), var(--teal)); }
 .stat-card.amber::before { background: linear-gradient(90deg, var(--amber), var(--rose)); }
@@ -723,6 +724,9 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="nav-item" data-page="newhires" id="nav-newhires" onclick="navigate('newhires')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span> New Hires
     </div>
+    <div class="nav-item" data-page="plan" id="nav-plan" onclick="navigate('plan')">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span> Plan
+    </div>
     <div class="nav-item" data-page="offboarded" id="nav-offboarded" onclick="navigate('offboarded')">
       <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Offboarded
     </div>
@@ -773,7 +777,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
       <div class="icon-btn" title="Settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </div>
-      <button class="btn btn-primary" id="topbar-action-btn" onclick="openTopbarAction()" data-role-only="admin,itstaff">+ Add Asset</button>
+      <button class="btn btn-primary" id="topbar-action-btn" onclick="openTopbarAction()">+ Add Asset</button>
     </div>
   </div>
 
@@ -965,6 +969,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <div class="import-tab active" onclick="switchImportTab('assets', this)">Assets</div>
         <div class="import-tab" onclick="switchImportTab('headcount', this)">Headcount</div>
         <div class="import-tab" onclick="switchImportTab('newhires', this)">New Hires</div>
+        <div class="import-tab" onclick="switchImportTab('plan', this)">Plan</div>
       </div>
 
       <div id="import-panel" class="card">
@@ -1063,7 +1068,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
           <thead>
             <tr>
               <th style="width:36px;"><input type="checkbox" id="employees-select-all" onchange="toggleAllEmployees(this.checked)"></th>
-              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th>
+              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th><th>Emp. Type</th>
               <th>Email</th><th>Location</th><th>Manager</th>
               <th>Onboard Date</th><th>Status</th><th>IT Assets</th><th>Actions</th>
             </tr>
@@ -1121,7 +1126,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
           <thead>
             <tr>
               <th style="width:36px;"><input type="checkbox" id="newhires-select-all" onchange="toggleAllNewHires(this.checked)"></th>
-              <th>Name</th><th>Department</th><th>Type</th><th>Role</th><th>Join Date</th>
+              <th>Name</th><th>Department</th><th>Type</th><th>Emp. Type</th><th>Role</th><th>Join Date</th>
               <th>Manager</th><th>Equipment Needed</th><th>IT Status</th><th>Actions</th>
             </tr>
           </thead>
@@ -1182,7 +1187,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <table>
           <thead>
             <tr>
-              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th>
+              <th>Employee</th><th>Department</th><th>Role</th><th>Type</th><th>Emp. Type</th>
               <th>Onboard Date</th><th>Offboard Date</th><th>Tenure</th><th>Reason</th><th>Notes</th><th>Actions</th>
             </tr>
           </thead>
@@ -1193,6 +1198,73 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
         <div class="empty-title">No offboarded staff</div>
         <div class="empty-sub">Employees who leave will appear here.</div>
+      </div>
+    </section>
+
+    <!-- ============ PLAN ============ -->
+    <section class="page" id="page-plan">
+      <div class="section-header" style="margin-bottom:20px;">
+        <div>
+          <div class="section-title">Equipment Plan</div>
+          <div class="section-sub">Quarterly plan by role, type and location</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="exportPlanCSV()">⬇ Export CSV</button>
+        </div>
+      </div>
+
+      <!-- Year / Quarter filter -->
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;">
+          <span style="font-size:12px;font-weight:600;color:var(--text2);">Year:</span>
+          <select id="plan-year" class="form-select" style="border:none;background:none;padding:0;font-size:14px;font-weight:700;width:72px;" onchange="renderPlan()">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;">
+          <span style="font-size:12px;font-weight:600;color:var(--text2);">Quarter:</span>
+          <select id="plan-quarter" class="form-select" style="border:none;background:none;padding:0;font-size:14px;font-weight:700;width:56px;" onchange="renderPlan()">
+            <option value="1">Q1</option>
+            <option value="2" selected>Q2</option>
+            <option value="3">Q3</option>
+            <option value="4">Q4</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Total Headcount summary -->
+      <div id="plan-summary" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;"></div>
+
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="table-wrap">
+          <table class="data-table" id="plan-table">
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Type</th>
+                <th>Current Model</th>
+                <th style="text-align:center;">Inventory</th>
+                <th style="text-align:center;color:var(--amber);">Buffer</th>
+                <th style="text-align:center;border-left:2px solid var(--border2);">Capital Place<br><span style="font-weight:400;font-size:11px;color:var(--text3);">Staff</span></th>
+                <th style="text-align:center;">Capital Place<br><span style="font-weight:400;font-size:11px;color:var(--text3);">Collaborators</span></th>
+                <th style="text-align:center;border-left:2px solid var(--border2);">Saigon Center<br><span style="font-weight:400;font-size:11px;color:var(--text3);">Staff</span></th>
+                <th style="text-align:center;">Saigon Center<br><span style="font-weight:400;font-size:11px;color:var(--text3);">Collaborators</span></th>
+                <th style="text-align:center;border-left:2px solid var(--border2);color:var(--accent2);">Total This<br><span style="font-weight:400;font-size:11px;">Quarter</span></th>
+                <th style="text-align:center;color:var(--green);">HC Onboarded<br><span style="font-weight:400;font-size:11px;color:var(--text3);">New Hires only</span></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="plan-tbody"></tbody>
+          </table>
+        </div>
+        <div id="plan-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="empty-title">No plan rows yet</div>
+          <div class="empty-sub">Click "+ Add Row" to start planning</div>
+        </div>
       </div>
     </section>
 
@@ -1320,12 +1392,6 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
             <option value="2026" selected>2026</option>
             <option value="2027">2027</option>
           </select>
-          <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 12px;">
-            <span style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;">HC Target:</span>
-            <input type="number" id="audit-hc-target" min="0" placeholder="0"
-              style="width:64px;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-weight:700;font-family:inherit;text-align:center;"
-              oninput="renderQuarterlyAudit()"/>
-          </div>
           <button class="btn btn-outline btn-sm" onclick="exportAuditCSV()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Export Audit CSV
@@ -1463,7 +1529,7 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <label class="form-label" data-i18n="model">Model</label>
         <select class="form-select" id="f-asset-model">
           <option value="">— Select Model —</option>
-          <option>Dell Precision T3680</option><option>Dell Precision T3650</option><option>Dell Precision T3640</option><option>Dell Precision T3630</option><option>Dell OptiPlex 7090</option><option>Dell OptiPlex 7080</option><option>Dell OptiPlex 70x (High)</option><option>Dell OptiPlex 70x (Low)</option><option>Dell Latitude 3460 (16GB)</option><option>Dell Latitude 34x (16GB)</option><option>Dell Latitude 54x (16GB)</option><option>Dell Pro Max Tower T2 (High)</option><option>Dell Pro Max Tower T2 (Low)</option><option>Dell Pro Slim</option><option>Dell Pro 14 Core 5</option><option>Dell Pro 14 Ultra 5</option><option>Dell Pro 14 Ultra 7</option><option>Dell UltraSharp 24-inch Monitor - U2422H</option><option>Dell UltraSharp 24-inch Monitor - U2419H</option><option>Dell UltraSharp 24-inch Monitor - U2417H</option><option>MacBook Pro M1</option><option>MacBook Pro M4 (24/512GB)</option><option>MacBook Air M4 (16/512GB)</option>
+          <option>Apple iMac (24-inch, M1, 2021)</option><option>Apple iMac (Retina 5K, 27-inch, 2019)</option><option>Apple iMac (Retina 5K, 27-inch, 2020)</option><option>Apple Mac Mini (M4, 2025)</option><option>Apple Macbook Air (13-inch, M4, 2025)</option><option>Apple MacBook Pro (13-inch, 2018, Four Thunderbolt 3 ports)</option><option>Apple MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)</option><option>Apple MacBook Pro (13-inch, M1, 2020)</option><option>Apple Macbook Pro (14-inch, M5 Pro, 2026)</option><option>Apple MacBook Pro (15-inch, 2018)</option><option>Apple MacBook Pro (16-inch, 2019)</option><option>Apple MacBook Pro (16-inch, 2021), M1 Pro, 10-core CPU, 16-core GPU, 16GB RAM, 512GB SSD</option><option>Asus 27-inch Monitor - VG279G</option><option>Custom PC</option><option>Dell 24-inch Monitor - P2425H</option><option>Dell 27-inch Monitor - P2418HT</option><option>Dell 27-inch Monitor - P2722H</option><option>Dell Latitude 3420</option><option>Dell Latitude 5400</option><option>Dell Latitude 5410</option><option>Dell Latitude 5420</option><option>Dell Latitude 5480</option><option>Dell Latitude 5490</option><option>Dell Latitude 5590</option><option>Dell Latitude 7410</option><option>Dell Latitude 7420</option><option>Dell Latitude 7490</option><option>Dell Optiplex 7060</option><option>Dell OptiPlex 7070</option><option>Dell Optiplex 7080</option><option>Dell OptiPlex 7090</option><option>Dell Precision 3630 Tower</option><option>Dell Precision 3640 Tower</option><option>Dell Precision 3650 Tower</option><option>Dell Precision 3650 Tower CTO Base</option><option>Dell Precision 3660 Tower</option><option>Dell Precision 3680 Tower</option><option>Dell Precision 5540</option><option>Dell Precision 7530</option><option>Dell Pro 14 PC14250</option><option>Dell Pro Max 14</option><option>Dell Pro Max Tower T2</option><option>Dell U2725QE</option><option>Dell UltraSharp 24-inch Monitor</option><option>Dell UltraSharp 24-inch Monitor - U2417H</option><option>Dell UltraSharp 24-inch Monitor - U2419H</option><option>Dell UltraSharp 24-inch Monitor - U2422H</option><option>Dell UltraSharp 27 Thunderbolt Hub Monitor - U2724DE</option><option>Dell UltraSharp 27-inch 4K Monitor - U2718Q</option><option>Dell UltraSharp 27-inch 4K Monitor - U2720Q</option><option>Dell UltraSharp 27-inch Monitor - SE2719HR</option><option>Dell XPS 13 9310</option><option>Dell XPS 13 9350</option><option>Dell XPS 8920</option><option>Dell XPS 8930</option><option>Desktop PC</option><option>Intel NUC</option><option>Laptop</option><option>Lenovo ThinkPad X1 Carbon Gen 13</option><option>LG 23-inch Monitor</option><option>LG 24-inch Monitor</option><option>LG Monitor</option>
         </select>
       </div>
       <div class="form-field">
@@ -1582,6 +1648,14 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         </select>
       </div>
       <div class="form-field">
+        <label class="form-label">Employee Type</label>
+        <select class="form-select" id="f-emp-emptype">
+          <option value="">-- Select --</option>
+          <option value="Staff">Staff</option>
+          <option value="Collaborators">Collaborators</option>
+        </select>
+      </div>
+      <div class="form-field">
         <label class="form-label">Location</label>
         <input class="form-input" id="f-emp-location" placeholder="e.g. Singapore"/>
       </div>
@@ -1638,6 +1712,14 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
         <label class="form-label">Role</label>
         <select class="form-select" id="f-hire-role">
           <option>Producer</option><option>Product AOV/FF</option><option>Product FC/DF/New Games</option><option>Marketing AOV/FF</option><option>Marketing FC/DF/New Games</option><option>Marketing ODP</option><option>Marketing ODP (work with data analysis)</option><option>Esports AOV/FF</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Employee Type</label>
+        <select class="form-select" id="f-hire-emptype">
+          <option value="">-- Select --</option>
+          <option value="Staff">Staff</option>
+          <option value="Collaborators">Collaborators</option>
         </select>
       </div>
       <div class="form-field">
@@ -1713,6 +1795,65 @@ tbody tr.selected-row { background: rgba(99,102,241,.12) !important; }
     <div class="form-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-offboard')">Cancel</button>
       <button class="btn btn-sm" onclick="confirmOffboard()" style="background:var(--amber);color:#fff;">Confirm Offboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL: PLAN ROW ============ -->
+<div class="modal-overlay" id="modal-plan">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">Add Plan Row</div>
+      <span class="modal-close" onclick="closeModal('modal-plan')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </span>
+    </div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="f-plan-role">
+          <option>Producer</option><option>Product AOV/FF</option><option>Product FC/DF/New Games</option><option>Marketing AOV/FF</option><option>Marketing FC/DF/New Games</option><option>Marketing ODP</option><option>Marketing ODP (work with data analysis)</option><option>Esports AOV/FF</option><option>Esports FC/DF</option><option>BA/Platform ODP</option><option>Creative (Graphic Design)</option><option>Creative (Video Editor)</option><option>Strategy &amp; Operations</option><option>Game Dev (Regional Craftland)</option><option>Game Design (Regional Craftland)</option><option>Game Art (Regional Craftland)</option><option>Game Dev (In-house Game Dev)</option><option>Game Design (In-house Game Dev)</option><option>Game Art (In-house Game Dev)</option><option>Developer</option><option>Developer (intern)</option><option>Admin</option><option>Procurement</option><option>People Team / HR</option><option>HR (work with data analysis)</option><option>Legal</option><option>Legal (work with data analysis)</option><option>Finance</option><option>IT Corporate</option><option>Infrastructure</option><option>Other Operations</option><option>Additional Laptop</option><option>Upgrade for Backfill</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Type</label>
+        <select class="form-select" id="f-plan-type" onchange="populatePlanModelDropdown(this.value,'')">
+          <option value="Laptop">Laptop</option>
+          <option value="Desktop PC">Desktop PC</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Year</label>
+        <select class="form-select" id="f-plan-year">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Quarter</label>
+        <select class="form-select" id="f-plan-quarter">
+          <option value="1">Q1</option>
+          <option value="2" selected>Q2</option>
+          <option value="3">Q3</option>
+          <option value="4">Q4</option>
+        </select>
+      </div>
+      <div class="form-field" style="grid-column:1/-1;position:relative;">
+        <label class="form-label">Current Model</label>
+        <input class="form-input" id="f-plan-model" autocomplete="off" placeholder="Type to search model..."
+          oninput="filterPlanModelDropdown(this.value)"
+          onfocus="filterPlanModelDropdown(this.value)"
+          onblur="setTimeout(()=>{ const d=document.getElementById('plan-model-dropdown'); if(d) d.style.display='none'; },150)"/>
+        <div id="plan-model-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-sm);max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.4);"></div>
+        <div style="margin-top:6px;font-size:12px;color:var(--text3);">Inventory available: <strong id="f-plan-inventory-display" style="color:var(--green);">—</strong></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text3);padding:0 0 12px 0;">After adding, enter quantities directly in the table.</div>
+    <div class="form-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-plan')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePlanRow()">Add Row</button>
     </div>
   </div>
 </div>
@@ -1923,6 +2064,7 @@ const TRANSLATIONS = {
     export_csv: '⬇ Export CSV',
     actionable_alerts: 'Actionable Alerts',
     alerts: 'Actionable Alerts',
+    plan: 'Plan',
     asset_by_model: 'Assets by Model',
     headcount_by_dept: 'Headcount by Department',
     newhires_by_month: 'New Hires by Month',
@@ -1974,6 +2116,7 @@ const TRANSLATIONS = {
     export_csv: '⬇ Xuất file CSV',
     actionable_alerts: 'Cảnh báo quan trọng',
     alerts: 'Cảnh báo quan trọng',
+    plan: 'Plan',
     asset_by_model: 'Tài sản theo Model',
     headcount_by_dept: 'Nhân sự theo phòng ban',
     newhires_by_month: 'Nhân sự mới theo tháng',
@@ -2056,7 +2199,7 @@ const navigateMap = {
   'dashboard': 'dashboard', 'assets': 'assets', 'headcount': 'headcount',
   'newhires': 'newhires', 'onboarding': 'onboarding',
   'csvimport': 'csvimport', 'reports': 'reports', 'users': 'reports', 'audit': 'audit', 'offboarded': 'offboarded',
-  'alerts': 'alerts'
+  'alerts': 'alerts', 'plan': 'plan'
 };
 
 let pendingCSVData = null;
@@ -2066,13 +2209,14 @@ let editingEmployeeId = null;
 async function initializeData() {
   applyConfig();
   try {
-    const [assRes, empRes, nhRes] = await Promise.all([
+    const [assRes, empRes, nhRes, planRes] = await Promise.all([
       authFetch('/api/assets'), authFetch('/api/employees'),
-      authFetch('/api/newhires')
+      authFetch('/api/newhires'), authFetch('/api/plan')
     ]);
     if (assRes.ok) assets = await assRes.json();
     if (empRes.ok) employees = await empRes.json();
     if (nhRes.ok) newHires = await nhRes.json();
+    if (planRes.ok) planRows = await planRes.json();
   } catch (err) {
     console.error('Failed to load DB data:', err);
     showToast('Failed connecting to database. Is backend running?', 'error');
@@ -2103,6 +2247,7 @@ const pageConfig = {
   audit:       { title:'Quarterly Audit', sub:'Reconcile headcount and IT asset allocation by quarter', action:'', actionFn:''},
   offboarded:  { title:'Offboarded Staff', sub:'History of employees who have left the organisation', action:'', actionFn:''},
   alerts:      { title:'Actionable Alerts', sub:'System alerts requiring attention', action:'', actionFn:''},
+  plan:        { title:'Plan', sub:'Quarterly equipment plan by role and location', action:'+ Add Row', actionFn:'openAddPlanRow'},
 };
 
 function navigate(pageId) {
@@ -2126,11 +2271,12 @@ function navigate(pageId) {
   document.getElementById('topbar-title').textContent = dict[navigateMap[pageId]];
   
   const actionBtn = document.getElementById('topbar-action-btn');
-  if (['dashboard','assets','headcount','newhires'].includes(pageId)) {
+  if (['dashboard','assets','headcount','newhires','plan'].includes(pageId)) {
     actionBtn.style.display = 'inline-flex';
     if (pageId === 'dashboard' || pageId === 'assets') actionBtn.textContent = dict.add_asset;
     else if (pageId === 'headcount') actionBtn.textContent = dict.add_employee;
     else if (pageId === 'newhires') actionBtn.textContent = dict.add_hire;
+    else if (pageId === 'plan') actionBtn.textContent = '+ Add Row';
   } else {
     actionBtn.style.display = 'none';
   }
@@ -2146,6 +2292,7 @@ function navigate(pageId) {
   if (pageId === 'audit')      { if (!window._auditInitialized) { setDefaultAuditQuarter(); window._auditInitialized = true; } renderQuarterlyAudit(); }
   if (pageId === 'offboarded') renderOffboarded();
   if (pageId === 'alerts')     renderAlerts();
+  if (pageId === 'plan')       { authFetch('/api/plan').then(r=>r.json()).then(d=>{ planRows=d; renderPlan(); }).catch(()=>renderPlan()); }
 
   applyRoleUI();
 }
@@ -2163,12 +2310,11 @@ function navigateAssets(type) {
 }
 
 function openTopbarAction() {
-  const active = document.querySelector('.nav-item.active');
-  if (!active) return;
-  const page = active.dataset.page;
+  const page = currentPage;
   if ((page === 'assets' || page === 'dashboard') && canAccess('assets','create')) openAddAsset();
   else if (page === 'headcount' && canAccess('employees','write')) openAddEmployee();
   else if (page === 'newhires' && canAccess('newhires','write')) openAddHire();
+  else if (page === 'plan') openAddPlanRow();
 }
 
 // ===================================================
@@ -2181,9 +2327,13 @@ function renderDashboard() {
   const inUse = assets.filter(a=>a.status==='In Use').length;
   const available = assets.filter(a=>a.status==='Available').length;
   const maintenance = assets.filter(a=>a.status==='Maintenance').length;
-  const totalEmp = employees.length;
-  const activeEmp = employees.filter(e=>e.status==='Active').length;
+  // Only count employees who have a joinDate (onboarded)
+  const onboardedEmps = employees.filter(e=>e.joinDate && e.joinDate.trim()!=='');
+  const totalEmp = onboardedEmps.length;
+  const activeEmp = onboardedEmps.filter(e=>e.status==='Active').length;
   const pendingHires = newHires.filter(h=>h.itStatus!=='Completed').length;
+  const staffCount = onboardedEmps.filter(e=>e.empType==='Staff').length;
+  const collabCount = onboardedEmps.filter(e=>e.empType==='Collaborators').length;
 
   const dict = TRANSLATIONS[currentLang];
   const statsEl = document.getElementById('dash-stats');
@@ -2217,6 +2367,13 @@ function renderDashboard() {
       <div class="stat-value">${totalEmp}</div>
       <div class="stat-label">${dict.total_employees}</div>
       <div class="stat-delta" style="color:var(--text3)">${activeEmp} ${dict.status_active.toLowerCase()}</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="stat-value">${staffCount}</div>
+      <div class="stat-label">Staff</div>
+      <div class="stat-delta" style="color:var(--purple);font-weight:600;">${collabCount} Collaborators</div>
+      ${(staffCount===0 && collabCount===0) ? `<div style="font-size:10px;color:var(--text3);margin-top:4px;">Set Emp. Type in Headcount</div>` : ''}
     </div>
     <div class="stat-card rose">
       <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div>
@@ -2390,10 +2547,9 @@ function renderDashboard() {
     }
   }); } // end ctx3El
 
-  // ── New Hire by Type chart ───────────────────────────────────────────
+  // ── Headcount by Type chart (onboarded employees only) ───────────────
   const allTypeCounts = {};
-  newHires.forEach(h => { const t = h.type || 'New Hire'; allTypeCounts[t] = (allTypeCounts[t]||0)+1; });
-  employees.forEach(e => { const t = e.type || 'New Hire'; if (t) allTypeCounts[t] = (allTypeCounts[t]||0)+1; });
+  onboardedEmps.forEach(e => { const t = e.type || 'New Hire'; allTypeCounts[t] = (allTypeCounts[t]||0)+1; });
   const typeLabels = Object.keys(allTypeCounts);
   const typeData = typeLabels.map(k => allTypeCounts[k]);
   const typeColors = { 'New Hire': '#14b8a6', 'Replace': '#f59e0b', 'Part Time': '#818cf8' };
@@ -3226,6 +3382,7 @@ function renderHeadcount() {
       <td>${e.dept}</td>
       <td>${e.role}</td>
       <td>${e.type ? `<span class="badge ${e.type==='New Hire'?'teal':e.type==='Replace'?'amber':'sky'}">${e.type}</span>` : '—'}</td>
+      <td>${e.empType ? `<span class="badge ${e.empType==='Staff'?'blue':'purple'}">${e.empType}</span>` : '<span style="color:var(--text3);font-size:12px;">—</span>'}</td>
       <td style="color:var(--accent2)">${e.email}</td>
       <td>${e.location}</td>
       <td>${e.manager}</td>
@@ -3254,6 +3411,7 @@ function openAddEmployee() {
   editingEmployeeId = null;
   document.getElementById('modal-emp-title').textContent = 'Add Employee';
   ['f-emp-name','f-emp-email','f-emp-role','f-emp-location','f-emp-manager','f-emp-joindate','f-emp-type'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-emp-emptype').value = '';
   openModal('modal-employee');
 }
 
@@ -3271,6 +3429,7 @@ function editEmployee(id) {
   document.getElementById('f-emp-status').value = e.status;
   document.getElementById('f-emp-joindate').value = e.joinDate || '';
   document.getElementById('f-emp-type').value = e.type || '';
+  document.getElementById('f-emp-emptype').value = e.empType || '';
   openModal('modal-employee');
 }
 
@@ -3300,6 +3459,7 @@ async function saveEmployee() {
     manager: document.getElementById('f-emp-manager').value.trim(),
     status: document.getElementById('f-emp-status').value,
     joinDate: document.getElementById('f-emp-joindate').value,
+    empType: document.getElementById('f-emp-emptype').value,
   };
   
   try {
@@ -3350,6 +3510,7 @@ function renderNewHires() {
       <td><div style="font-weight:600;color:var(--text)">${h.name}</div><div style="font-size:11px;color:var(--text3)">${h.id}</div></td>
       <td>${h.dept}</td>
       <td>${h.type || 'New Hire'}</td>
+      <td>${h.empType ? `<span class="badge ${h.empType==='Staff'?'blue':'purple'}">${h.empType}</span>` : '<span style="color:var(--text3);font-size:12px;">—</span>'}</td>
       <td>${h.role}</td>
       <td>${formatDate(h.joinDate)}</td>
       <td>${h.manager}</td>
@@ -3385,24 +3546,21 @@ async function updateHireStatus(id, status) {
   if (stageMap[status]!==undefined) h.pipelineStage = stageMap[status];
 
   try {
-    await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+    const r1 = await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+    if (!r1.ok) throw new Error('Save failed');
 
     // Auto-transfer to headcount when Completed
     if (status === 'Completed') {
       const newEmp = {
         id: `EMP-${Date.now().toString().slice(-6)}`,
-        name: h.name,
-        dept: h.dept,
-        role: h.role || '',
-        type: h.type || '',
-        email: h.email || '',
-        location: '',
-        manager: h.manager || '',
-        status: 'Active',
-        joinDate: h.joinDate || ''
+        name: h.name, dept: h.dept, role: h.role || '', type: h.type || '',
+        email: h.email || '', location: '', manager: h.manager || '',
+        status: 'Active', joinDate: h.joinDate || ''
       };
-      await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
-      await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      const r2 = await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
+      if (!r2.ok) throw new Error('Add employee failed');
+      const r3 = await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      if (!r3.ok) throw new Error('Delete hire failed');
       showToast(`${h.name} completed onboarding — added to Headcount`, 'success');
       await initializeData();
     } else {
@@ -3412,7 +3570,7 @@ async function updateHireStatus(id, status) {
     }
   } catch(e) {
     h.itStatus = oldStatus; h.pipelineStage = oldStage;
-    showToast('Failed to update status', 'error');
+    showToast('Failed to update status: ' + e.message, 'error');
   }
 }
 
@@ -3435,6 +3593,7 @@ function openAddHire() {
   document.getElementById('f-hire-joindate').value = '';
   document.getElementById('f-hire-dept').selectedIndex = 0;
   document.getElementById('f-hire-type').selectedIndex = 0;
+  document.getElementById('f-hire-emptype').selectedIndex = 0;
   openModal('modal-hire');
 }
 
@@ -3452,9 +3611,11 @@ function openEditHire(id) {
   const deptSel = document.getElementById('f-hire-dept');
   const typeSel = document.getElementById('f-hire-type');
   const roleSel = document.getElementById('f-hire-role');
+  const empTypeSel = document.getElementById('f-hire-emptype');
   [...deptSel.options].forEach(o => o.selected = o.value === h.dept);
   [...typeSel.options].forEach(o => o.selected = o.value === h.type);
   [...roleSel.options].forEach(o => o.selected = o.value === h.role);
+  [...empTypeSel.options].forEach(o => o.selected = o.value === (h.empType || ''));
   openModal('modal-hire');
 }
 
@@ -3474,6 +3635,7 @@ async function saveHire() {
     joinDate: document.getElementById('f-hire-joindate').value,
     manager: document.getElementById('f-hire-manager').value.trim(),
     equipment: document.getElementById('f-hire-equipment').value.trim(),
+    empType: document.getElementById('f-hire-emptype').value,
     itStatus: existing ? existing.itStatus : 'Pending',
     pipelineStage: existing ? existing.pipelineStage : 0,
   };
@@ -3594,24 +3756,21 @@ async function setStage(id, stageIndex) {
   h.itStatus = statusMap[stageIndex] || 'Pending';
 
   try {
-    await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+    const r1 = await authFetch('/api/newhires', { method: 'POST', body: JSON.stringify(h) });
+    if (!r1.ok) throw new Error('Save failed');
 
     // Auto-transfer to headcount when Completed
     if (stageIndex === 5) {
       const newEmp = {
         id: `EMP-${Date.now().toString().slice(-6)}`,
-        name: h.name,
-        dept: h.dept,
-        role: h.role || '',
-        type: h.type || '',
-        email: h.email || '',
-        location: '',
-        manager: h.manager || '',
-        status: 'Active',
-        joinDate: h.joinDate || ''
+        name: h.name, dept: h.dept, role: h.role || '', type: h.type || '',
+        email: h.email || '', location: '', manager: h.manager || '',
+        status: 'Active', joinDate: h.joinDate || ''
       };
-      await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
-      await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      const r2 = await authFetch('/api/employees', { method: 'POST', body: JSON.stringify(newEmp) });
+      if (!r2.ok) throw new Error('Add employee failed');
+      const r3 = await authFetch(`/api/newhires/${id}`, { method: 'DELETE' });
+      if (!r3.ok) throw new Error('Delete hire failed');
       showToast(`${h.name} completed onboarding — added to Headcount`, 'success');
       // Re-fetch all data
       await initializeData();
@@ -3622,7 +3781,7 @@ async function setStage(id, stageIndex) {
     }
   } catch(e) {
     h.pipelineStage = oldStage; h.itStatus = oldStatus;
-    showToast('Failed to save stage','error');
+    showToast('Failed to save stage: ' + e.message, 'error');
   }
 }
 
@@ -3735,6 +3894,11 @@ function getFields(type) {
       {k:'id',l:'ID'},{k:'name',l:'Name'},{k:'dept',l:'Department'},{k:'type',l:'Type'},{k:'role',l:'Role'},
       {k:'joinDate',l:'Join Date'},{k:'manager',l:'Manager'},{k:'equipment',l:'Equipment'},{k:'itStatus',l:'IT Status'}
     ],
+    plan: [
+      {k:'year',l:'Year'},{k:'quarter',l:'Quarter'},{k:'role',l:'Role'},{k:'type',l:'Type'},{k:'model',l:'Model'},
+      {k:'cap_staff',l:'Capital Place Staff'},{k:'cap_collab',l:'Capital Place Collab'},
+      {k:'sgc_staff',l:'Saigon Center Staff'},{k:'sgc_collab',l:'Saigon Center Collab'}
+    ],
   }[type] || [];
 }
 
@@ -3742,7 +3906,7 @@ function switchImportTab(type, el) {
   currentImportType = type;
   document.querySelectorAll('.import-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  const titles = {assets:'Import Assets',headcount:'Import Headcount',newhires:'Import New Hires'};
+  const titles = {assets:'Import Assets',headcount:'Import Headcount',newhires:'Import New Hires',plan:'Import Plan'};
   document.getElementById('import-panel-title').textContent = titles[type];
   document.getElementById('preview-section').style.display = 'none';
   document.getElementById('csv-file-input').value = '';
@@ -3751,9 +3915,12 @@ function switchImportTab(type, el) {
 
 const csvTemplates = {
   assets: `Asset ID,Asset tag,Is new,Serial number,Finance tag,Asset type,Model name,DO number,Software installed,Entity,Origin Region,Warranty period,Last audit date,Tag,Remark,Processor,RAM (GB),Storage (GB),Status,Site(Region code + Site),Storeroom,Rack,Row,Asset owner,Owner department,Asset location,Assigned date,Asset confirmation date
-AST-001,AST-TAG-001,Yes,SN-001,FIN-001,Laptop,Dell Latitude 3460 (16GB),DO-001,"Windows 11,Office 365",Main Entity,VN,2028-06-17,2026-01-15,AST-TAG-001,Good condition,Intel i5,16,512,Available,VN-HCM-SITE-A,STK-01,Rack-01,Row-A,Nguyen Van A,Product,Ho Chi Minh,2026-05-01,2026-05-01`,
+AST-001,AST-TAG-001,Yes,SN-001,FIN-001,Laptop,Dell Latitude 3420,DO-001,"Windows 11,Office 365",Main Entity,VN,2028-06-17,2026-01-15,AST-TAG-001,Good condition,Intel i5,16,512,Available,VN-HCM-SITE-A,STK-01,Rack-01,Row-A,Nguyen Van A,Product,Ho Chi Minh,2026-05-01,2026-05-01`,
   headcount: `Employee ID,Name,Department,Role,Email,Location,Manager,Status\nEMP-001,Jane Smith,Engineering,Developer,jane@co.com,HQ F3,Bob Lee,Active`,
   newhires: `ID,Name,Department,Role,Join Date,Manager,Equipment Needed,IT Status\nNH-001,Alex Brown,Engineering,Backend Dev,2026-05-01,Tom Walsh,"Laptop, Monitor",Pending`,
+  plan: `Year,Quarter,Role,Type,Model,Capital Place Staff,Capital Place Collab,Saigon Center Staff,Saigon Center Collab
+2026,2,Producer,Laptop,Dell Latitude 5420,2,1,1,0
+2026,2,Developer,Desktop PC,Dell Precision 3660 Tower,0,0,1,1`,
 };
 
 function downloadTemplate() {
@@ -3925,9 +4092,25 @@ async function confirmImport() {
           pipelineStage: 0
         };
         endpoint = '/api/newhires';
+      } else if (currentImportType === 'plan') {
+        const getVal = (k) => (mapping[k] !== undefined && r[mapping[k]]) || '';
+        const model = getVal('model');
+        if (!model) continue;
+        obj = {
+          year: parseInt(getVal('year')) || 2026,
+          quarter: parseInt(getVal('quarter')) || 2,
+          role: getVal('role') || 'Other',
+          type: getVal('type') || 'Laptop',
+          model,
+          cap_staff:  parseInt(getVal('cap_staff'))  || 0,
+          cap_collab: parseInt(getVal('cap_collab')) || 0,
+          sgc_staff:  parseInt(getVal('sgc_staff'))  || 0,
+          sgc_collab: parseInt(getVal('sgc_collab')) || 0,
+        };
+        endpoint = '/api/plan';
       }
 
-      if ((!obj.id || !obj.id.trim()) && (!obj.name || !obj.name.trim())) continue;
+      if (currentImportType !== 'plan' && (!obj.id || !obj.id.trim()) && (!obj.name || !obj.name.trim())) continue;
 
       const res = await authFetch(endpoint, { method: 'POST', body: JSON.stringify(obj) });
       if (res.ok) count++; else failed++;
@@ -4444,6 +4627,7 @@ function renderOffboarded() {
         <td>${e.dept}</td>
         <td>${e.role}</td>
         <td>${e.type ? `<span class="badge ${e.type==='New Hire'?'teal':e.type==='Replace'?'amber':'sky'}">${e.type}</span>` : '—'}</td>
+        <td>${e.empType ? `<span class="badge ${e.empType==='Staff'?'blue':'purple'}">${e.empType}</span>` : '<span style="color:var(--text3);font-size:12px;">—</span>'}</td>
         <td style="color:var(--text3);font-size:12px;">${formatDate(e.joinDate)}</td>
         <td style="font-weight:600;color:var(--rose);font-size:12px;">${formatDate(e.offboardDate)}</td>
         <td style="font-size:12px;color:var(--text3);">${calcTenure(e.joinDate, e.offboardDate)}</td>
@@ -4518,6 +4702,13 @@ function setDefaultAuditQuarter() {
   if (ySel) ySel.value = String(now.getFullYear());
 }
 
+function getPlannedHeadcount() {
+  const total = planRows.reduce((s,r)=>{
+    return s + (r.cap_staff||0) + (r.cap_collab||0) + (r.sgc_staff||0) + (r.sgc_collab||0);
+  }, 0);
+  return total;
+}
+
 function renderQuarterlyAudit() {
   const quarter = document.getElementById('audit-quarter')?.value || '2';
   const year = document.getElementById('audit-year')?.value || '2026';
@@ -4534,9 +4725,7 @@ function renderQuarterlyAudit() {
   const totalAssets = assets.length;
   const inUseAssets = assets.filter(a => a.status === 'In Use').length;
   const statsEl = document.getElementById('audit-stats');
-  const targetInput = document.getElementById('audit-hc-target');
-  const inputVal = targetInput ? parseInt(targetInput.value) : NaN;
-  const totalPlanned = (!isNaN(inputVal) && inputVal > 0) ? inputVal : (onboarded.length + upcoming.length);
+  const totalPlanned = getPlannedHeadcount();
   const remaining = Math.max(0, totalPlanned - onboarded.length);
 
   statsEl.innerHTML = `
@@ -4694,7 +4883,10 @@ function renderQuarterlyAudit() {
   });
 
   const tbody3 = document.getElementById('audit-asset-tbody');
-  tbody3.innerHTML = Object.keys(modelMap).sort().map(m => {
+  tbody3.innerHTML = Object.keys(modelMap).sort((a,b) => {
+    const diff = modelMap[b].avail - modelMap[a].avail;
+    return diff !== 0 ? diff : a.localeCompare(b);
+  }).map(m => {
     const d = modelMap[m];
     const afterHires = d.avail - upcoming.length; // rough buffer (avail minus total upcoming demand)
     const remainColor = afterHires > 0 ? 'var(--green)' : afterHires === 0 ? 'var(--amber)' : 'var(--rose)';
@@ -4780,6 +4972,396 @@ function exportAuditCSV() {
 }
 
 // ===================================================
+//   PLAN
+// ===================================================
+
+let planRows = [];
+
+const ASSET_MODEL_LIST = [
+  'Apple iMac (24-inch, M1, 2021)',
+  'Apple iMac (Retina 5K, 27-inch, 2019)',
+  'Apple iMac (Retina 5K, 27-inch, 2020)',
+  'Apple Mac Mini (M4, 2025)',
+  'Apple Macbook Air (13-inch, M4, 2025)',
+  'Apple MacBook Pro (13-inch, 2018, Four Thunderbolt 3 ports)',
+  'Apple MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)',
+  'Apple MacBook Pro (13-inch, M1, 2020)',
+  'Apple Macbook Pro (14-inch, M5 Pro, 2026)',
+  'Apple MacBook Pro (15-inch, 2018)',
+  'Apple MacBook Pro (16-inch, 2019)',
+  'Apple MacBook Pro (16-inch, 2021), M1 Pro, 10-core CPU, 16-core GPU, 16GB RAM, 512GB SSD',
+  'Asus 27-inch Monitor - VG279G',
+  'Custom PC',
+  'Dell 24-inch Monitor - P2425H',
+  'Dell 27-inch Monitor - P2418HT',
+  'Dell 27-inch Monitor - P2722H',
+  'Dell Latitude 3420',
+  'Dell Latitude 5400',
+  'Dell Latitude 5410',
+  'Dell Latitude 5420',
+  'Dell Latitude 5480',
+  'Dell Latitude 5490',
+  'Dell Latitude 5590',
+  'Dell Latitude 7410',
+  'Dell Latitude 7420',
+  'Dell Latitude 7490',
+  'Dell Optiplex 7060',
+  'Dell OptiPlex 7070',
+  'Dell Optiplex 7080',
+  'Dell OptiPlex 7090',
+  'Dell Precision 3630 Tower',
+  'Dell Precision 3640 Tower',
+  'Dell Precision 3650 Tower',
+  'Dell Precision 3650 Tower CTO Base',
+  'Dell Precision 3660 Tower',
+  'Dell Precision 3680 Tower',
+  'Dell Precision 5540',
+  'Dell Precision 7530',
+  'Dell Pro 14 PC14250',
+  'Dell Pro Max 14',
+  'Dell Pro Max Tower T2',
+  'Dell U2725QE',
+  'Dell UltraSharp 24-inch Monitor',
+  'Dell UltraSharp 24-inch Monitor - U2417H',
+  'Dell UltraSharp 24-inch Monitor - U2419H',
+  'Dell UltraSharp 24-inch Monitor - U2422H',
+  'Dell UltraSharp 27 Thunderbolt Hub Monitor - U2724DE',
+  'Dell UltraSharp 27-inch 4K Monitor - U2718Q',
+  'Dell UltraSharp 27-inch 4K Monitor - U2720Q',
+  'Dell UltraSharp 27-inch Monitor - SE2719HR',
+  'Dell XPS 13 9310',
+  'Dell XPS 13 9350',
+  'Dell XPS 8920',
+  'Dell XPS 8930',
+  'Desktop PC',
+  'Intel NUC',
+  'Laptop',
+  'Lenovo ThinkPad X1 Carbon Gen 13',
+  'LG 23-inch Monitor',
+  'LG 24-inch Monitor',
+  'LG Monitor',
+];
+
+async function loadPlanData() {
+  const res = await authFetch('/api/plan');
+  planRows = await res.json();
+}
+
+function getInventoryForModel(modelLabel) {
+  if (!modelLabel) return 0;
+  return assets.filter(a => {
+    const brand = (a.brand || '').trim();
+    const m = (a.model || '').trim();
+    const label = (brand && !m.toLowerCase().startsWith(brand.toLowerCase())) ? brand + ' ' + m : m;
+    return label === modelLabel && (a.status || '').toLowerCase() === 'available';
+  }).length;
+}
+
+function getModelsForType(type) {
+  const map = new Map(); // key = display label, value = model field
+  const typeNorm = (type || '').trim().toLowerCase();
+  assets
+    .filter(a => {
+      const t = (a.type || '').trim().toLowerCase();
+      const m = (a.model || '').trim();
+      return t === typeNorm && m !== '' && m.toLowerCase() !== typeNorm;
+    })
+    .forEach(a => {
+      const brand = (a.brand || '').trim();
+      const model = a.model.trim();
+      // If brand already prefixes model name, use model alone; else combine
+      const label = (brand && !model.toLowerCase().startsWith(brand.toLowerCase()))
+        ? brand + ' ' + model
+        : model;
+      if (!map.has(label)) map.set(label, model);
+    });
+  // If no type filter match, fall back to all assets with a model (catch-all)
+  if (map.size === 0 && typeNorm) {
+    assets.filter(a => (a.model||'').trim() !== '').forEach(a => {
+      const brand = (a.brand || '').trim();
+      const model = a.model.trim();
+      const label = (brand && !model.toLowerCase().startsWith(brand.toLowerCase()))
+        ? brand + ' ' + model : model;
+      if (!map.has(label)) map.set(label, model);
+    });
+  }
+  return [...map.entries()].sort((a,b) => a[0].localeCompare(b[0]));
+  // returns [ [label, modelValue], ... ]
+}
+
+function renderPlan() {
+  const tbody = document.getElementById('plan-tbody');
+  const emptyEl = document.getElementById('plan-empty');
+  const tableEl = document.querySelector('#plan-table');
+  const summaryEl = document.getElementById('plan-summary');
+
+  // Filter by selected year/quarter
+  const selYear    = parseInt(document.getElementById('plan-year')?.value) || 2026;
+  const selQuarter = parseInt(document.getElementById('plan-quarter')?.value) || 2;
+  const filteredRows = planRows.filter(r =>
+    (r.year || 2026) == selYear && (r.quarter || 2) == selQuarter
+  );
+
+  // Summary totals (filtered)
+  const totCapStaff  = filteredRows.reduce((s,r)=>s+(r.cap_staff||0),0);
+  const totCapCollab = filteredRows.reduce((s,r)=>s+(r.cap_collab||0),0);
+  const totSgcStaff  = filteredRows.reduce((s,r)=>s+(r.sgc_staff||0),0);
+  const totSgcCollab = filteredRows.reduce((s,r)=>s+(r.sgc_collab||0),0);
+
+  const grandTotal = totCapStaff + totCapCollab + totSgcStaff + totSgcCollab;
+
+  if (summaryEl) summaryEl.innerHTML = `
+    <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Total Planned Headcount</div>
+      <div style="font-size:30px;font-weight:800;color:var(--accent2);">${getPlannedHeadcount()}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">all locations combined</div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;">Capital Place</div>
+      <div style="display:flex;gap:16px;">
+        <div><div style="font-size:20px;font-weight:700;color:var(--sky);">${totCapStaff}</div><div style="font-size:11px;color:var(--text3);">Staff</div></div>
+        <div><div style="font-size:20px;font-weight:700;color:var(--purple);">${totCapCollab}</div><div style="font-size:11px;color:var(--text3);">Collaborators</div></div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;">Saigon Center</div>
+      <div style="display:flex;gap:16px;">
+        <div><div style="font-size:20px;font-weight:700;color:var(--sky);">${totSgcStaff}</div><div style="font-size:11px;color:var(--text3);">Staff</div></div>
+        <div><div style="font-size:20px;font-weight:700;color:var(--purple);">${totSgcCollab}</div><div style="font-size:11px;color:var(--text3);">Collaborators</div></div>
+      </div>
+    </div>
+  `;
+
+  if (!filteredRows.length) {
+    if (tableEl) tableEl.closest('.table-wrap').style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  if (tableEl) tableEl.closest('.table-wrap').style.display = '';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  // HC Onboarded: employees who joined in the selected quarter/year
+  // (they were New Hires who completed onboarding and moved to headcount)
+  const qStart = new Date(`${selYear}-${String((selQuarter-1)*3+1).padStart(2,'0')}-01`);
+  const qEnd   = new Date(`${selYear}-${String(selQuarter*3).padStart(2,'0')}-${selQuarter===1||selQuarter===3?31:30}`);
+  qEnd.setMonth(qEnd.getMonth()+1, 0); // last day of the quarter's last month
+  const onboardedInQuarter = employees.filter(e => {
+    if (!e.joinDate) return false;
+    const d = new Date(e.joinDate);
+    return d >= qStart && d <= qEnd;
+  });
+
+  tbody.innerHTML = filteredRows.map(r => {
+    const inv = getInventoryForModel(r.model);
+    const total = (r.cap_staff||0) + (r.cap_collab||0) + (r.sgc_staff||0) + (r.sgc_collab||0);
+    const hcOnboarded = onboardedInQuarter.filter(e => e.role === r.role).length;
+    const inputStyle = 'width:52px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:13px;font-weight:600;font-family:inherit;outline:none;';
+    return `<tr>
+      <td style="font-weight:600;white-space:nowrap;">${r.role}</td>
+      <td><span class="badge ${r.type==='Laptop'?'teal':'sky'}">${r.type}</span></td>
+      <td style="color:var(--text2);">${r.model}</td>
+      <td style="text-align:center;"><span style="font-weight:700;color:${inv>0?'var(--green)':'var(--rose)'};">${inv}</span></td>
+      <td style="text-align:center;"><input type="number" min="0" value="${r.buffer||0}" style="${inputStyle}color:var(--amber);" onchange="updatePlanField(${r.id},'buffer',this.value)" /></td>
+      <td style="text-align:center;border-left:2px solid var(--border2);">
+        <input type="number" min="0" value="${r.cap_staff||0}" style="${inputStyle}" onchange="updatePlanField(${r.id},'cap_staff',this.value)" />
+      </td>
+      <td style="text-align:center;">
+        <input type="number" min="0" value="${r.cap_collab||0}" style="${inputStyle}" onchange="updatePlanField(${r.id},'cap_collab',this.value)" />
+      </td>
+      <td style="text-align:center;border-left:2px solid var(--border2);">
+        <input type="number" min="0" value="${r.sgc_staff||0}" style="${inputStyle}" onchange="updatePlanField(${r.id},'sgc_staff',this.value)" />
+      </td>
+      <td style="text-align:center;">
+        <input type="number" min="0" value="${r.sgc_collab||0}" style="${inputStyle}" onchange="updatePlanField(${r.id},'sgc_collab',this.value)" />
+      </td>
+      <td style="text-align:center;border-left:2px solid var(--border2);font-weight:800;color:var(--accent2);font-size:15px;" id="plan-total-${r.id}">${total}</td>
+      <td style="text-align:center;font-weight:700;color:var(--green);font-size:15px;">${hcOnboarded}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn btn-danger btn-sm" onclick="deletePlanRow(${r.id})" title="Delete">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updatePlanField(id, field, value) {
+  const r = planRows.find(x => x.id === id);
+  if (!r) return;
+  r[field] = parseInt(value) || 0;
+  // Update total cell instantly
+  const total = (r.cap_staff||0) + (r.cap_collab||0) + (r.sgc_staff||0) + (r.sgc_collab||0);
+  const totalEl = document.getElementById(`plan-total-${id}`);
+  if (totalEl) totalEl.textContent = total;
+  // Update summary
+  renderPlanSummary();
+  // Save to server
+  try {
+    await authFetch('/api/plan', { method: 'POST', body: JSON.stringify(r) });
+  } catch(e) { showToast('Failed to save', 'error'); }
+}
+
+function renderPlanSummary() {
+  const summaryEl = document.getElementById('plan-summary');
+  if (!summaryEl) return;
+  const selYear    = parseInt(document.getElementById('plan-year')?.value) || 2026;
+  const selQuarter = parseInt(document.getElementById('plan-quarter')?.value) || 2;
+  const filtered   = planRows.filter(r => (r.year||2026) == selYear && (r.quarter||2) == selQuarter);
+  const totCapStaff  = filtered.reduce((s,r)=>s+(r.cap_staff||0),0);
+  const totCapCollab = filtered.reduce((s,r)=>s+(r.cap_collab||0),0);
+  const totSgcStaff  = filtered.reduce((s,r)=>s+(r.sgc_staff||0),0);
+  const totSgcCollab = filtered.reduce((s,r)=>s+(r.sgc_collab||0),0);
+  const grandTotal   = totCapStaff + totCapCollab + totSgcStaff + totSgcCollab;
+  summaryEl.innerHTML = `
+    <div style="flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Total Planned Headcount</div>
+      <div style="font-size:30px;font-weight:800;color:var(--accent2);">${getPlannedHeadcount()}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">all locations combined</div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;">Capital Place</div>
+      <div style="display:flex;gap:16px;">
+        <div><div style="font-size:20px;font-weight:700;color:var(--sky);">${totCapStaff}</div><div style="font-size:11px;color:var(--text3);">Staff</div></div>
+        <div><div style="font-size:20px;font-weight:700;color:var(--purple);">${totCapCollab}</div><div style="font-size:11px;color:var(--text3);">Collaborators</div></div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:120px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;">Saigon Center</div>
+      <div style="display:flex;gap:16px;">
+        <div><div style="font-size:20px;font-weight:700;color:var(--sky);">${totSgcStaff}</div><div style="font-size:11px;color:var(--text3);">Staff</div></div>
+        <div><div style="font-size:20px;font-weight:700;color:var(--purple);">${totSgcCollab}</div><div style="font-size:11px;color:var(--text3);">Collaborators</div></div>
+      </div>
+    </div>
+  `;
+}
+
+function populatePlanModelDropdown(selectedType, selectedModel) {
+  const input = document.getElementById('f-plan-model');
+  if (input) { input.value = selectedModel || ''; }
+  updatePlanInventory();
+}
+
+function filterPlanModelDropdown(query) {
+  const q = (query || '').toLowerCase().trim();
+  const filtered = q ? ASSET_MODEL_LIST.filter(m => m.toLowerCase().includes(q)) : ASSET_MODEL_LIST;
+  const dd = document.getElementById('plan-model-dropdown');
+  if (!dd) return;
+  if (!filtered.length) {
+    dd.style.display = 'block';
+    dd.innerHTML = `<div style="padding:10px 14px;font-size:13px;color:var(--text3);">No matching models found</div>`;
+    return;
+  }
+  dd.style.display = 'block';
+  dd.innerHTML = filtered.map(label => {
+    const inv = getInventoryForModel(label);
+    return `<div onclick="selectPlanModel('${label.replace(/'/g,"\\'")}')"
+      style="padding:8px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;border-bottom:1px solid var(--border);"
+      onmouseenter="this.style.background='var(--surface)'" onmouseleave="this.style.background=''">
+      <span>${label}</span>
+      <span style="font-size:11px;font-weight:700;color:${inv>0?'var(--green)':'var(--text3)'};">${inv} avail.</span>
+    </div>`;
+  }).join('');
+}
+
+function selectPlanModel(label) {
+  const input = document.getElementById('f-plan-model');
+  if (input) input.value = label;
+  const dd = document.getElementById('plan-model-dropdown');
+  if (dd) dd.style.display = 'none';
+  updatePlanInventory();
+}
+
+function updatePlanInventory() {
+  const model = document.getElementById('f-plan-model')?.value || '';
+  const inv = model ? getInventoryForModel(model) : '—';
+  const el = document.getElementById('f-plan-inventory-display');
+  if (el) {
+    el.textContent = inv;
+    el.style.color = (typeof inv === 'number' && inv > 0) ? 'var(--green)' : inv === '—' ? 'var(--text3)' : 'var(--rose)';
+  }
+}
+
+function updatePlanTotal() {
+  const s1 = parseInt(document.getElementById('f-plan-cap-staff').value)||0;
+  const s2 = parseInt(document.getElementById('f-plan-cap-collab').value)||0;
+  const s3 = parseInt(document.getElementById('f-plan-sgc-staff').value)||0;
+  const s4 = parseInt(document.getElementById('f-plan-sgc-collab').value)||0;
+  document.getElementById('f-plan-total-display').textContent = s1+s2+s3+s4;
+}
+
+function openAddPlanRow() {
+  // Sync modal year/quarter with current filter
+  const filterYear = document.getElementById('plan-year')?.value || '2026';
+  const filterQuarter = document.getElementById('plan-quarter')?.value || '2';
+  document.getElementById('f-plan-year').value = filterYear;
+  document.getElementById('f-plan-quarter').value = filterQuarter;
+  document.getElementById('f-plan-type').value = 'Laptop';
+  document.getElementById('f-plan-model').value = '';
+  document.getElementById('plan-model-dropdown').style.display = 'none';
+  updatePlanInventory();
+  openModal('modal-plan');
+}
+
+function openEditPlanRow(id) {
+  const r = planRows.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('modal-plan-title').textContent = 'Edit Plan Row';
+  document.getElementById('f-plan-id').value = r.id;
+  document.getElementById('f-plan-role').value = r.role;
+  document.getElementById('f-plan-type').value = r.type;
+  document.getElementById('f-plan-cap-staff').value = r.cap_staff||0;
+  document.getElementById('f-plan-cap-collab').value = r.cap_collab||0;
+  document.getElementById('f-plan-sgc-staff').value = r.sgc_staff||0;
+  document.getElementById('f-plan-sgc-collab').value = r.sgc_collab||0;
+  document.getElementById('f-plan-total-display').textContent = (r.cap_staff||0)+(r.cap_collab||0)+(r.sgc_staff||0)+(r.sgc_collab||0);
+  populatePlanModelDropdown(r.type, r.model);
+  openModal('modal-plan');
+}
+
+async function savePlanRow() {
+  const obj = {
+    role: document.getElementById('f-plan-role').value,
+    type: document.getElementById('f-plan-type').value,
+    model: document.getElementById('f-plan-model').value,
+    year: parseInt(document.getElementById('f-plan-year').value) || 2026,
+    quarter: parseInt(document.getElementById('f-plan-quarter').value) || 2,
+    cap_staff: 0, cap_collab: 0, sgc_staff: 0, sgc_collab: 0,
+  };
+  if (!obj.model) { showToast('Please select a model.', 'error'); return; }
+  try {
+    const res = await authFetch('/api/plan', { method: 'POST', body: JSON.stringify(obj) });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    planRows.push({ ...obj, id: data.id, total: 0 });
+    closeModal('modal-plan');
+    renderPlan();
+    showToast('Plan row added. Enter numbers directly in the table.', 'success');
+  } catch(e) { showToast('Failed to save plan row.', 'error'); }
+}
+
+async function deletePlanRow(id) {
+  if (!confirm('Delete this plan row?')) return;
+  try {
+    const res = await authFetch(`/api/plan/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    planRows = planRows.filter(r => r.id !== id);
+    renderPlan();
+    showToast('Plan row deleted.', 'success');
+  } catch(e) { showToast('Failed to delete.', 'error'); }
+}
+
+function exportPlanCSV() {
+  const BOM = '﻿';
+  const headers = ['Role','Type','Current Model','Inventory','Capital Place - Staff','Capital Place - Collaborators','Saigon Center - Staff','Saigon Center - Collaborators','Total This Quarter'];
+  const rows = planRows.map(r => {
+    const inv = getInventoryForModel(r.model);
+    return [r.role, r.type, r.model, inv, r.cap_staff||0, r.cap_collab||0, r.sgc_staff||0, r.sgc_collab||0, (r.cap_staff||0)+(r.cap_collab||0)+(r.sgc_staff||0)+(r.sgc_collab||0)].join(',');
+  });
+  downloadCSVString(BOM + [headers.join(','), ...rows].join('\n'), 'equipment_plan.csv');
+}
+
 //   INIT
 // ===================================================
 (async () => {

@@ -4,8 +4,30 @@ const http = require('http');
 // SeaTalk Webhook URL — set via /api/notifications/config or env var
 let webhookUrl = process.env.SEATALK_WEBHOOK_URL || '';
 
+// DB reference — injected after DB is ready
+let _db = null;
+
+function setDB(db) {
+  _db = db;
+  // Load persisted webhook URL from settings table
+  db.get("SELECT value FROM settings WHERE key = 'seatalk_webhook_url'", [], (err, row) => {
+    if (!err && row && row.value) {
+      webhookUrl = row.value;
+      console.log('[SeaTalk] Loaded webhook URL from DB.');
+    }
+  });
+}
+
 function setWebhookUrl(url) {
-  webhookUrl = url;
+  webhookUrl = url || '';
+  // Persist to DB if available
+  if (_db) {
+    _db.run(
+      "INSERT INTO settings (key, value) VALUES ('seatalk_webhook_url', ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+      [webhookUrl],
+      (err) => { if (err) console.error('[SeaTalk] Failed to persist webhook URL:', err.message); }
+    );
+  }
 }
 
 function getWebhookUrl() {
@@ -64,6 +86,7 @@ async function notifyCompletedOnboarding(name, dept) {
 }
 
 module.exports = {
+  setDB,
   setWebhookUrl,
   getWebhookUrl,
   isConfigured,

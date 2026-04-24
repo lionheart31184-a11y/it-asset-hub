@@ -59,6 +59,7 @@ function initDB() {
     )`);
     db.run("ALTER TABLE employees ADD COLUMN offboardDate TEXT", () => {});
     db.run("ALTER TABLE employees ADD COLUMN offboardReason TEXT", () => {});
+    db.run("ALTER TABLE employees ADD COLUMN empType TEXT", () => {});
 
     // 3. New Hires
     db.run(`CREATE TABLE IF NOT EXISTS new_hires (
@@ -75,6 +76,7 @@ function initDB() {
       pipelineStage INTEGER
     )`);
     db.run("ALTER TABLE new_hires ADD COLUMN email TEXT", () => {});
+    db.run("ALTER TABLE new_hires ADD COLUMN empType TEXT", () => {});
 
     // 4. Q2 Plan
     db.run(`CREATE TABLE IF NOT EXISTS q2_plan (
@@ -99,6 +101,26 @@ function initDB() {
       password_hash TEXT,
       role TEXT,
       name TEXT,
+      createdAt TEXT
+    )`);
+
+    // 6. Settings (key-value store for app config)
+    db.run(`CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )`);
+
+    // 7. Equipment Plan
+    db.run(`CREATE TABLE IF NOT EXISTS equipment_plan (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      role TEXT,
+      type TEXT,
+      model TEXT,
+      cap_staff INTEGER DEFAULT 0,
+      cap_collab INTEGER DEFAULT 0,
+      sgc_staff INTEGER DEFAULT 0,
+      sgc_collab INTEGER DEFAULT 0,
+      total INTEGER DEFAULT 0,
       createdAt TEXT
     )`);
 

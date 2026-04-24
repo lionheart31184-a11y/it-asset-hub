@@ -14,6 +14,7 @@ app.use(express.static(__dirname));
 
 // Initialize Database
 initDB();
+notif.setDB(db);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'it-asset-hub-secret-2026';
 const SALT_ROUNDS = 10;
@@ -194,12 +195,12 @@ app.get('/api/employees', requireAuth, (req, res) => {
 });
 
 app.post('/api/employees', requireAuth, requireRole('admin','hr'), (req, res) => {
-  const { id, name, dept, role, type, email, location, manager, status, joinDate, offboardDate, offboardReason } = req.body;
-  const sql = `INSERT INTO employees (id,name,dept,role,type,email,location,manager,status,joinDate,offboardDate,offboardReason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+  const { id, name, dept, role, type, email, location, manager, status, joinDate, offboardDate, offboardReason, empType } = req.body;
+  const sql = `INSERT INTO employees (id,name,dept,role,type,email,location,manager,status,joinDate,offboardDate,offboardReason,empType) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
     name=excluded.name, dept=excluded.dept, role=excluded.role, type=excluded.type, email=excluded.email,
     location=excluded.location, manager=excluded.manager, status=excluded.status, joinDate=excluded.joinDate,
-    offboardDate=excluded.offboardDate, offboardReason=excluded.offboardReason`;
-  db.run(sql, [id, name||'', dept||'', role||'', type||'', email||'', location||'', manager||'', status||'', joinDate||'', offboardDate||'', offboardReason||''], function(err) {
+    offboardDate=excluded.offboardDate, offboardReason=excluded.offboardReason, empType=excluded.empType`;
+  db.run(sql, [id, name||'', dept||'', role||'', type||'', email||'', location||'', manager||'', status||'', joinDate||'', offboardDate||'', offboardReason||'', empType||''], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, id });
   });
@@ -221,30 +222,28 @@ app.get('/api/newhires', requireAuth, (req, res) => {
 });
 
 app.post('/api/newhires', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
-  const { id, name, dept, type, role, email, joinDate, manager, equipment, itStatus, pipelineStage } = req.body;
+  const { id, name, dept, type, role, email, joinDate, manager, equipment, itStatus, pipelineStage, empType } = req.body;
 
   // Check if this is a new record (not an update)
   db.get('SELECT id, itStatus FROM new_hires WHERE id = ?', [id||''], (err, existing) => {
-    const sql = `INSERT INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
+    const sql = `INSERT INTO new_hires (id,name,dept,type,role,email,joinDate,manager,equipment,itStatus,pipelineStage,empType) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET
       name=excluded.name, dept=excluded.dept, type=excluded.type, role=excluded.role, email=excluded.email, joinDate=excluded.joinDate,
-      manager=excluded.manager, equipment=excluded.equipment, itStatus=excluded.itStatus, pipelineStage=excluded.pipelineStage`;
-    db.run(sql, [id||'', name||'', dept||'', type||'', role||'', email||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0], function(dbErr) {
+      manager=excluded.manager, equipment=excluded.equipment, itStatus=excluded.itStatus, pipelineStage=excluded.pipelineStage, empType=excluded.empType`;
+    db.run(sql, [id||'', name||'', dept||'', type||'', role||'', email||'', joinDate||'', manager||'', equipment||'', itStatus||'', pipelineStage||0, empType||''], function(dbErr) {
       if (dbErr) return res.status(500).json({ error: dbErr.message });
       res.json({ success: true, id: id||'' });
 
       // Notifications (fire-and-forget)
       if (!existing) {
-        // New hire added
         notif.notifyNewHire(name, dept, joinDate).catch(()=>{});
       } else if (existing.itStatus !== 'Completed' && itStatus === 'Completed') {
-        // Onboarding just completed
         notif.notifyCompletedOnboarding(name, dept).catch(()=>{});
       }
     });
   });
 });
 
-app.delete('/api/newhires/:id', requireAuth, requireRole('admin','hr'), (req, res) => {
+app.delete('/api/newhires/:id', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
   db.run('DELETE FROM new_hires WHERE id = ?', [req.params.id], function(err) {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, deleted: this.changes });
@@ -312,6 +311,67 @@ app.delete('/api/planning/:id', requireAuth, requireRole('admin'), (req, res) =>
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true, deleted: this.changes });
   });
+});
+
+// ============================================================
+// EQUIPMENT PLAN
+// ============================================================
+
+app.get('/api/plan', requireAuth, (req, res) => {
+  db.all('SELECT * FROM equipment_plan ORDER BY id', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+app.post('/api/plan', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
+  const { id, role, type, model, cap_staff, cap_collab, sgc_staff, sgc_collab, year, quarter, buffer } = req.body;
+  const total = (cap_staff||0) + (cap_collab||0) + (sgc_staff||0) + (sgc_collab||0);
+  if (id) {
+    db.run('UPDATE equipment_plan SET role=?,type=?,model=?,cap_staff=?,cap_collab=?,sgc_staff=?,sgc_collab=?,total=?,year=?,quarter=?,buffer=? WHERE id=?',
+      [role||'', type||'', model||'', cap_staff||0, cap_collab||0, sgc_staff||0, sgc_collab||0, total, year||2026, quarter||2, buffer||0, id],
+      function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, id });
+      });
+  } else {
+    db.run('INSERT INTO equipment_plan (role,type,model,cap_staff,cap_collab,sgc_staff,sgc_collab,total,year,quarter,buffer,createdAt) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+      [role||'', type||'', model||'', cap_staff||0, cap_collab||0, sgc_staff||0, sgc_collab||0, total, year||2026, quarter||2, buffer||0, new Date().toISOString()],
+      function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, id: this.lastID });
+      });
+  }
+});
+
+app.delete('/api/plan/:id', requireAuth, requireRole('admin','hr','itstaff'), (req, res) => {
+  db.run('DELETE FROM equipment_plan WHERE id = ?', [req.params.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true, deleted: this.changes });
+  });
+});
+
+// ============================================================
+// SETTINGS (generic key-value)
+// ============================================================
+
+app.get('/api/settings/:key', requireAuth, (req, res) => {
+  db.get('SELECT value FROM settings WHERE key = ?', [req.params.key], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ key: req.params.key, value: row ? row.value : null });
+  });
+});
+
+app.post('/api/settings/:key', requireAuth, requireRole('admin'), (req, res) => {
+  const { value } = req.body;
+  db.run(
+    "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+    [req.params.key, value || ''],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
+    }
+  );
 });
 
 // ============================================================
